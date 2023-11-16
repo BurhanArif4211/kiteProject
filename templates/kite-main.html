@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet"
+            href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+            integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+            crossorigin="anonymous">
+        <link rel="stylesheet"
+            href="https://use.fontawesome.com/releases/v5.3.1/css/all.css"
+            integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU"
+            crossorigin="anonymous">
+
+        <!-- This is added justfor message boxes  -->
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+            rel="stylesheet">
+        <script
+            src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+        <title>User Kite </title>
+        <style>
+        .btn-logout{
+            position: absolute;
+            top:4.44%;
+            right: 13.33%;
+        }
+    </style>
+        <body>
+            <form method="POST" action="/api/logout">
+                {% csrf_token %}
+
+                <button class="btn btn-primary btn-logout" type="submit"><i
+                        class="fas fa-user-plus"></i>logout</button>
+            </form>
+
+            <section class="h-600 ">
+                <div class="container py-5 h-600">
+                    <div
+                        class="row d-flex justify-content-center align-items-center h-100">
+                        <div class="col col-lg-9 col-xl-11">
+                            <div class="card">
+                                <div
+                                    class="rounded-top text-white d-flex flex-row"
+                                    style="background-image: linear-gradient(to top right ,#4BBBAA, #F7B633,#FA4B16); height:200px;">
+                                    <div class="ms-4 mt-5 d-flex flex-column"
+                                        style="width: 150px;">
+
+                                        <img
+                                            src="/static/assets/jpg/default.jpg"
+                                            alt="Generic placeholder image"
+                                            class="img-fluid img-thumbnail mt-4 mb-2"
+                                            style="width: 150px; z-index: 1">
+                                        <button type="button"
+                                            class="btn btn-outline-dark"
+                                            data-mdb-ripple-color="dark"
+                                            style="z-index: 1;">
+                                            Edit profile
+                                        </button>
+                                    </div>
+                                    <div class="ms-3" style="margin-top: 130px;">
+                                        <h5>{{user_info.name}}</h5>
+                                        <p>{{profile_info.nitche}}</p>
+                                    </div>
+                                </div>
+                                <div class="p-4 text-black"
+                                    style="background-color: #f8f9fa;">
+                                    <div
+                                        class="d-flex justify-content-end text-center py-1">
+                                        <div>
+                                            <p class="mb-1 h5">0</p>
+                                            <p class="small text-muted mb-0">Photos</p>
+                                        </div>
+                                        <div class="px-3">
+                                            <p class="mb-1 h5">0</p>
+                                            <p class="small text-muted mb-0">Followers</p>
+                                        </div>
+                                        <div>
+                                            <p class="mb-1 h5">0</p>
+                                            <p class="small text-muted mb-0">Following</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-body p-4 text-black">
+                                    <div class="mb-5">
+                                        <p class="lead fw-normal mb-1">About</p>
+                                        <div class="p-4"
+                                            style="background-color: #f8f9fa;">
+                                            <p class="font-italic mb-1">{{profile_info.about}}</p>
+
+                                        </div>
+                                        {%for link in profile_info.links%}
+                                        <a herf= " {{link}}"> </a>
+                                        {%endfor%}
+                                    </div>
+                                    <div
+                                        class="d-flex justify-content-between align-items-center mb-4">
+                                        <p class="lead fw-normal mb-0">Recent
+                                            photos</p>
+                                        <p class="mb-0"><a href="#!"
+                                                class="text-muted">Show all</a></p>
+                                    </div>
+                                    <div class="row g-2">
+                                        <div class="col mb-2">
+                                            <img src
+                                                alt="image 1"
+                                                class="w-100 rounded-3">
+                                        </div>
+                                        <div class="col mb-2">
+                                            <img src
+                                                alt="image 1"
+                                                class="w-100 rounded-3">
+                                        </div>
+                                    </div>
+                                    <div class="row g-2">
+                                        <div class="col">
+                                            <img src
+                                                alt="image 1"
+                                                class="w-100 rounded-3">
+                                        </div>
+                                        <div class="col">
+                                            <img src
+                                                alt="image 1"
+                                                class="w-100 rounded-3">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </body>
+    </html>
