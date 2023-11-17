@@ -72,7 +72,25 @@ body{
     backface-visibility: hidden;
     color: transparent;
 }
+/* GPT Is the hero */
 
+.password-container {
+    position: relative;
+}
+
+.show-password {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    cursor: pointer;
+    z-index: 2;
+}
+.password-container input:focus + .show-password {
+    top: 50%;
+}
+
+/* end */
 
 /* start styling of error messages by https://codepen.io/jonathan-huffman */
 
@@ -164,7 +182,7 @@ body{
 #logreg-forms .social-btn{
     font-weight: 100;
     color:white;
-    width:190px;
+    width:164px;
     font-size: 0.9rem;
 }
 
@@ -233,6 +251,36 @@ body{
     
 }
     </style>
+    <script>
+       
+        function togglePasswordVisibility(fieldId) {
+            var passwordField = document.getElementById(fieldId);
+            var fieldType = passwordField.type;
+
+            if (fieldType === 'password') {
+                passwordField.type = 'text';
+            } else {
+                passwordField.type = 'password';
+            }
+        }        
+
+function validatePassword() {
+    let password1 = document.getElementById("user-pass").value;
+    let password2 = document.getElementById("user-repeatpass").value;
+    let errorElement = document.getElementById("passwordError");
+    console.log(password1 + password2)
+
+    if (password1 !== password2) {
+        errorElement.innerHTML = "Passwords do not match.";
+        return false;
+    } else {
+        errorElement.innerHTML = "";
+    }
+    return true;
+}
+
+
+    </script>
         <title>Join Kite Now</title>
     </head>
     <body>
@@ -270,12 +318,11 @@ body{
                     style="text-align: center"> Sign in</h1>
                 <div class="social-login">
                     <button class="btn facebook-btn social-btn" type="button"><span><i
-                                class="fab fa-facebook-f"></i> Sign in with
-                            Facebook</span> </button>
+                                class="fab fa-facebook-f"></i>  With Facebook</span> </button>
                             <!-- <form method="POST" action="/api/loginWithGoogle"> -->
-                    <button class="btn google-button btn" >
+                    <button class="text-dark btn google-button btn social-btn" >
                         <svg xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 24 24" width="20" height="20">
+                            viewBox="0 0 24 24" width="15" height="15">
                             <g
                                 transform="matrix(1, 0, 0, 1, 27.009001, -39.238998)">
                                 <path fill="#4285F4"
@@ -288,7 +335,7 @@ body{
                                     d="M -14.754 43.989 C -12.984 43.989 -11.404 44.599 -10.154 45.789 L -6.734 42.369 C -8.804 40.429 -11.514 39.239 -14.754 39.239 C -19.444 39.239 -23.494 41.939 -25.464 45.859 L -21.484 48.949 C -20.534 46.099 -17.884 43.989 -14.754 43.989 Z" />
                             </g>
                         </svg>
-                        Sign in with Google
+                       With Google
                     </button>
                 <!-- </form> -->
                 </div>
@@ -298,7 +345,9 @@ body{
                     autofocus>
                 <input name="password" type="password" id="inputPassword"
                     class="form-control" placeholder="Password" required>
-
+                    <div class="password-container">
+                <span style="transform:translateY(-120%);" class="show-password" onclick="togglePasswordVisibility('inputPassword')"><i style="user-select:none; opacity: .5;" class="material-icons">visibility</i></span>
+                    </div>
                 <button class="btn btn-success btn-block" type="submit"><i
                         class="fas fa-sign-in-alt"></i> Sign in</button>
                 <a href="#" id="forgot_pswd">Forgot password?</a>
@@ -320,19 +369,19 @@ body{
 
             <!-- For Sign UP -->
 
-            <form method="POST" action="/api/signup" class="form-signup">
+            <form onsubmit="return validatePassword()" method="POST" action="/api/signup" class="form-signup">
                 {% csrf_token %}
 
                 <div class="social-login">
                     <button class="btn facebook-btn social-btn" type="button"><span><i
-                                class="fab fa-facebook-f"></i> Sign up with
-                            Facebook</span> </button>
+                                class="fab fa-facebook-f"></i>
+                           With Facebook</span> </button>
                 </div>
                 <div class="social-login">
-                    <button class="btn google-button btn"
-                        on:click={signInWithGoogleL}>
+                    <button class="text-dark btn google-button btn social-btn"
+                        >
                         <svg xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 24 24" width="20" height="20">
+                            viewBox="0 0 24 24" width="15" height="15">
                             <g
                                 transform="matrix(1, 0, 0, 1, 27.009001, -39.238998)">
                                 <path fill="#4285F4"
@@ -345,31 +394,29 @@ body{
                                     d="M -14.754 43.989 C -12.984 43.989 -11.404 44.599 -10.154 45.789 L -6.734 42.369 C -8.804 40.429 -11.514 39.239 -14.754 39.239 C -19.444 39.239 -23.494 41.939 -25.464 45.859 L -21.484 48.949 C -20.534 46.099 -17.884 43.989 -14.754 43.989 Z" />
                             </g>
                         </svg>
-                        Sign in with Google
+                      With Google
                     </button>
-                    <!-- <button class="btn google-btn btn" type="button"><span><i
-                                class="fab fa-google-plus-g"></i> Sign up with
-                            Google+</span> </button> -->
                 </div>
 
                 <p style="text-align:center">OR</p>
-
-                <input name="username" type="text" id="user-name"
-                    class="form-control" placeholder="Full name" required
-                    autofocus>
-                <input name="email" type="email" id="user-email"
-                    class="form-control" placeholder="Email address" required
-                    autofocus>
-                <input name="password" type="password" id="user-pass"
-                    class="form-control" placeholder="Password" required
-                    autofocus>
-                <input type="password" id="user-repeatpass" class="form-control"
-                    placeholder="Repeat Password" required autofocus>
-
-                <button class="btn btn-primary btn-block" type="submit"><i
-                        class="fas fa-user-plus"></i> Sign Up</button>
-                <a href="#" id="cancel_signup"><i class="fas fa-angle-left"></i>
-                    Back</a>
+                <input name="username" type="text" id="user-name"class="form-control" placeholder="Full name" required autofocus>
+                <input name="email" type="email" id="user-email" class="form-control" placeholder="Email address" requiredautofocus>
+                <div class="password-container">
+                    <!-- <label for="password1">Password:</label> -->
+                    <input name="password" type="password" id="user-pass" class="form-control" placeholder="Password" required autofocus>
+                    <span class="show-password" onclick="togglePasswordVisibility('user-pass')"><i style="user-select:none; opacity: .5;" class="material-icons">visibility</i></span>
+                </div>
+                
+                <div class="password-container">
+                    <!-- <label for="password2">Confirm Password:</label> -->
+                    <input type="password" id="user-repeatpass" class="form-control" placeholder="Repeat Password" required autofocus>
+                    <span class="show-password" onclick="togglePasswordVisibility('user-repeatpass')"><i style="user-select:none; opacity: .5;" class="material-icons">visibility</i></span>
+                </div>
+                
+                <div id="passwordError" style="color: red;"></div>
+                <br>
+                <button class="btn btn-primary btn-block" type="submit" value="Submit"><i class="fas fa-user-plus"></i>Sign Up</button>
+                <a href="#" id="cancel_signup"><i class="fas fa-angle-left"></i>Back</a>
             </form>
             <br>
 

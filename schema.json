@@ -9,8 +9,8 @@
                 "followerUserID": "followerUserID",
                 "timestamp": "2023-11-16T14:00:00"
                 },
-            "...":        {
-                
+            "...":      {
+
                 "...":"..."
             }    
         }
@@ -30,7 +30,6 @@
           "comments": {
             "commentID": {
               "userID": "userID",
-              "postID": "postID",
               "content": "Comment content",
               "timestamp": "2023-11-16T12:30:00"
             }
@@ -38,14 +37,12 @@
           "shares": {
             "shareID": {
               "userID": "userID",
-              "postID": "postID",
               "timestamp": "2023-11-16T13:00:00"
             }
           },
           "views": {
             "viewID": {
               "userID": "userID",
-              "postID": "postID",
               "timestamp": "2023-11-16T13:30:00"
             }
           }
