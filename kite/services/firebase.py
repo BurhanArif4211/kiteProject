@@ -1,5 +1,7 @@
 import firebase, base64
 from ErrorCodes import STATUS_CODES 
+import firebase_admin
+from firebase_admin import credentials, firestore
 fireConfig = {
     "apiKey": "AIzaSyDHP6GQhjz0uFtrnuFllumERl-HmGSA9kA",
     "authDomain": "potfolio-492d3.firebaseapp.com",
@@ -9,6 +11,8 @@ fireConfig = {
     "messagingSenderId": "1041514184898",
     "appId": "1:1041514184898:web:d02a11cc9eac9cd6d7bb5b"
 }
+firebase_admin.initialize_app(credentials.Certificate('../../../Downloads/potfolio-492d3-firebase-adminsdk-c1s9v-a2c77c2b1c.json'))
+db = firestore.client()
 
 fireApp = firebase.initialize_app(fireConfig)
 # Firebase Authentication Quota: 10k Active USers

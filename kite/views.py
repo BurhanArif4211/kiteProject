@@ -3,9 +3,10 @@ from django.template.response import TemplateResponse
 from django.template import loader
 from django.contrib import messages
 import re,os,base64,random
-
+import firebase_admin
+from firebase_admin import credentials, firestore
 from ErrorCodes import STATUS_CODES 
-from .services.firebase import upload_image, auth,store
+from .services.firebase import upload_image, auth,store,db
 
 ######################################################################################################################
 #                                                       PAGES                                                        #
@@ -26,6 +27,8 @@ def kitePG(req):
                     'user_info': auth.get_account_info(decoded_user),
                     'profile_info':userProfileData[0][profileDataId]
                 }
+                # if claims['firebase']['sign_in_provider']=='password':
+                #     context['profile_url']=''
                 return TemplateResponse(req, "kite-main.html", context)
             else:
                 return render(req, "profile-form.html")
@@ -62,30 +65,6 @@ def index(request):
 #                                                NON-Related APIS                                                    #
 ######################################################################################################################
 
-# def uploadPROPIC(request):
-#     if request.method == 'POST' and 'user_data' in request.session and request.FILES['profileImage']:
-#         profileImage = request.FILES['profileImage']
-#         try:
-#             encoded_user_data = request.session['user_data']
-#             decoded_user = base64.b64decode(encoded_user_data).decode()
-#             user_info = auth.get_account_info(decoded_user)
-#             fN = handle_uploaded_file(profileImage)
-#             try:
-#                 #child(user_info['users'][0]['localId']).
-#                 # DOFF = storage.child("usersData").child(fN).put(f"static/temp/{fN}")
-#                 DOFF = storage.child("usersData").child(user_info['users'][0]['localId']).child("propic.kite").put(f"static/temp/{fN}")
-#                 print(DOFF)
-#             except Exception as error:
-#                 print(error)
-#             print(fN)
-#             # print("REmoving")
-#             # os.remove(fN)
-#             # storage.child("images/example.jpg").get_url(user["idToken"])
-#             return HttpResponse("DONE uploading file")
-#         except Exception as error:
-#             print(error)
-#             return HttpResponse("Error uploading file")
-
 def uploadUserPic(request):
     if request.method == 'POST' and 'user_data' in request.session :
         encoded_user_data = request.session['user_data']
@@ -98,11 +77,18 @@ def uploadUserPic(request):
         
         # Upload the image to Firebase Storage
         pp_url = upload_image(file_path, profile_picture.file, profile_picture.content_type)
-        # print('recived pp_url:' + pp_url)
-        auth.update_profile(decoded_user, photo_url=pp_url)
         
-        user_info = auth.get_account_info(decoded_user)
+        query=db.collection('users1').where('user_id',"==",claims['user_id']).stream()
+        print('query:')
+        # print(query)
+        # Step 2: Update the document with the new field
+        for doc in query:
+            db.collection('users1').document(doc.id).update({'pp_url': pp_url})
+            
+            
+        # auth.update_profile(decoded_user, photo_url=pp_url)     # WARNING! does not work for emailUsers
         
+        # user_info = auth.get_account_info(decoded_user)
         # print(user_info)
         
         return redirect('/kite')  # Redirect to the user's profile page or wherever appropriate
@@ -124,7 +110,6 @@ def logout(request):
         messages.success(request,("You have been Logged Out!"))
         return redirect("/login")
     else:
-        
         return redirect("/login")
 
 ######################################################################################################################
@@ -210,9 +195,9 @@ def loginWithEmail(request):
 ######################################################################################################################
 def loadUserPosts(request):
     if 'user_data' in request.session: 
-        encoded_user_data = request.session['user_data']
-        decoded_user = base64.b64decode(encoded_user_data).decode()
-        claims = auth.verify_id_token(decoded_user)
+        # encoded_user_data = request.session['user_data']
+        # decoded_user = base64.b64decode(encoded_user_data).decode()
+        # claims = auth.verify_id_token(decoded_user)
         
         # post_ids = [post.id for post in request.user.profile_info.posts]
         # posts_data = [(post_id, get_post(post_id)) for post_id in post_ids]
@@ -231,24 +216,24 @@ def loadUserPosts(request):
 #                                                   Helper Functions                                                 #
 ######################################################################################################################
     
-def handle_uploaded_file(paramfile):
-    fNN = randomId() + ".kite"
-    base_path = r"D:\VirtualDesktop\GeneticEngineerinering\KiteProject"
-    temp_path = os.path.join('static', 'temp')
-    fN = os.path.join(temp_path, fNN)
-    fN2 =  fNN
+# def handle_uploaded_file(paramfile):
+#     fNN = randomId() + ".kite"
+#     base_path = r"D:\VirtualDesktop\GeneticEngineerinering\KiteProject"
+#     temp_path = os.path.join('static', 'temp')
+#     fN = os.path.join(temp_path, fNN)
+#     fN2 =  fNN
 
-    with open(fN, 'wb+') as destination:
-        for chunk in paramfile.chunks():
-            destination.write(chunk)
+#     with open(fN, 'wb+') as destination:
+#         for chunk in paramfile.chunks():
+#             destination.write(chunk)
 
-    return fN2
+#     return fN2
 
-def randomId():
-    returnable = ""
-    raw = "qwertyuiopasdfghjklzxcvbnm_1234567890"
-    for i in range(20):
-        q = random.randint(0, len(raw) - 1)
-        returnable += raw[q]
-    return returnable
+# def randomId():
+#     returnable = ""
+#     raw = "qwertyuiopasdfghjklzxcvbnm_1234567890"
+#     for i in range(20):
+#         q = random.randint(0, len(raw) - 1)
+#         returnable += raw[q]
+#     return returnable
 

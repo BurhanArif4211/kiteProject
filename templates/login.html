@@ -106,19 +106,22 @@ body{
     display: inline-block;
   }
   .copyArea {
+    line-height: 1.3;
     max-width: 850px;
     float: none;
     display:block;
     overflow: hidden;
   }
-  .copyArea p {
+  .copyArea  p {
     margin-top: 20px;
+    position: relative;
   }
   .closeArea {
     width: 30px;
     float: right;
   }
   .closeArea i {
+
     cursor: pointer;
   }
   
@@ -128,7 +131,14 @@ body{
     background:#FA4B16;
     border-radius: 3px;
   }
-
+.war{
+    position: absolute;
+    top: 380px;
+}
+.can{
+    position: absolute;
+    top: 380px;
+}
 /* end  */
 
 #logreg-forms{
@@ -295,8 +305,8 @@ function validatePassword() {
                 {%for message in messages%}
 
                 <div class="box warning" >
-                    <div class="iconArea"><p><i class="material-icons md-36 md-light">warning</i></p></div>
-                    <div class="closeArea" id="warning"><p class="copyRight"><i class="material-icons md-dark">cancel</i></p></div>
+                    <div class="iconArea"><p><i class="material-icons war md-36 md-light">warning</i></p></div>
+                    <div class="closeArea" id="warning"><p class="copyRight"><i class="material-icons can md-dark">cancel</i></p></div>
                     <div class="copyArea"><p><strong>Message:<div class="message-box">
                     <div class="message">{{message}}</div></div></strong></p></div>
                   </div>
