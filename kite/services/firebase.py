@@ -1,23 +1,25 @@
-import firebase, base64
+import base64
 from ErrorCodes import STATUS_CODES 
+import firebase
 import firebase_admin
-from firebase_admin import credentials, firestore
+from firebase_admin import credentials, firestore,storage
+
 fireConfig = {
-....
+#add you API keys
 }
-firebase_admin.initialize_app(credentials.Certificate('../../../Downloads/potfolio-492d3-firebase-adminsdk-c1s9v-a2c77c2b1c.json'))
-db = firestore.client()
+
+firebase_admin.initialize_app(credentials.Certificate('../../../Downloads/potfolio-492d3-firebase-adminsdk-c1s9v-a2c77c2b1c.json'),{'storageBucket': 'potfolio-492d3.appspot.com'})
+# # firestore Quota: 1GB
+store = firestore.client()
+# storage=storage
 
 fireApp = firebase.initialize_app(fireConfig)
-# Firebase Authentication Quota: 10k Active USers
-auth = fireApp.auth()
-# firestore Quota: 1GB
-store = fireApp.firestore()
-# Storage Quota: 5GB
-storage= fireApp.storage()
-# print('firebase.py   ___________________')
-
-
+# # Firebase Authentication Quota: 10k Active Users
+fireauth = fireApp.auth()
+# # firestore Quota: 1GB
+# store = fireApp.firestore()
+# # Storage Quota: 5GB
+# storage= fireApp.storage()
 
 def upload_image(file_path, file_stream, content_type):
     """
@@ -31,15 +33,14 @@ def upload_image(file_path, file_stream, content_type):
     Returns:
     - The download URL of the uploaded image.
     """
-    # print('recived File Path:' + file_path)
-    
-    storage.child(file_path).put(file_stream, content_type)
-    
-    download_url = storage.child(file_path).get_url(None)
-    
-    # print('url for stored profile photo:'+ download_url)
+    blob = storage.bucket().blob(file_path)
+    blob.upload_from_file(file_stream, content_type=content_type)
+
+    # Make the uploaded file publicly accessible
+    blob.make_public()
+
+    # Get the permanent download URL
+    download_url = blob.public_url
     return download_url
 
 
-
-# print('_________________________________')

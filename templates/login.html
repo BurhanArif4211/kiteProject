@@ -303,15 +303,12 @@ function validatePassword() {
                 </p><span>Take Flight!</span>
                 {% if messages %}
                 {%for message in messages%}
-
                 <div class="box warning" >
                     <div class="iconArea"><p><i class="material-icons war md-36 md-light">warning</i></p></div>
                     <div class="closeArea" id="warning"><p class="copyRight"><i class="material-icons can md-dark">cancel</i></p></div>
                     <div class="copyArea"><p><strong>Message:<div class="message-box">
                     <div class="message">{{message}}</div></div></strong></p></div>
                   </div>
-
-                
                 {%endfor%}
                 {%endif%}
 
@@ -478,7 +475,16 @@ function validatePassword() {
         $('#logreg-forms #cancel_reset').click(toggleResetPswd);
         $('#logreg-forms #btn-signup').click(toggleSignUp);
         $('#logreg-forms #cancel_signup').click(toggleSignUp);
-    })</script>
+    })
+
+    $(document).ready(function() {
+        $('#warning').on('click', function() {
+            $('.warning').fadeOut(300, function(){
+              $('.warning').remove();
+            });
+        });
+    })
+</script>
     </body>
 </html>
 
