@@ -113,9 +113,14 @@ def kitePG(req):
     if "user_data" in req.session:
         encoded_user_data = req.session['user_data']
         decoded_user = base64.b64decode(encoded_user_data).decode()
-        claims = auth.verify_id_token(decoded_user)
-        # print(claims)
-        
+        try:
+            claims = auth.verify_id_token(decoded_user)
+            # print(claims)
+        except auth.ExpiredIdTokenError:
+            del req.session['user_data']
+            messages.success(
+                req, ("Your Session got expired! Please login again to continue."))
+            return redirect("/login")
         if claims['email_verified']:
             # Use Firestore to get user profile data
             user_profile_data = store.collection('users1').where('user_id', '==', claims['user_id']).get()
@@ -136,9 +141,9 @@ def kitePG(req):
                     'user_info': user_info,
                     'profile_info': user_profile_data[0].to_dict(),
                 }
-                return TemplateResponse(req, "kite-main.html", context)
+                return TemplateResponse(req, "kite/kite-main.html", context)
             else:
-                return render(req, "profile-form.html")
+                return render(req, "authentication/profile-form.html")
         else:
             del req.session['user_data']
             messages.success(
@@ -150,12 +155,10 @@ def kitePG(req):
         return redirect("/login")
     
 def uploadPost(request):
-    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-        # template = loader.get_template('upload-post-popup.html')
-        # html = template.render()
-        return TemplateResponse(request,'upload-post-popup.html')
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest': # this is for security 
+        return TemplateResponse(request,'kite/upload-post-popup.html')
     else:
-        messages.success(request,(f'This link is not supposed to be visited'))
+        # messages.success(request,(f'This link is not supposed to be visited'))
         return redirect("/kite")
     
 def loginPG(req):
@@ -169,13 +172,13 @@ def loginPG(req):
             return redirect("/kite")
         else:
             messages.success(req,("Please Verify Your Account Email before Going Futher! Check your email."))
-            return render(req,'login.html')
+            return render(req,'authentication/login.html')
     else:
-        return render(req,'login.html')
+        return render(req,'authentication/login.html')
 
 def index(request):
     # TODO add user_info context
-    return render(request, 'index.html')
+    return render(request, 'home/index.html')
 
 ######################################################################################################################
 #                                                NON-Related APIS                                                    #
@@ -365,7 +368,7 @@ def loadUserPosts(request):
                 posts_info.append(post_info) #append items to this until loop finishes
             
         
-        return TemplateResponse(request, 'posts-grid.html', {'posts': posts_info})
+        return TemplateResponse(request, 'kite/posts-grid.html', {'posts': posts_info})
     
 # this can be used to avoid confusion 
 #  def getPostInfoById(postId):
