@@ -8,6 +8,7 @@ urlpatterns = [
     path('',views.index,name='home'),
     path('login/',views.loginPG,name='login'),
     path('kite/',views.kitePG,name='kite'),
+    path('uploadpost/',views.uploadPost,name='uploadpost'),
     
     # Athentication APIs
     path('api/login',views.loginWithEmail,name='api/login'),
@@ -17,8 +18,10 @@ urlpatterns = [
     path('api/resendemailverification',views.resendEmailVerification,name='resendemailverification'),
     path('api/logout',views.logout,name='logout'),
     
-    # Data Updating APIs
+    # Data Updating/Uploading APIs
     path('api/uploaduserpic',views.uploadUserPic,name='api/uploaduserpic'),
+    path('api/uploaduserpost',views.uploadUserPost,name='api/uploadusrpost'),
+    
     
     # Data loading APIs
     path('api/loaduserposts',views.loadUserPosts,name='api/loaduserposts'),    

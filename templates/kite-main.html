@@ -16,6 +16,20 @@
         rel="stylesheet">
     <script
         src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+
+       <!-- for modal -->
+        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+        
     <title>User Kite</title>
     <style>
         /* GPT */
@@ -57,7 +71,7 @@
         }
         .btn-logout {
             position: absolute;
-            top: 3%;
+            top: 1.33%;
             right: 0.33%;
         }
     </style>
@@ -94,7 +108,7 @@
                                 </div>
                                 <form class="" method="POST" action="/api/logout">
                                     {% csrf_token %}
-                                    <button class="btn btn-primary float-end btn-logout" type="submit"><i
+                                    <button style="color: white;" class="btn btn-outline-light float-end btn-logout" type="submit"><i
                                             class="fas fa-user-plus"></i>logout</button>
                                 </form>
                                 
@@ -106,20 +120,23 @@
                         </div>
                         <div class="p-4 text-black" style="background-color: #f8f9fa;">
                             {{profile_info.about}}
-                            <a style="display: block;" href="https://{{profile_info.links.1}}">Link-1</a>
-                            <a style="display: block;" href="https://{{profile_info.links.2}}">Link-2</a>
-                            <a style="display: block;" href="https://{{profile_info.links.3}}">Link-3</a>
+                            <a style="display: block;" href="{{profile_info.links.1}}">Link-1</a>
+                            <a style="display: block;" href="{{profile_info.links.2}}">Link-2</a>
+                            <a style="display: block;" href="{{profile_info.links.3}}">Link-3</a>
+                            Owner of: <p>{{profile_info.company}}</p>
                             
 
                             <div class="d-flex justify-content-end text-center py-1">
-                                <button type="button" class="btn btn-outline-dark " style="margin:10px;"
-                                    data-mdb-ripple-color="dark" style="z-index: 1;">
-                                    + Add
+                                <div class="d-flex flex-lg-row flex-sm-coloumn">
+                                <button type="button" class="btn btn-outline-dark" style="margin:10px;" onclick="loadModalContent()" data-toggle="modal" data-target="#uploadPostModal">
+                                    Upload Post
                                 </button>
+                                <div id="modal-container"></div>
                                 <button type="button" class="btn btn-outline-dark" style="margin:10px;"
                                     data-mdb-ripple-color="dark" style="z-index: 1;">
                                     Edit profile
                                 </button>
+                            </div>
                                 <div>
                                     <p class="mb-1 h5">{{0}}</p>
                                     <p class="small text-muted mb-0">Photos</p>
@@ -143,7 +160,25 @@
                                 .then(html => {
                                     document.getElementById('post-grid-container').innerHTML = html;
                                 });
-
+                                // Function to fetch and load the modal content
+                                function loadModalContent() {
+                                    fetch('/uploadpost',
+                                    {
+                                        method: 'GET',
+                                        headers: {
+                                          'X-Requested-With': 'XMLHttpRequest'
+                                        },
+                                      })
+                                        .then(response => response.text())
+                                        .then(html => {
+                                            // Set the modal content
+                                            document.getElementById('modal-container').innerHTML = html;
+                                            // Show the modal
+                                            $('#uploadPostModal').modal('show');
+                                        });
+                                }
+                                
+                            //for profile upload shbang
                             document.getElementById('overlay').addEventListener('click', function () {
                                 document.getElementById('pp-input').click();
                             });

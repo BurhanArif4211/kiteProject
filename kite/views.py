@@ -1,8 +1,9 @@
 from django.shortcuts import render, HttpResponse, redirect
 from django.template.response import TemplateResponse
+from django.http import JsonResponse, HttpResponse
 from django.template import loader
 from django.contrib import messages
-import re,os,random,base64
+import re,os,random,base64,datetime
 from firebase_admin import auth
 from ErrorCodes import STATUS_CODES 
 from .services.firebase import upload_image, fireauth,storage,store
@@ -67,12 +68,6 @@ from .services.firebase import upload_image, fireauth,storage,store
 #################################################################################################################################
 #### profile info from firestore collection "users1":
 #
-#    example:
-#    {'niche': 'Senior Dev', 'company': 'Master Inc', 'links': 
-#    {'3': '-', '1': 'masterrecon.com', '2': 'facebook.com'}, 
-#    'country': 'United States', 'user_id': 'jE0ZoxMelpWnvDsfto9GLtGhJuw2', 
-#    'about': 'I am an Enterpenuier in Manhattan', 'city': 'MANHATTAN'}
-#
 #    when ever you run:
 #    user_profile_data = store.collection('users1').where('user_id', '==', claims['user_id']).get()
 #    print(user_profile_data)
@@ -98,9 +93,10 @@ from .services.firebase import upload_image, fireauth,storage,store
 #    [REMEMBER!] : This System is used from firebase_admin (import firebase_admin)
 #
 ###############################################################################################################
-#
-#  
-#
+#### post info from firestore collection 'posts1':
+#    
+#   when ever you run:
+#    user_profile_data = store.collection('posts1').where('user_id', '==', claims['user_id']).get()
 #
 #
 #
@@ -153,7 +149,14 @@ def kitePG(req):
             req, ("Please Signup/Login In order to Continue to your kite."))
         return redirect("/login")
     
-    
+def uploadPost(request):
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        # template = loader.get_template('upload-post-popup.html')
+        # html = template.render()
+        return TemplateResponse(request,'upload-post-popup.html')
+    else:
+        messages.success(request,(f'This link is not supposed to be visited'))
+        return redirect("/kite")
     
 def loginPG(req):
     
@@ -183,23 +186,67 @@ def uploadUserPic(request):
         encoded_user_data = request.session['user_data']
         decoded_user = base64.b64decode(encoded_user_data).decode()
         claims = auth.verify_id_token(decoded_user)
-        profile_picture = request.FILES['pp']
         
-        # Define the file path where the image will be stored in Firebase Storage
+        profile_picture = request.FILES['pp']
         file_path = f"userData/{claims['user_id']}/pp.jpg"
         
         # Upload the image to Firebase Storage using your existing function
         pp_url = upload_image(file_path, profile_picture.file, profile_picture.content_type)
         
         auth.update_user(claims['user_id'], photo_url=pp_url,)
+        
         # # ALERT!: This is an old method to store pp_url leave it 
         # # Use Firestore to update the document with the new field
         # user_query = store.collection('users1').where('user_id', '==', claims['user_id']).stream()
         # for doc in user_query:
         #     store.collection('users1').document(doc.id).update({'pp_url': pp_url})
         #########################################################
+        
         return redirect('/kite')
     
+def uploadUserPost(request):
+    if request.method == 'POST' and 'user_data' in request.session:
+        encoded_user_data = request.session['user_data']
+        decoded_user = base64.b64decode(encoded_user_data).decode()
+        claims = auth.verify_id_token(decoded_user)
+        
+        postImage = request.FILES['postImage']
+        postDescription = request.POST.get('postDescription')
+        postId=randomId()
+        current_time=datetime.datetime.now()
+        
+        file_path = f"postsData/{postId}/1.jpg"
+        
+        # Upload the image to Firebase Storage using your existing function
+        post_url = upload_image(file_path, postImage.file, postImage.content_type)
+        
+        store.collection('posts1').document(postId).set(
+            {
+                'user_id':claims['user_id'],
+                'post_url':post_url,
+                'post_description':postDescription,
+                'added_at':current_time,
+            }
+        )
+        
+        # Update 'users1' collection by appending postId to the 'posts' field
+        user_query = store.collection('users1').where('user_id', '==', claims['user_id']).stream()
+        for doc in user_query:
+            user_data = doc.to_dict()
+            current_posts = user_data.get('posts', [])
+            current_posts.append(postId)
+            
+            store.collection('users1').document(doc.id).update({'posts': current_posts})
+        
+        # # ALERT!: This is an old method to store pp_url leave it 
+        # # Use Firestore to update the document with the new field
+        # user_query = store.collection('users1').where('user_id', '==', claims['user_id']).stream()
+        # for doc in user_query:
+        #     store.collection('users1').document(doc.id).update({'pp_url': pp_url})
+        #########################################################
+        
+        return redirect('/kite')   
+
     ## this is useless for now
 def resendEmailVerification(request):
     
@@ -296,7 +343,7 @@ def loginWithEmail(request):
             return redirect("/login") 
     else:
         messages.success(request,("what are you trying to do?"))
-        return redirect("fbi.org")
+        return redirect("https://www.fbi.org")
 
 
 ######################################################################################################################
@@ -304,45 +351,35 @@ def loginWithEmail(request):
 ######################################################################################################################
 def loadUserPosts(request):
     if 'user_data' in request.session: 
-        # encoded_user_data = request.session['user_data']
-        # decoded_user = base64.b64decode(encoded_user_data).decode()
-        # claims = fireauth.verify_id_token(decoded_user)
+        encoded_user_data = request.session['user_data']
+        decoded_user = base64.b64decode(encoded_user_data).decode()
+        claims=fireauth.verify_id_token(decoded_user)
+        posts_info=[]
+        user_profile_data = store.collection('users1').where('user_id', '==', claims['user_id']).get()
         
-        # post_ids = [post.id for post in request.user.profile_info.posts]
-        # posts_data = [(post_id, get_post(post_id)) for post_id in post_ids]
+        if 'posts' in user_profile_data[0].to_dict():
+            posts=user_profile_data[0].to_dict()['posts']
+            for postId in posts:
+                post_info=store.collection('posts1').document(postId).get().to_dict()
+                # print(post_info)
+                posts_info.append(post_info) #append items to this until loop finishes
+            
         
-        context = {'posts_data': 'example data'}
+        return TemplateResponse(request, 'posts-grid.html', {'posts': posts_info})
     
-        template = loader.get_template('posts-grid.html')
-        html = template.render(context)
-    
-        return HttpResponse(html)
-    
-    
-
+# this can be used to avoid confusion 
+#  def getPostInfoById(postId):
+#      return post_info=store.collection('posts1').document(postId).get().to_dict()
 
 ######################################################################################################################
 #                                                   Helper Functions                                                 #
 ######################################################################################################################
     
-# def handle_uploaded_file(paramfile):
-#     fNN = randomId() + ".kite"
-#     base_path = r"D:\VirtualDesktop\GeneticEngineerinering\KiteProject"
-#     temp_path = os.path.join('static', 'temp')
-#     fN = os.path.join(temp_path, fNN)
-#     fN2 =  fNN
-
-#     with open(fN, 'wb+') as destination:
-#         for chunk in paramfile.chunks():
-#             destination.write(chunk)
-
-#     return fN2
-
-# def randomId():
-#     returnable = ""
-#     raw = "qwertyuiopasdfghjklzxcvbnm_1234567890"
-#     for i in range(20):
-#         q = random.randint(0, len(raw) - 1)
-#         returnable += raw[q]
-#     return returnable
+def randomId():
+    returnable = ""
+    raw = "qwertyuiopasdfghjklzxcvbnm_1234567890"
+    for i in range(20):
+        q = random.randint(0, len(raw) - 1)
+        returnable += raw[q]
+    return returnable
 
