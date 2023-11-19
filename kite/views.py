@@ -121,6 +121,7 @@ def kitePG(req):
             messages.success(
                 req, ("Your Session got expired! Please login again to continue."))
             return redirect("/login")
+        
         if claims['email_verified']:
             # Use Firestore to get user profile data
             user_profile_data = store.collection('users1').where('user_id', '==', claims['user_id']).get()
@@ -166,7 +167,15 @@ def loginPG(req):
     if "user_data" in req.session:
         encoded_user_data = req.session['user_data']
         decoded_user = base64.b64decode(encoded_user_data).decode()
-        claims = fireauth.verify_id_token(decoded_user)
+        try:
+            claims = auth.verify_id_token(decoded_user)
+            # print(claims)
+        except auth.ExpiredIdTokenError:
+            del req.session['user_data']
+            messages.success(
+                req, ("Your Session got expired! Please login again to continue."))
+            return redirect("/login")
+
         # print(claims)
         if claims['email_verified']:
             return redirect("/kite")
@@ -188,7 +197,15 @@ def uploadUserPic(request):
     if request.method == 'POST' and 'user_data' in request.session:
         encoded_user_data = request.session['user_data']
         decoded_user = base64.b64decode(encoded_user_data).decode()
-        claims = auth.verify_id_token(decoded_user)
+        try:
+            claims = auth.verify_id_token(decoded_user)
+            # print(claims)
+        except auth.ExpiredIdTokenError:
+            del request.session['user_data']
+            messages.success(
+                request, ("Your Session got expired! Please login again to continue."))
+            return redirect("/login")
+
         
         profile_picture = request.FILES['pp']
         file_path = f"userData/{claims['user_id']}/pp.jpg"
@@ -211,7 +228,15 @@ def uploadUserPost(request):
     if request.method == 'POST' and 'user_data' in request.session:
         encoded_user_data = request.session['user_data']
         decoded_user = base64.b64decode(encoded_user_data).decode()
-        claims = auth.verify_id_token(decoded_user)
+        try:
+            claims = auth.verify_id_token(decoded_user)
+            # print(claims)
+        except auth.ExpiredIdTokenError:
+            del request.session['user_data']
+            messages.success(
+                request, ("Your Session got expired! Please login again to continue."))
+            return redirect("/login")
+
         
         postImage = request.FILES['postImage']
         postDescription = request.POST.get('postDescription')
@@ -276,7 +301,7 @@ def logout(request):
 
 
 def signUpWithEmail(request):
-    if request.method == 'POST':
+    if request.method == 'POST' :
         recived_username = request.POST.get('username')
         password = request.POST.get('password')
         email = request.POST.get('email')
@@ -302,7 +327,15 @@ def createProfile(request):
     if request.method == 'POST' and 'user_data' in request.session:            
         encoded_user_data = request.session['user_data']
         decoded_user = base64.b64decode(encoded_user_data).decode()
-        user_info = fireauth.verify_id_token(decoded_user)
+        try:
+            user_info = auth.verify_id_token(decoded_user)
+            # print(claims)
+        except auth.ExpiredIdTokenError:
+            del request.session['user_data']
+            messages.success(
+                request, ("Your Session got expired! Please login again to continue."))
+            return redirect("/login")
+
         
         country = request.POST.get('country')
         city = request.POST.get('city')
@@ -356,7 +389,15 @@ def loadUserPosts(request):
     if 'user_data' in request.session: 
         encoded_user_data = request.session['user_data']
         decoded_user = base64.b64decode(encoded_user_data).decode()
-        claims=fireauth.verify_id_token(decoded_user)
+        try:
+            claims = auth.verify_id_token(decoded_user)
+            # print(claims)
+        except auth.ExpiredIdTokenError:
+            del request.session['user_data']
+            messages.success(
+                request, ("Your Session got expired! Please login again to continue."))
+            return redirect("/login")
+
         posts_info=[]
         user_profile_data = store.collection('users1').where('user_id', '==', claims['user_id']).get()
         
