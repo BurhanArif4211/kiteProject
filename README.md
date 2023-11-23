@@ -1,4 +1,5 @@
-![](https://firebasestorage.googleapis.com/v0/b/potfolio-492d3.appspot.com/o/static%2Fmain1-dark.png)
+
+![](https://firebasestorage.googleapis.com/v0/b/potfolio-492d3.appspot.com/o/static%2Fmain1-dark.png?alt=media&token=03326a9a-4cfd-4867-bf56-30b9765c60d5)
 
 _** A blazing fast portfolio plateform for self promoted graphic designers/freelancers. **_
 
