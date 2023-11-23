@@ -13,8 +13,7 @@ fireConfig = {
     "messagingSenderId" : "1041514184898",
     "appId" : "1:1041514184898:web:d02a11cc9eac9cd6d7bb5b"
 }
-
-firebase_admin.initialize_app(credentials.Certificate('../../../Downloads/potfolio-492d3-firebase-adminsdk-c1s9v-a2c77c2b1c.json'),{'storageBucket': 'potfolio-492d3.appspot.com'})
+firebase_admin.initialize_app(credentials.Certificate('potfolio-492d3-firebase-adminsdk-c1s9v-11f6742053.json'),{'storageBucket': 'potfolio-492d3.appspot.com'})
 # # firestore Quota: 1GB
 store = firestore.client()
 # storage=storage
