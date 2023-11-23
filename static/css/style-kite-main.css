@@ -1,0 +1,52 @@
+  
+  /* BASECOLORS 
+   teal : #4BBBAA
+   yellow : #F7B633
+   red : #FA4B16
+*/
+  
+  /* GPT */
+  .profile-picture-container {
+    position: relative;
+    display: inline-block;
+}
+
+.overlay-post {
+    position: absolute;
+    z-index: 3;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.3s;
+    cursor: pointer;
+    color: white;
+}
+
+.camera-icon {
+    color: #fff;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+.overlay-post:hover {
+    opacity: 1;
+}
+
+/* end */
+
+
+.prof-pic{
+    width: 100%;
+    height: 100%;
+}
+.btn-logout {
+    position: absolute;
+    top: 1.33%;
+    right: 0.33%;
+}

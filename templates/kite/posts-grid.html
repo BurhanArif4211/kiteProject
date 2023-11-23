@@ -1,6 +1,6 @@
 <!-- post-grid.html -->
     {% if not posts  %}
-    <div class="row">No Posts Yet.</div>
+    <div class="">No Posts Yet.</div>
     {% endif %}
     <div class="container mt-4">
       <div class="row">
@@ -13,9 +13,9 @@
                 <!-- Other post information goes here -->
   
                 <!-- Overlay -->
-                <div class="overlay">
-                  <p class="overlay-date">{{ post.added_at }}</p>
-                  <p class="overlay-likes">Likes: {{ post.likes }}</p>
+                <div class="overlay-post">
+                  <p class="overlay-post__date">{{ post.added_at }}</p>
+                  <p class="overlay-post__likes">Likes: {{ post.likes }}</p>
                 </div>
               </div>
             </div>
