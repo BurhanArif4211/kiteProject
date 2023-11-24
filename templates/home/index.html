@@ -5,22 +5,78 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>Kite | Home</title>
-	<link type="text/css" rel="stylesheet" href="/static/css/style-index.css" />
+	<link type="text/css" rel="stylesheet" href="/static/css/style-index.css">
+
+	<!-- This css does not work separately in a file. IDK why X(  -->
+<style>
+	.search{
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+        justify-content: center;
+       
+	}
+
+    input {
+        width: 100%;
+        padding: 10px;
+        border: none;
+        border-bottom: 2px solid #555;
+        outline: none;
+        margin-bottom: 20px;
+		background-color: rgba(255, 255, 255, 0.7);
+        font-size: 18px;
+		box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    }
+
+</style>
 </head>    
         <section class="index-main">
 			<header class="header">
 				<div class="header__main">
 					<h1 class="header__heading-prime">Welcome To the winds</h1>
 					{% if user_info %}
-					  <input type="text" placeholder="Search For Someone/Something" class="header__search-input">
-					  <button class="btn btn-success header__button-Search">Find</button>	
-					  
+                     <div class="search container">
+					<form onsubmit="event.preventDefault();" role="search">
+						<input id="search" type="search" placeholder="Search..." autofocus required />
+						<button class="btn btn-primary" style="background-color: #4BBBAA;" type="submit">Go</button>    
+					</form>
+					 </div> 
 					{%else%}
 					  <button onclick="location.href = '/login';" class="btn btn-success fw-bold header__button-join " style="background-color: #4BBBAA;">Join</button>	
 					{%endif%}
+                    {% if allUsers %}
+                        <div class="d-flex flex-wrap">
+                            {% for user in allUsers %}
+                                {% include 'home/profile-card.html' with user=user profile_info=profile_info %}
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p>No users available.</p>
+                    {% endif %}
+					
+			
+				</div>
+			</header>
+		</section>
+		<script>
+			function toggleFollow(publicId) {
+            fetch(`/api/follow/${publicId}/`)
+                .then(response => response.json())
+                .then(data => {
+                    // Handle the response as needed
+                    console.log(data);
+                })
+                .catch(error => console.error('Error:', error))
+    }
+		</script>
+{% endblock %}
 
-					{% if allUsers %}
-					<!-- everything: {{allUsers}} -->
+
+<!--
+
+{% if allUsers %}
+					
 					<div class="d-flex flex-wrap">
 						{% for user in allUsers %}
 							<div style="width: 18rem;" class="card p-3">
@@ -30,6 +86,7 @@
 								
 								{% if user_info %}
 								{{ user.publicProfileId }}
+								
 									<button id="follow" class="btn btn-success" style="background-color: #4BBBAA;" onclick="followUserByPublicId('{{ user.publicProfileId }}','follow')">Follow</button>
 									<script>
 										function followUserByPublicId(publicId, buttonId) {
@@ -54,14 +111,6 @@
 				{% else %}
 					<p>No users available.</p>
 				{% endif %}
-			
-				</div>
-			</header>
-		</section>
-
-{% endblock %}
-
-
 
 
 

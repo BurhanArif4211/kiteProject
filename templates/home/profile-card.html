@@ -1,0 +1,16 @@
+<div style="width: 18rem;" class="card p-3">
+    <img class="mx-auto d-block img-thumbnail"style="width:100px;" src="{{user.pp_url}}" />
+    <h2>{{ user.company }}</h2>
+    <p>{{ user.about }}</p>
+    <!-- Add other user details as needed -->
+
+    {% if user_info %}
+        <!-- Display follow/unfollow button based on the follow status -->
+        {% if user.publicProfileId in profile_info.following %}
+            <button id="folow" class="btn btn-light"  onclick="toggleFollow('{{ user.publicProfileId }}')">Unfollow</button>
+        {% else %}
+            <button id="folow" class="btn btn-success" style="background-color: #4BBBAA;" onclick="toggleFollow('{{ user.publicProfileId }}')">Follow</button>
+        {% endif %}
+    {% endif %}
+</div>
+<!--TODO add cooldown to button (3 sec)-->
