@@ -1,17 +1,17 @@
-  
-  /* BASECOLORS 
+ /* BASE COLORS
    teal : #4BBBAA
    yellow : #F7B633
    red : #FA4B16
-*/
-  
+  */
+
   /* GPT */
-  .profile-picture-container {
+
+  .overlay-pp {
     position: relative;
     display: inline-block;
-}
+  }
 
-.overlay-post {
+  .overlay-post {
     position: absolute;
     z-index: 3;
     top: 0;
@@ -26,27 +26,41 @@
     transition: opacity 0.3s;
     cursor: pointer;
     color: white;
-}
+  }
 
-.camera-icon {
+  .camera-icon {
     color: #fff;
     font-size: 24px;
     cursor: pointer;
-}
+  }
 
-.overlay-post:hover {
+  .overlay-post:hover {
     opacity: 1;
-}
+  }
 
-/* end */
+  .pp-hover-text {
+    color: white;
+    position: absolute;
+    opacity: 0;
+    transition: all ease 0.5s;
+    transform: translate(-50%, 0%);
+    text-align: center;
+  }
 
+  .overlay-pp:hover .pp-hover-text {
+    transform: translate(0%, 0%);
+    opacity: 1;
+  }
 
-.prof-pic{
+  /* end */
+
+  .prof-pic {
     width: 100%;
     height: 100%;
-}
-.btn-logout {
+  }
+
+  .btn-logout {
     position: absolute;
     top: 1.33%;
     right: 0.33%;
-}
+  }

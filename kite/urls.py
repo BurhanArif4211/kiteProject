@@ -8,7 +8,7 @@ urlpatterns = [
     path('',views.index,name='home'),
     path('login/',views.loginPG,name='login'),
     path('kite/',views.kitePG,name='kite'),
-    path('api/follow/<str:profile>/',views.follow,name='follow'),
+    path('api/follow/<str:publicProfileId>/',views.followUserByPublicId,name='follow'),
     path('kites/<str:publicProfileId>/', views.publicKitePG, name='kitespublicprofile'),
     path('uploadpost/',views.uploadPost,name='uploadpost'),
     

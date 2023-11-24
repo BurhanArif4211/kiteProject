@@ -6,8 +6,9 @@ from firebase_admin import credentials, firestore,storage
 
 fireConfig = {
 
+
 }
-firebase_admin.initialize_app(credentials.Certificate('Put cred here!!'),{'storageBucket': 'potfolio-492d3.appspot.com'})
+firebase_admin.initialize_app(credentials.Certificate('potfolio-492d3-firebase-adminsdk-c1s9v-11f6742053.json'),{'storageBucket': 'potfolio-492d3.appspot.com'})
 # # firestore Quota: 1GB
 store = firestore.client()
 # storage=storage

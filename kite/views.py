@@ -16,7 +16,6 @@ from .services.firebase import upload_image, fireauth, storage, store
 #                                                       PAGES                                                        #
 ######################################################################################################################
 
-
 def publicKitePG(req, publicProfileId):
     if "user_data" in req.session:
         encoded_user_data = req.session['user_data']
@@ -127,20 +126,26 @@ def index(request):
             messages.success(
                 request, ("You Were Loged Out!"))
             return redirect("/login")
+        #########################  THIS IS JUST FOR TEST DONOT PUSH IN PRODUCTION WITH THIS CODE  ##############################
+        
+        users=store.collection('users1').get()
+        
+        userList=[]
+        for i in range(len(users)):
+            userList.append(users[i].to_dict())
+            
+       
+        ##########################################################################################################################
         user_data = fireauth.get_account_info(decoded_user)['users'][0]
-        # print(user_data)
-        user_profile_data = store.collection('users1').where('user_id', '==', claims['user_id']).get()
         user_info = {
          "localID": user_data.get("localId"),
          "email": user_data.get("email"),
          "displayName": user_data.get("displayName"),
          "photoUrl": user_data.get("photoUrl"),
         }
-        # print(user_info)
         context = {
-            'user_claims': claims,
+             'allUsers':userList,
             'user_info': user_info,
-            'profile_info': user_profile_data[0].to_dict(),
         }
         return TemplateResponse(request, "home/index.html", context)
     else:
@@ -175,9 +180,9 @@ def uploadUserPic(request):
 
         # # ALERT!: This is an old method to store pp_url leave it
         # # Use Firestore to update the document with the new field
-        # user_query = store.collection('users1').where('user_id', '==', claims['user_id']).stream()
-        # for doc in user_query:
-        #     store.collection('users1').document(doc.id).update({'pp_url': pp_url})
+        user_query = store.collection('users1').where('user_id', '==', claims['user_id']).stream()
+        for doc in user_query:
+            store.collection('users1').document(doc.id).update({'pp_url': pp_url})
         #########################################################
 
         return redirect('/kite')
@@ -213,9 +218,9 @@ def uploadUserPost(request):
                 'post_url': post_url,
                 'post_description': postDescription,
                 'likes':[],
-                'comments':{#add comments later by using update system in firebase
+                'comments':{ #add comments later by using update method in firebase
                     },
-                'added_at': current_time,
+                'added_at': current_time,# TODO IMPORTANT: add a date fetching system from server since users can expliot this!!!
             }
         )
 
@@ -230,18 +235,11 @@ def uploadUserPost(request):
             store.collection('users1').document(
                 doc.id).update({'posts': current_posts})
 
-        # # ALERT!: This is an old method to store pp_url leave it
-        # # Use Firestore to update the document with the new field
-        # user_query = store.collection('users1').where('user_id', '==', claims['user_id']).stream()
-        # for doc in user_query:
-        #     store.collection('users1').document(doc.id).update({'pp_url': pp_url})
-        #########################################################
-
         return redirect('/kite')
 
+
+
     # this is useless for now
-
-
 def resendEmailVerification(request):
 
     if "user_data" in request.session:
@@ -256,7 +254,7 @@ def resendEmailVerification(request):
 def logout(request):
     if 'user_data' in request.session:
         del request.session['user_data']
-        messages.success(request, ("You have been Logged Out!"))
+        messages.success(request, ("You Were Loged Out!"))
         return redirect("/login")
     else:
         return redirect("/login")
@@ -265,32 +263,103 @@ def logout(request):
 #                                                       APIS                                                         #
 ######################################################################################################################
 
-
-def follow(request,profile):
+def followUserByPublicId(request,publicProfileId):
     if 'user_data' in request.session:
         encoded_user_data = request.session['user_data']
         decoded_user = base64.b64decode(encoded_user_data).decode()
         try:
             claims = auth.verify_id_token(decoded_user)
-            # print(claims)
         except auth.ExpiredIdTokenError:
             del request.session['user_data']
             messages.success(
                 request, ("You Were Logged Out!"))
             return redirect("/login")
-
-        secondperson_profile_data = store.collection('users1').where(
-            'profile', '==', profile).get()
-        user_profile_data = store.collection('users1').where(
-            'user_id', '==', claims['user_id']).get()
-        print(secondperson_profile_data[0].to_dict())
-        print(user_profile_data[0].to_dict())
-        print(claims['user_id'])
-
-        #TODO just fetch and set documents of these two lines
-        store.collection("users1").document(claims['user_id']).update({'following':[secondperson_profile_data[0].to_dict().get('user_id')] + user_profile_data[0].to_dict().get('following')})
-        store.collection("users1").document(secondperson_profile_data[0].to_dict().get('user_id')).update({'followers':([secondperson_profile_data[0].to_dict().get('user_id')] + user_profile_data[0].to_dict().get('followers'))})
-        return HttpResponse('followed')
+        
+        print(f"the follow function was called by {claims['name']} for {publicProfileId}")
+        # print('_________________________________________')
+        
+        our_profile_data = store.collection('users1').where('publicProfileId', '==', publicProfileId).get()
+        their_profile_data = store.collection('users1').where('user_id', '==', claims['user_id']).get()
+        
+        # print(following_profile_data)
+        # print('_________________________________________')
+        # print(follower_profile_data)
+        # print('_________________________________________')
+        
+      
+        # Check if you are trying to follow yourself
+        if our_profile_data[0].to_dict().get('publicProfileId') == their_profile_data[0].to_dict().get('publicProfileId'):
+            print("You can't follow yourself!")
+            return redirect('/')            
+        else:
+            # Update 'following' for the current user
+            our_current_following = set(our_profile_data[0].to_dict().get('following', []))
+            
+            if their_profile_data[0].to_dict().get('publicProfileId') not in our_current_following:
+                
+                user_query = store.collection('users1').where('publicProfileId', '==', our_profile_data[0].to_dict().get('publicProfileId')).stream()
+                for doc in user_query:    
+                    
+                    our_current_following.add(our_profile_data[0].to_dict().get('publicProfileId'))
+                    
+                    store.collection('users1').document(doc.id).update({'following': list(our_current_following)})
+            else:
+                print('The user is already in my following list!')
+                return redirect('/')
+            
+            # Update 'followers' for the other user
+            user_query = store.collection('users1').where('publicProfileId', '==', publicProfileId).stream()
+            for doc in user_query:
+                user_data = doc.to_dict()
+                their_current_followers = set(user_data.get('followers', []))
+                if our_profile_data[0].to_dict().get('publicProfileId') not in their_current_followers:
+                    
+                    their_current_followers.add(their_profile_data[0].to_dict().get('publicProfileId'))
+                    
+                    store.collection('users1').document(doc.id).update({'followers': list(their_current_followers)})
+                else:
+                    print("I am already in the other person's list!")
+                    return redirect('/')
+        
+        
+        # REMOVE in production!
+        
+        # if follower_profile_data[0].to_dict().get('publicProfileId') not in following_profile_data[0].to_dict().get('following', []) : #check if the user is already followed
+        #     # Update 'users1' collection by appending postId to the 'following' field
+        #     user_query = store.collection('users1').where('user_id', '==', claims['user_id']).stream() #this will stream current logged in user's profile data
+        #     for doc in user_query:
+        #         user_data = doc.to_dict()
+        #         current_following = user_data.get('following', [])
+        #         current_following.append(following_profile_data[0].to_dict().get('publicProfileId'))
+        #         store.collection('users1').document(
+        #             doc.id).update({'following': current_following})
+        # else:
+        #     print('the user is slready in my followers list!')     
+             
+        # if following_profile_data[0].to_dict().get('publicProfileId') not in follower_profile_data[0].to_dict().get('following', []) : #check if the user is already followed
+        #     # Update 'users1' collection by appending postId to the 'followiers' field
+        #     user_query = store.collection('users1').where('publicProfileId', '==', publicProfileId).stream() #this will stream the other (to be followed) user's profile data
+        #     for doc in user_query:
+        #         user_data = doc.to_dict()
+        #         current_followers = user_data.get('followers', [])
+        #         current_followers.append(follower_profile_data[0].to_dict().get('publicProfileId'))
+        #         store.collection('users1').document(
+        #             doc.id).update({'followers': current_followers})
+        # else:
+        #     print("i am already in other person's  list!")  
+            
+            # store.collection("users1").document(
+            #     claims['user_id']).update(
+            #         {'following':[following_profile_data[0].to_dict().get('user_id')] + 
+            #          follower_profile_data[0].to_dict().get('following')})
+                
+            # store.collection("users1").document(
+            #     following_profile_data[0].to_dict().get('user_id')).update(
+            #         {'followers':([following_profile_data[0].to_dict().get('user_id')] + 
+            #                       follower_profile_data[0].to_dict().get('followers'))})
+            
+            return redirect('/')
+    
 def signUpWithEmail(request):
     if request.method == 'POST':
         recived_username = request.POST.get('username')
@@ -303,12 +372,10 @@ def signUpWithEmail(request):
         print(user)
         fireauth.update_profile(
             user['idToken'], display_name=f"{recived_username}")
-        # encoded_user_data = base64.b64encode(f"{user['idToken']}".encode()).decode()
-        # request.session['user_data'] = encoded_user_data
         fireauth.send_email_verification(user['idToken'])
 
         messages.success(
-            request, ('Sign Up was Successful Please check Your Email for a Verification link!'))
+            request, ('Sign Up was Successful Please check Your Email for a Verification link.'))
 
         return redirect('/login')
     else:
@@ -341,7 +408,8 @@ def createProfile(request):
 
         try:
             store.collection('users1').add({'user_id': user_info['user_id'], "country": country,
-                                            "links": links,'following' : [], 'followers' : [], "niche": niche, "city": city, "company": company, "about": about, "publicProfileId":profilePublicId})
+                                            "links": links,'following' : [], 'followers' : [], "niche": niche, 
+                                            "city": city, "company": company, "about": about, "publicProfileId":profilePublicId})
             messages.success(request, ("Profile Created! Now Lets Get to know about each other."))
             return redirect("/kite")
 

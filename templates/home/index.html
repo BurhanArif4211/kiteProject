@@ -18,6 +18,43 @@
 					{%else%}
 					  <button onclick="location.href = '/login';" class="btn btn-success fw-bold header__button-join " style="background-color: #4BBBAA;">Join</button>	
 					{%endif%}
+
+					{% if allUsers %}
+					<!-- everything: {{allUsers}} -->
+					<div class="d-flex flex-wrap">
+						{% for user in allUsers %}
+							<div style="width: 18rem;" class="card p-3">
+								<img class="img-thumbnail"style="width:100px;" src="{{user.pp_url}}" />
+								<h2>{{ user.company }}</h2>
+								<p>{{ user.about }}</p>
+								
+								{% if user_info %}
+								{{ user.publicProfileId }}
+									<button id="follow" class="btn btn-success" style="background-color: #4BBBAA;" onclick="followUserByPublicId('{{ user.publicProfileId }}','follow')">Follow</button>
+									<script>
+										function followUserByPublicId(publicId, buttonId) {
+											var button = document.getElementById(buttonId);
+											button.disabled = true;
+											fetch(`api/follow/${publicId}`)
+                                            .then(response => response.json())
+                                            .then(data => {
+                                                // Handle the response as needed
+                                                console.log(data);
+                                            })
+                                            .catch(error => console.error('Error:', error));
+											setTimeout(function () {
+												button.disabled = false;
+											}, 3000);
+										}
+									</script>
+								{% endif %}
+							</div>
+						{% endfor %}
+					</div>
+				{% else %}
+					<p>No users available.</p>
+				{% endif %}
+			
 				</div>
 			</header>
 		</section>

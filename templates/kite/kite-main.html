@@ -17,33 +17,34 @@
                             style="background-image: linear-gradient(to top right ,#4BBBAA, #F7B633,#FA4B16); height:250px;">
                             <div class="ms-4 mt-5 d-flex flex-column"
                                 style="width: 150px;">
-                                <div class="position-relative">
-                                    <!-- Profile picture -->
-                                    <div class="prof-pic">
-
-                                        <img src="{{ user_info.photoUrl }}"
-                                            alt="user pp"
-                                            class="img-fluid img-thumbnail mt-4 mb-2"
-                                            style="width: 150px; z-index: 1"
-                                            id="profile-picture">
-                                    </div>
-                                    <!-- Overlay for hover effect -->
-                                    <div class="overlay" id="overlay">
+                                <div class="container">
+                                    <div class="overlay-pp" id="overlay-pp">
+                                      <img src="{{ user_info.photoUrl }}"
+                                        alt="user pp"
+                                        class="img-fluid img-thumbnail mt-4 mb-2 prof-pic"
+                                        style="width: 150px; z-index: 1"
+                                        id="profile-picture">
+                                  
+                                      <div class="overlay-post" id="overlay-post">
                                         <form enctype="multipart/form-data"
-                                            id="change-profile-pic"
-                                            method="post"
-                                            action="/api/uploaduserpic">
-                                            {%csrf_token%}
-                                            <label for="pp-input"
-                                                class="camera-icon">
-                                                <i class="fas fa-camera"></i>
-                                            </label>
-                                            <input name="pp" type="file"
-                                                id="pp-input"
-                                                style="display: none">
+                                          id="change-profile-pic"
+                                          method="post"
+                                          action="/api/uploaduserpic">
+                                          {% csrf_token %}
+                                          <label for="pp-input" class="camera-icon">
+                                            <i class="fas fa-camera pp-form-icon"></i>
+                                            <div class="pp-hover-text">Change Profile Pic</div>
+                                          </label>
+                                          <input name="pp" type="file"
+                                            id="pp-input"
+                                            style="
+                                              all: unset;
+                                              display: none;
+                                            ">
                                         </form>
+                                      </div>
                                     </div>
-                                </div>
+                                  </div>
                                 <form class method="POST" action="/api/logout">
                                     {% csrf_token %}
                                     <button style="color: white;"
@@ -89,15 +90,15 @@
                                 </div>
                                 <div id="modal-container"></div>
                                 <div>
-                                    <p class="mb-1 h5">{{0}}</p>
+                                    <p class="mb-1 h5">{{profile_info.posts | length}}</p>
                                     <p class="small text-muted mb-0">Photos</p>
                                 </div>
                                 <div class="px-3">
-                                    <p class="mb-1 h5">{{0}}</p>
+                                    <p class="mb-1 h5">{{profile_info.followers | length}}</p>
                                     <p class="small text-muted mb-0">Followers</p>
                                 </div>
                                 <div>
-                                    <p class="mb-1 h5">{{0}}</p>
+                                    <p class="mb-1 h5">{{profile_info.following | length}}</p>
                                     <p class="small text-muted mb-0">Following</p>
                                 </div>
                             </div>
@@ -136,13 +137,11 @@
                                 
                                 // Handle file selection and upload
                         
-                            document.getElementById('overlay').addEventListener('click', function () {
-                                document.getElementById('pp-input').click();
-                            });
-                            document.getElementById('pp-input').addEventListener('change', function (event) {
-                                // Submit the form when a file is selected
-                                document.getElementById('change-profile-pic').submit();
-                            });
+
+                                
+                                  document.getElementById('pp-input').addEventListener('change', function () {
+                                    document.getElementById('change-profile-pic').submit();
+                                  });
                         </script>
 
                     </div>
