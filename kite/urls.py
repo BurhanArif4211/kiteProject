@@ -8,14 +8,14 @@ urlpatterns = [
     path('',views.index,name='home'),
     path('login/',views.loginPG,name='login'),
     path('kite/',views.kitePG,name='kite'),
-    path('api/like/<str:postId>/',views.like,name='like'),
-    path('api/follow/<str:publicProfileId>/',views.followUserByPublicId,name='follow'),
     path('kites/<str:publicProfileId>/', views.publicKitePG, name='kitespublicprofile'),
     path('uploadpost/',views.uploadPost,name='uploadpost'),
     
     # Athentication APIs
     path('api/login',views.loginWithEmail,name='api/login'),
     ## path('api/googlelogin',views.loginWithGoogle,name='api/googlelogin'),
+    path('api/like/<str:postId>/',views.like,name='like'),
+    path('api/follow/<str:publicProfileId>/',views.followUserByPublicId,name='follow'),
     path('api/signup',views.signUpWithEmail,name='api/signup'),
     path('api/createprofile',views.createProfile,name='api/createprofile'),
     path('api/resendemailverification',views.resendEmailVerification,name='resendemailverification'),
@@ -27,5 +27,6 @@ urlpatterns = [
     
     
     # Data loading APIs
+    path('api/loaduserposts/<str:userIdFromUrl>/',views.loadThirdPersonPost,name='api/loadThirdPersonPosts'),
     path('api/loaduserposts',views.loadUserPosts,name='api/loaduserposts'),    
 ]

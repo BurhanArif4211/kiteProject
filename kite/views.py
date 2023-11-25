@@ -555,6 +555,36 @@ def loadUserPosts(request):
 
         return TemplateResponse(request, 'kite/posts-grid.html', {'posts': posts_info})
 
+
+def loadThirdPersonPost(request,userIdFromUrl):
+    if 'user_data' in request.session and request.headers.get('X-Requested-With') == 'XMLHttpRequest': # For security so the user can't load his posts separately!
+        encoded_user_data = request.session['user_data']
+        decoded_user = base64.b64decode(encoded_user_data).decode()
+        try:
+            claims = auth.verify_id_token(decoded_user)
+            # print(claims)
+        except auth.ExpiredIdTokenError:
+            del request.session['user_data']
+            messages.success(
+                request, ("You Were Logged Out!"))
+            return redirect("/login")
+
+        posts_info = []
+        user_profile_data = store.collection('users1').where(
+            'user_id', '==', userIdFromUrl).get()
+
+
+        if 'posts' in user_profile_data[0].to_dict():
+            posts = user_profile_data[0].to_dict()['posts']
+            for postId in posts:
+                post_info = store.collection(
+                    'posts1').document(postId).get().to_dict()
+                print(post_info)
+                # append items to 'posts_info' until loop finishes
+                posts_info.append(post_info)
+        # print(posts_info)
+
+        return TemplateResponse(request, 'kite/posts-grid.html', {'posts': posts_info})
 # this can be used to avoid confusion
 #  def getPostInfoById(postId):
 #      return post_info=store.collection('posts1').document(postId).get().to_dict()

@@ -1,8 +1,8 @@
 <div style="width: 18rem;" class="card p-3">
-    <img class="mx-auto d-block img-thumbnail"style="width:100px;" src="{{user.pp_url}}" />
+    <a href="kites/{{user.publicProfileId}}"><img class="mx-auto d-block img-thumbnail"style="width:100px;" src="{{user.pp_url}}" />
     <h2>{{ user.company }}</h2>
     <p>{{ user.about }}</p>
-    <!-- Add other user details as needed -->
+    </a><!-- Add other user details as needed -->
 
     {% if user_info %}
         <!-- Display follow/unfollow button based on the follow status -->

@@ -2,13 +2,11 @@
 
 {% block content %}
 <head>
-
     <title>Kite | User</title>
     <link type="text/css" rel="stylesheet"
         href="/static/css/style-kite-main.css" />
 </head>
     <section class="h-100">
-        {{src}}
         <div class="container-fluid py-5 h-100">
             <div
                 class="row d-flex justify-content-center align-items-center h-100">
@@ -107,7 +105,7 @@
 
                         <script>
                             // Fetch and load the post grid component asynchronously
-                            fetch('/api/loaduserposts',{
+                            fetch('/api/loaduserposts/{{user_info.localID}}/',{
                                 method: 'GET',
                                         headers: {
                                           'X-Requested-With': 'XMLHttpRequest'
