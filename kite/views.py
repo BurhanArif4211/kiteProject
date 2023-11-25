@@ -219,8 +219,7 @@ def uploadUserPost(request):
                 'post_url': post_url,
                 'post_description': postDescription,
                 'likes':[],
-                'comments':{ #add comments later by using update method in firebase
-                    },
+                'comments':[], #add comments later by using update method in firebase //It should be better to use Array e.g [{name:aman, caption: caption, time: time},{name: so on}] or how'll you name elements of dict for each comments?
                 'added_at': current_time,# TODO IMPORTANT: add a date fetching system from server since users can expliot this!!!
             }
         )
@@ -265,6 +264,56 @@ def logout(request):
 ######################################################################################################################
 
 
+
+def like(request, url):
+    if 'user_data' in request.session:
+        encoded_user_data = request.session['user_data']
+        decoded_user = base64.b64decode(encoded_user_data).decode()
+        
+        try:
+            claims = auth.verify_id_token(decoded_user)
+        except auth.ExpiredIdTokenError:
+            del request.session['user_data']
+            messages.success(
+                request, ("Your Session got expired! Please login again to continue."))
+            return redirect("/login")
+        except auth.InvalidIdTokenError:
+            # Handle invalid token error, for example, log the error
+            print("Invalid ID token error")
+            return HttpResponse('{"error":"Invalid user"}')
+
+        # Assuming you have initialized your Firestore client as 'store' and 'db'
+        post_query = store.collection('posts1').where('post_id', '==', url).get()
+
+        if post_query:
+            post_profile = post_query[0]
+            post_profile_data = post_profile.to_dict()
+
+            if 'post_id' in post_profile_data and claims['user_id'] in post_profile_data['post_id']:
+                print('User has not liked this post before')
+                document_id = post_profile.id
+                
+                # Retrieve the 'likers' array from the document
+                likers = post_profile.get('likers', [])
+
+                if claims['user_id'] in likers:
+                    print('User has liked this post before')
+                    # Remove the user from the 'likers' array
+                    likers.remove(claims['user_id'])
+
+                    # Update the 'likers' array in the Firestore document
+                    post_profile.reference.update({'likers': likers})
+
+                    return HttpResponse('{"state":"like"}')
+                else:
+                    #TODO Else insert into DataBase
+                    return HttpResponse('{"state":"liked"}')
+            else:
+                return HttpResponse('{"error":"Invalid post or user"}')
+        else:
+            return HttpResponse('{"error":"Post not found"}')
+    else:
+        return HttpResponse('{"error":"You may be logged out"}')
 
 
 
