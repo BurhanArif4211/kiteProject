@@ -50,7 +50,7 @@
             </ul>
             <div class="navbar-nav">
                 {% if not request.path == '/kite/' %}
-                {% if user_info %}
+                {% if profile_info %}
                 <!-- Show user profile image and displayName if user is logged in -->
                 <a class="nav-item nav-link" href="/kite">
 
@@ -58,9 +58,9 @@
                 <div class="dropdown">
                     <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
                         aria-haspopup="true" aria-expanded="false">
-                        <img src="{{default.pic}}" alt="Profile Image" class="rounded-circle"
+                        <img src="{{profile_info.pp_url}}" alt="Profile Image" class="rounded-circle"
                             style="width: 30px; height: 30px; margin-right: 5px;">
-                        {{ default.name }}
+                        {{ profile_info.display_name }}
                     </button>
                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                         <a class="dropdown-item" href="kite">View Kite</a>

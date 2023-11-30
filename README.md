@@ -10,7 +10,7 @@
 
 ## **Meet The Dev Team:**
 
-[* *Amaan Ali*](https://github.com/DeveloperAmanAli)
+[* *Aman Ali*](https://github.com/DeveloperAmanAli)
 [* *Burhan Arif*](https://github.com/BurhanArif4211)
 ### **Others**
 Soon!

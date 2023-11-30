@@ -20,14 +20,14 @@
                                     <!-- Profile picture -->
                                     <div class="prof-pic">
 
-                                        <img src="{{ user_info.photoUrl }}"
+                                        <img src="{{ profile_info.pp_url }}"
                                             alt="user pp"
                                             class="img-fluid img-thumbnail mt-4 mb-2"
                                             style="width: 150px; z-index: 1"
                                             id="profile-picture">
                                     </div>
                                     <!-- Overlay for hover effect -->
-                                    <div class="overlay" id="overlay">
+                                    <!-- <div class="overlay" id="overlay">   NO need to upload pp on other person's profile
                                         <form enctype="multipart/form-data"
                                             id="change-profile-pic"
                                             method="post"
@@ -41,20 +41,21 @@
                                                 id="pp-input"
                                                 style="display: none">
                                         </form>
-                                    </div>
+                                    </div> -->
                                 </div>
+<!--                                 
                                 <form class method="POST" action="/api/logout">
                                     {% csrf_token %}
                                     <button style="color: white;"
                                         class="btn btn-outline-light float-end btn-logout"
                                         type="submit"><i
                                             class="fas fa-user-plus"></i>logout</button>
-                                </form>
+                                </form> -->
 
                             </div>
                             <div class="ms-3"
                                 style="margin-top: 130px;margin-left:10px;">
-                                <h1 class="fs-sm-1">{{ user_info.displayName }}</h1>
+                                <h1 class="fs-sm-1">{{ profile_info.display_name }}</h1>
                                 <p>{{ profile_info.niche }}</p>
                             </div>
                         </div>
@@ -72,18 +73,21 @@
                             <div
                                 class="d-flex justify-content-end text-center py-1">
                                 <div class="d-lg-flex mt-sm-0 text-left">
-                                    <button type="button"
-                                        class="btn btn-outline-dark mt-1 py-2 px-1  p-md-1"
-                                        onclick="loadModalContent()"
-                                        data-toggle="modal"
-                                        data-target="#uploadPostModal">
-                                        Upload Post
-                                    </button>
+                                {% if profile_info %}
+                                    <!-- Display follow/unfollow button based on the follow status -->
+                                    {% if profile_info.publicProfileId in current_profile_info.following %}
+                                        <button id="folow" class="btn btn-outline-dark"  onclick="toggleFollow('{{ profile_info.publicProfileId }}')">Unfollow</button>
+                                    {% elif profile_info.publicProfileId == current_profile_info.publicProfileId %}
+                                      (You)
+                                    {%else%}
+                                    <button id="folow" class="btn btn-outline-dark"  onclick="toggleFollow('{{ profile_info.publicProfileId }}')">Follow</button>
+                                    {% endif %}
+                                {% endif %}
                                     <button type="button"
                                         class="btn btn-outline-dark mt-1 py-2 px-1 mr-md-1 p-md-1 mx-md-2"
                                         data-mdb-ripple-color="dark"
                                         style="z-index: 1;">
-                                        Edit profile
+                                        Message
                                     </button>
                                 </div>
                                 <div id="modal-container"></div>
@@ -104,8 +108,17 @@
                         <div id="post-grid-container"></div>
 
                         <script>
+                            function toggleFollow(publicId) {
+                                fetch(`/api/follow/${publicId}/`)
+                                    .then(response => response.json())
+                                    .then(data => {
+                                        // Handle the response as needed
+                                        console.log(data);
+                                    })
+                                    .catch(error => console.error('Error:', error))
+                        }
                             // Fetch and load the post grid component asynchronously
-                            fetch('/api/loaduserposts/{{user_info.localID}}/',{
+                            fetch('/api/loaduserposts/{{profile_info.publicProfileId}}/',{
                                 method: 'GET',
                                         headers: {
                                           'X-Requested-With': 'XMLHttpRequest'

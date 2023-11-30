@@ -2,7 +2,8 @@ import base64
 from ErrorCodes import STATUS_CODES 
 import firebase
 import firebase_admin
-from firebase_admin import credentials, firestore,storage
+from firebase_admin import auth, credentials, firestore,storage
+
 
 fireConfig = {
 "apiKey" : "AIzaSyDHP6GQhjz0uFtrnuFllumERl-HmGSA9kA",
@@ -16,15 +17,14 @@ fireConfig = {
 firebase_admin.initialize_app(credentials.Certificate('potfolio-492d3-firebase-adminsdk-c1s9v-11f6742053.json'),{'storageBucket': 'potfolio-492d3.appspot.com'})
 # # firestore Quota: 1GB
 store = firestore.client()
-# storage=storage
-
 fireApp = firebase.initialize_app(fireConfig)
-# # Firebase Authentication Quota: 10k Active Users
+# # Firebase Authentication Quota: 50k Active Users
 fireauth = fireApp.auth()
 # # firestore Quota: 1GB
 # store = fireApp.firestore()
 # # Storage Quota: 5GB
 # storage= fireApp.storage()
+
 
 def upload_image(file_path, file_stream, content_type):
     """

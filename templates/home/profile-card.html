@@ -1,16 +1,18 @@
 <div style="width: 18rem;" class="card p-3">
     <a href="kites/{{user.publicProfileId}}"><img class="mx-auto d-block img-thumbnail"style="width:100px;" src="{{user.pp_url}}" />
-    <h2>{{ user.company }}</h2>
+        <h1>{{user.display_name}}</h1>
+    <!-- <h2>{{ user.company }}</h2> -->
     <p>{{ user.about }}</p>
     </a><!-- Add other user details as needed -->
 
-    {% if user_info %}
+    {% if profile_info %}
         <!-- Display follow/unfollow button based on the follow status -->
         {% if user.publicProfileId in profile_info.following %}
             <button id="folow" class="btn btn-light"  onclick="toggleFollow('{{ user.publicProfileId }}')">Unfollow</button>
-        {% else %}
+        {% elif user.publicProfileId == profile_info.publicProfileId %}
+        (You)
+        {%else%}
             <button id="folow" class="btn btn-success" style="background-color: #4BBBAA;" onclick="toggleFollow('{{ user.publicProfileId }}')">Follow</button>
         {% endif %}
     {% endif %}
 </div>
-<!--TODO add cooldown to button (3 sec)-->
