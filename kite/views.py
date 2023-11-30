@@ -28,7 +28,7 @@ def publicKitePG(req, publicProfileId):
                 req, ("You Were Logged Out!"))
             return redirect("/login")
         if claims['email_verified']:
-            return kitePGHelper(req, publicProfileId)
+            return kitePGHelper(req, publicProfileId,claims)
     else:
         return redirect('/login')
 
@@ -143,7 +143,12 @@ def index(request):
          "displayName": user_data.get("displayName"),
          "photoUrl": user_data.get("photoUrl"),
         }
-        context = {
+        profile_data_of_currently_logged_in_user = store.collection('users1').where('user_id', '==', claims['user_id']).get()[0].to_dict()
+        context ={
+            'default' :{
+            'pic' : profile_data_of_currently_logged_in_user.get('pp_url'), 'name': auth.get_user(claims['user_id']).display_name
+            },
+  
             'allUsers':userList,
             'user_info': user_info,
             'profile_info':profile_data[0].to_dict(),
@@ -596,7 +601,7 @@ def loadThirdPersonPost(request,userIdFromUrl):
 # loads profile using path
 
 
-def kitePGHelper(req, publicProfileId): # Be confident About your self. One day you are gonna be proud of your self!
+def kitePGHelper(req, publicProfileId,claims): # Be confident About your self. One day you are gonna be proud of your self!
     user_profile_data = store.collection('users1').where('publicProfileId', '==', publicProfileId).get()
     
     if len(user_profile_data) > 0:
@@ -610,13 +615,16 @@ def kitePGHelper(req, publicProfileId): # Be confident About your self. One day 
             "displayName": user_data.display_name,
             "photoUrl": user_data.photo_url,
         }
-        print(user_info)
+        profile_data_of_currently_logged_in_user = store.collection('users1').where('user_id', '==', claims['user_id']).get()[0].to_dict()
         context = {
+            'default' :{
+            'pic' : profile_data_of_currently_logged_in_user.get('pp_url'), 'name': auth.get_user(claims['user_id']).display_name
+            },
             'src': publicProfileId,
             'user_info': user_info,
             'profile_info': user_profile_data[0].to_dict(),
         }
-
+        print(context.get("default").get("name"))
         return TemplateResponse(req, "kite/kite-public.html", context)
     else:
         # TODO In future i will make a 404 page so the user may know that the wrong ID does not exist! ;) 
