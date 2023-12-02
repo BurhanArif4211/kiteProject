@@ -9,7 +9,8 @@ import base64
 import datetime
 from firebase_admin import auth
 from ErrorCodes import STATUS_CODES
-from .services.firebase import upload_image, fireauth, store# storage
+from .services.firebase import upload_image,validateLogin,getPublicUrl,AuthenticationError, fireauth, store# storage
+from .modules.scorealgo import scorify
 
 ######################################################################################################################
 #                                                       PAGES                                                        #
@@ -61,7 +62,8 @@ def kitePG(request):
     
     if claims['email_verified']:
         # Use Firestore to get user profile data
-        user_profile_data = store.collection('users1').where('user_id', '==', claims['user_id']).get()
+        user_profile_data = store.collection('users1').where(
+            'user_id', '==', claims['user_id']).get()
         
         if len(user_profile_data) > 0:
         # print(user_profile_data[0].to_dict())
@@ -69,6 +71,12 @@ def kitePG(request):
             # user_info=getUserInfo(decoded_user)
             # print(user_info)
             context = {
+                'niches': user_profile_data[0].to_dict().get('niche').split(','),
+                    'urls': [
+                     [get_main_domain(   user_profile_data[0].to_dict().get('links').get('2')),user_profile_data[0].to_dict().get('links').get('2')]
+                    ,[get_main_domain(user_profile_data[0].to_dict().get('links').get('1')),user_profile_data[0].to_dict().get('links').get('1')]
+                    ,[get_main_domain(user_profile_data[0].to_dict().get('links').get('3')),user_profile_data[0].to_dict().get('links').get('3')]],
+                    'score' : scorify(claims['user_id']),
                 'user_claims': claims,
                 # 'user_info': user_info, now it is depricated!
                 'profile_info': user_profile_data[0].to_dict(),
@@ -157,6 +165,7 @@ def createProfile(request):
             messages.success(request, ("Please Verify Your Account Email before Going Further! Check your email Inbox."))
             return redirect("/login")
         else:
+            user_info=getUserInfo(decoded_user)
             country = request.POST.get('country')
             city = request.POST.get('city')
             niche = request.POST.get('niche')
@@ -168,9 +177,21 @@ def createProfile(request):
             link3 = request.POST.get('link3')
             links = {"1": link1, "2": link2, "3": link3}
             try:
-                store.collection('users1').add({'user_id': claims['user_id'], "country": country,
-                                                "links": links,'following' : [], 'followers' : [], "niche": niche, 
-                                                "city": city, "company": company, "about": about, "publicProfileId":publicProfileId})
+                store.collection('users1').add(
+                    {'display_name':user_info['displayName'],
+                    'user_id': claims['user_id'], 
+                     "country": country,
+                     "links": links,
+                     'following' : [], 
+                     'followers' : [], 
+                     "niche": niche, 
+                     "city": city, 
+                     "company": company, 
+                     "about": about, 
+                     "publicProfileId":publicProfileId,
+                     'pp_url':f"{getPublicUrl('static/default.jpg')}"
+                     })
+                
                 return redirect("/kite")
             except Exception as e:
                 print(e)
@@ -191,6 +212,7 @@ def loginWithEmail(request):
             request.session['user_data'] = encoded_user_data
             return redirect("/kite")
         except Exception as e:
+            
             messages.success(request, (f"Sign in error: {e}"))
             return redirect("/login")
     else:
@@ -201,33 +223,11 @@ def loginWithEmail(request):
 #                             Authentication Utilities                                                               #
 ######################################################################################################################
 
-class AuthenticationError(Exception):
-    pass
-
-def validateLogin(request):
-    if "user_data" in request.session:
-        encoded_user_data = request.session['user_data']
-        decoded_user = None
-        try:
-            decoded_user = base64.b64decode(encoded_user_data).decode()
-            claims = auth.verify_id_token(decoded_user)
-            # If verification is successful, return both claims and decoded_user
-            return [claims, decoded_user]
-        except auth.ExpiredIdTokenError:
-            del request.session['user_data']
-            messages.success(request, ("You Were Logged Out!"))
-            raise AuthenticationError("Expired ID token")
-        except auth.InvalidIdTokenError:
-            del request.session['user_data']
-            print("Invalid ID token error")
-            raise AuthenticationError("Invalid ID token")
-    else:
-        return [False, False]
-
 
 def getUserInfo(decoded_user):
+    # * This function takes current auth token, fetches current user's auth-related personal data, right now, only 4 fields are useful
+    # * But in future, this will be used to figure out if a user has google login or normal email login.
     user_info=fireauth.get_account_info(decoded_user)['users'][0]
-        
     user_info = {
             "localID":user_info.get("localId"),
             "email": user_info.get("email"),
@@ -236,9 +236,12 @@ def getUserInfo(decoded_user):
             }
     return user_info
 
+def userIdtoPublicId(user_id):
+    # * * This Function Takes a user's privatedUser_id to exchange it for his publicId
+    return store.collection('users1').where('user_id','==',user_id).get()[0].to_dict()['publicProfileId']
 
-    # This is useless for now
 def resendEmailVerification(request):
+    # This is useless for now
     try:
         claims, decoded_user = validateLogin(request)
     except AuthenticationError as e:
@@ -252,7 +255,7 @@ def resendEmailVerification(request):
 def logout(request):
     if 'user_data' in request.session:
         del request.session['user_data']
-        messages.success(request, ("You Were Loged Out!"))
+        messages.success(request, ("You were loged out!"))
         return redirect("/login")
     else:
         return redirect("/login")
@@ -260,24 +263,26 @@ def logout(request):
 ######################################################################################################################
 #                                              Data Upload Functions                                                 #
 ######################################################################################################################
-#TODO add exeptions
 
 def uploadUserPic(request):
-    if request.method == 'POST' and request.FILES['pp']:
+    if request.method == 'POST'and request.FILES['pp']:
         try:
             claims, decoded_user = validateLogin(request)
         except AuthenticationError as e:
             print(f"Authentication error: {e}")
             return redirect("/login")
+        
+        publicProfileId = userIdtoPublicId(claims['user_id'])
+        
         profile_picture = request.FILES['pp']
-        file_path = f"userData/{claims['user_id']}/pp.jpg"
+        file_path = f"userData/{publicProfileId}/pp.jpg"
         # Upload the image to Firebase Storage using your existing function
         pp_url = upload_image(file_path, profile_picture.file,profile_picture.content_type)
-        print(f"{pp_url:_^10}")
         auth.update_user(claims['user_id'], photo_url=pp_url,)
         user_query = store.collection('users1').where('user_id', '==', claims['user_id']).stream()
         for doc in user_query:
-            store.collection('users1').document(doc.id).update({'pp_url': pp_url})
+            # adding current time in orfer to prevent caching this sucessfully fixes the prfile-not-updating-bug. :) 
+            store.collection('users1').document(doc.id).update({'pp_url': f"{pp_url}?updatedOn={datetime.datetime.now()}"}) 
         #########################################################
 
         return redirect('/kite')
@@ -285,7 +290,7 @@ def uploadUserPic(request):
         return redirect('/')
     
 def uploadUserPost(request):
- if request.method == 'POST':
+ if request.method == 'POST' and request.FILES['postImage']:
     try:
         claims, decoded_user = validateLogin(request)
     except AuthenticationError as e:
@@ -296,6 +301,7 @@ def uploadUserPost(request):
     if not claims['email_verified']:
         return redirect('/kite')
     else:
+        
         postImage = request.FILES['postImage']
         postDescription = request.POST.get('postDescription')
         postId = randomId()
@@ -308,25 +314,24 @@ def uploadUserPost(request):
 
         store.collection('posts1').document(postId).set(
             {
-                'user_id': claims['user_id'],
+                'public_profile_id': userIdtoPublicId(claims['user_id']),
+                'user_id':{claims['user_id']},# comment this maybe
                 'post_url': post_url,
                 'post_description': postDescription,
                 'likes':[],
                 'comments':[], #add comments later by using update method in firebase //It should be better to use Array e.g [{name:aman, caption: caption, time: time},{name: so on}] or how'll you name elements of dict for each comments?
-                'added_at': current_time,# TODO IMPORTANT: add a date fetching system from server since users can't expliot this!!!
+                'added_at': current_time, # TODO IMPORTANT: add a date fetching system from server since users can expliot this!!!
             }
         )
 
         # Update 'users1' collection by appending postId to the 'posts' field
-        user_query = store.collection('users1').where(
-            'user_id', '==', claims['user_id']).stream()
+        user_query = store.collection('users1').where('user_id', '==', claims['user_id']).stream()
         for doc in user_query:
             user_data = doc.to_dict()
             current_posts = user_data.get('posts', [])
             current_posts.append(postId)
 
-            store.collection('users1').document(
-                doc.id).update({'posts': current_posts})
+            store.collection('users1').document(doc.id).update({'posts': current_posts})
 
         return redirect('/kite')
  else:
