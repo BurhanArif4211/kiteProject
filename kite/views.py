@@ -35,6 +35,7 @@ def index(request):
     profile_data = store.collection('users1').where('user_id', '==', claims['user_id']).get()[0].to_dict()
     # user_info=getUserInfo(decoded_user)
     context = {
+        'default':{'pp_url':profile_data['pp_url'],'display_name':profile_data['display_name']},
         'allUsers':userList,
         #'user_info':user_info, #Depricated
         'profile_info':profile_data,
@@ -62,8 +63,7 @@ def kitePG(request):
     
     if claims['email_verified']:
         # Use Firestore to get user profile data
-        user_profile_data = store.collection('users1').where(
-            'user_id', '==', claims['user_id']).get()
+        user_profile_data = store.collection('users1').where('user_id', '==', claims['user_id']).get()
         
         if len(user_profile_data) > 0:
         # print(user_profile_data[0].to_dict())
@@ -73,9 +73,10 @@ def kitePG(request):
             context = {
                 'niches': user_profile_data[0].to_dict().get('niche').split(','),
                     'urls': [
-                     [get_main_domain(   user_profile_data[0].to_dict().get('links').get('2')),user_profile_data[0].to_dict().get('links').get('2')]
+                    [get_main_domain(   user_profile_data[0].to_dict().get('links').get('2')),user_profile_data[0].to_dict().get('links').get('2')]
                     ,[get_main_domain(user_profile_data[0].to_dict().get('links').get('1')),user_profile_data[0].to_dict().get('links').get('1')]
-                    ,[get_main_domain(user_profile_data[0].to_dict().get('links').get('3')),user_profile_data[0].to_dict().get('links').get('3')]],
+                    ,[get_main_domain(user_profile_data[0].to_dict().get('links').get('3')),user_profile_data[0].to_dict().get('links').get('3')]
+                    ],
                     'score' : scorify(claims['user_id']),
                 'user_claims': claims,
                 # 'user_info': user_info, now it is depricated!
@@ -240,6 +241,11 @@ def userIdtoPublicId(user_id):
     # * * This Function Takes a user's privatedUser_id to exchange it for his publicId
     return store.collection('users1').where('user_id','==',user_id).get()[0].to_dict()['publicProfileId']
 
+def getProfileInfo(publicProfileId):
+    # * * This function gets all profile data of a user from firebase mainly for cutom filter in the info_filters.py file
+    return store.collection('users1').where('publicProfileId','==',publicProfileId).get()[0].to_dict()
+    
+    
 def resendEmailVerification(request):
     # This is useless for now
     try:
@@ -442,6 +448,10 @@ def likeUserPost(request, targetPostId):
         else:
             return HttpResponse('{"error":"Post not found"}')
 
+from django.http import JsonResponse
+
+
+
 def followUserByPublicId(request, publicProfileId):
     try:
         claims, decoded_user = validateLogin(request)
@@ -451,42 +461,180 @@ def followUserByPublicId(request, publicProfileId):
     if not claims:
         return redirect('/')
     if claims['email_verified']:
+        
         print(f"The follow function was called by {claims['name']} for {publicProfileId}")
-        ours_profile_data = store.collection('users1').where('user_id', '==', claims['user_id']).get()
-        ourPublicProfileId = ours_profile_data[0].to_dict().get('publicProfileId')
+        
+        ourProfileData = store.collection('users1').where('user_id', '==', claims['user_id']).get()
+        
+        ourPublicProfileId = ourProfileData[0].to_dict().get('publicProfileId')
+        
         # theirPublicProfileId = publicProfileId
         # Check if you are trying to follow yourself
         if publicProfileId == ourPublicProfileId:
             print("You can't follow yourself!")
-            return redirect('/')
+            response={
+                        "success": False,
+                        "message": "You can't follow yourself!",
+                        "data":{
+                            
+                        }
+                    }
+            return JsonResponse(response)
         else:
             # Update 'following' for the current user (Staging)
-            ourCurrentFollowing = set(
-                ours_profile_data[0].to_dict().get('following', []))
-
-            if publicProfileId in ourCurrentFollowing:
+            ourCurrentFollowing = set(ourProfileData[0].to_dict().get('following', [])) #following:[...,...,...]
+            
+            theirProfileData = store.collection('users1').where('publicProfileId', '==', publicProfileId).get()[0].to_dict()
+            theirCurrentFollowers = set(theirProfileData.get('followers', []))
+            
+            if publicProfileId in ourCurrentFollowing and ourPublicProfileId in theirCurrentFollowers:
                 # If the user is already in the following list, remove them
                 ourCurrentFollowing.remove(publicProfileId)
-            else:
+                theirCurrentFollowers.remove(ourPublicProfileId)
+                
+            elif not (publicProfileId in ourCurrentFollowing and ourPublicProfileId in theirCurrentFollowers):
                 # If the user is not in the following list, add them
                 ourCurrentFollowing.add(publicProfileId)
+                theirCurrentFollowers.add(ourPublicProfileId)
             # Here we do the actual update of data.
-            user_query = store.collection('users1').where('publicProfileId', '==', ourPublicProfileId ).stream()
-            for doc in user_query:
+            
+            ourProfileData = store.collection('users1').where('publicProfileId', '==', ourPublicProfileId ).stream()
+            for doc in ourProfileData:
                 store.collection('users1').document(doc.id).update({'following': list(ourCurrentFollowing)})
+                
+            theirProfileData = store.collection('users1').where('publicProfileId', '==', publicProfileId).stream()
+            for doc in theirProfileData:
+                store.collection('users1').document(doc.id).update({'followers': list(theirCurrentFollowers)})
+                
+            response={
+                        "success": True,
+                        "message": f'You followed/unfollowed {theirCurrentFollowers} ',
+                        "data": {
+                            "theirFollowerCount": len(theirCurrentFollowers),
+                            "ourFollowingCount": len(ourCurrentFollowing)
+                        }
+                    }
+            return JsonResponse(response)
+        
+                ##############             ######################                 ################
             # Update 'followers' for the other user
-            user_query = store.collection('users1').where('publicProfileId', '==', publicProfileId).stream()
-            for doc in user_query:
-                user_data = doc.to_dict()
-                their_current_followers = set(user_data.get('followers', []))
-                if ourPublicProfileId in their_current_followers:
-                    # If the current user is already in the other person's followers list, remove them
-                    their_current_followers.remove(ourPublicProfileId)
-                else:
-                    # If the current user is not in the other person's followers list, add them
-                    their_current_followers.add(ourPublicProfileId)
-                    store.collection('users1').document(doc.id).update({'followers': list(their_current_followers)})
-            return redirect('/')
+            # theirProfileData = store.collection('users1').where('publicProfileId', '==', publicProfileId).stream()
+            # for doc in theirProfileData:
+            #     ourFollowersList = doc.to_dict()
+            #     theirCurrentFollowers = set(ourFollowersList.get('followers', []))
+                
+                # if ourPublicProfileId in theirCurrentFollowers:
+                #     # If the current user is already in the other person's followers list, remove them
+                #     theirCurrentFollowers.remove(ourPublicProfileId)
+                #     store.collection('users1').document(doc.id).update({'followers': list(theirCurrentFollowers)})
+                    
+                #     response={
+                #                 "success": True,
+                #                 "message": f'You unfollowed {theirCurrentFollowers} ',
+                #                 "data": {
+                #                     "followerCount": len(theirCurrentFollowers),
+                #                     "followingCount": len(ourCurrentFollowing)
+                #                }
+                #             }
+                #     return JsonResponse()
+                # else:
+                #     # If the current user is not in the other person's followers list, add them
+                #     theirCurrentFollowers.add(ourPublicProfileId)
+                #     store.collection('users1').document(doc.id).update({'followers': list(theirCurrentFollowers)})
+                #     response={
+                #                 "success": True,
+                #                 "message": f'You followed {theirCurrentFollowers} ',
+                #                 "data": {
+                #                     "followerCount": len(theirCurrentFollowers),
+                #                     "followingCount": len(ourCurrentFollowing)
+                #                }
+                #             }
+                    # return JsonResponse(response)
+
+
+
+
+# def followUserByPublicId(request, publicProfileId):
+#     try:
+#         claims, decoded_user = validateLogin(request)
+#     except AuthenticationError as e:
+#         print(f"Authentication error: {e}")
+#         return redirect("/login")
+    
+#     if not claims:
+#         return redirect('/')
+    
+#     if claims['email_verified']:
+#         print(f"The follow function was called by {claims['name']} for {publicProfileId}")
+        
+#         ours_profile_data = store.collection('users1').where('user_id', '==', claims['user_id']).get()
+#         ourPublicProfileId = ours_profile_data[0].to_dict().get('publicProfileId')
+
+#         # Check if you are trying to follow yourself
+#         if publicProfileId == ourPublicProfileId:
+#             print("You can't follow yourself!")
+#             response = {
+#                 "success": False,
+#                 "message": "You can't follow yourself!",
+#                 "data": {
+#                     "followerCount": False,
+#                     "followingCount": False
+#                 }
+#             }
+#             return JsonResponse(response)
+        
+#         ### Update 'following' for the current user (Staging)
+#         ourCurrentFollowing = set(ours_profile_data[0].to_dict().get('following', []))
+
+#         if publicProfileId in ourCurrentFollowing:
+#             # If the user is already in the following list, remove them
+#             ourCurrentFollowing.remove(publicProfileId)
+#         else:
+#             # If the user is not in the following list, add them
+#             ourCurrentFollowing.add(publicProfileId)
+
+#         # Here we do the actual update of data.
+#         for doc in ours_profile_data:
+#             store.collection('users1').document(doc.id).update({'following': list(ourCurrentFollowing)})
+
+#         ### Update 'followers' for the other user
+        
+#         # theirProfileData = store.collection('users1').where('publicProfileId', '==', publicProfileId).stream()
+#         # for doc in theirProfileData:
+#         #     ourFollowersList = doc.to_dict()
+#         #     their_current_followers = set(ourFollowersList.get('followers', []))
+
+#         #     if ourPublicProfileId in their_current_followers:
+#         #         # If the current user is already in the other person's followers list, remove them
+#         #         their_current_followers.remove(ourPublicProfileId)
+#         #     else:
+#         #         # If the current user is not in the other person's followers list, add them
+#         #         their_current_followers.add(ourPublicProfileId)
+#         #         store.collection('users1').document(doc.id).update({'followers': list(their_current_followers)})
+#         # Update 'followers' for the other user
+#         theirProfileData = store.collection('users1').where('publicProfileId', '==', publicProfileId).stream()
+#         for doc in theirProfileData:
+#             followersList = doc.to_dict()
+#             their_current_followers = set(followersList.get('followers', []))
+#             if ourPublicProfileId in their_current_followers:
+#                 # If the current user is already in the other person's followers list, remove them
+#                 their_current_followers.remove(ourPublicProfileId)
+#             else:
+#                 #If the current user is not in the other person's followers list, add them
+#                 their_current_followers.add(ourPublicProfileId)
+#                 store.collection('users1').document(doc.id).update({'followers': list(their_current_followers)})
+
+#         # sent to front to update on page
+#         response = {
+#             "success": True,
+#             "message": f'You followed/unfollowed {publicProfileId}',
+#             "data": {
+#                 "theirFollowerCount": len(their_current_followers) ,  # Update with the actual follower count
+#                 "yourFollowingCount": len(ourCurrentFollowing)  # Update with the actual following count
+#             }
+#         }
+#         return JsonResponse(response)
+
     
 ######################################################################################################################
 #                                                   Helper Functions                                                 #
@@ -504,10 +652,11 @@ def publicKitePGHelper(request, publicProfileId,decoded_user, claims):
         current_user_profile_data = store.collection('users1').where('user_id', '==', claims['user_id']).get()[0].to_dict()
         
         context = {
-            'default':{'pp_url':current_user_profile_data['pp_url'],'displayName':current_user_profile_data['display_name']},# for Base-nav.html
+            'default':{'pp_url':current_user_profile_data['pp_url'],'display_name':current_user_profile_data['display_name']},# for Base-nav.html
             'current_profile_info':current_user_profile_data,
             # 'user_info': user_info, this is depricated now all info of any user is stored in profile_info
             'profile_info': user_profile_data[0].to_dict(),
+            'score' : scorify(user_profile_data[0].to_dict()['user_id']),#chonge later to public profile id maybe
         }
         
         return TemplateResponse(request, "kite/kite-public.html", context)

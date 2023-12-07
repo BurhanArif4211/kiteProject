@@ -58,12 +58,12 @@
                 <div class="dropdown">
                     <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
                         aria-haspopup="true" aria-expanded="false">
-                        <img src="{{profile_info.pp_url}}" alt="Profile Image" class="rounded-circle"
+                        <img src="{{default.pp_url}}" alt="Profile Image" class="rounded-circle"
                             style="width: 30px; height: 30px; margin-right: 5px;">
-                        {{ profile_info.display_name }}
+                            {{ default.display_name }}
                     </button>
                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                        <a class="dropdown-item" href="kite">View Kite</a>
+                        <a class="dropdown-item" href="/kite">View Kite</a>
                         <a class="dropdown-item" href="#">Notifications</a>
                         <a class="dropdown-item">
                             <form method="POST" action="/api/logout">

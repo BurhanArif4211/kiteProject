@@ -34,6 +34,47 @@
 	}
 
 </style>
+<script>
+		//toggle follow 
+
+		function toggleFollow(publicId, action) {
+			const followButton = document.getElementById('followButton');
+			
+			// Disable the button to prevent spam clicking
+			followButton.disabled = true;
+		
+			fetch(`/api/follow/${publicId}/?action=${action}`)
+				.then(response => response.json())
+				.then(data => {
+					// Handle the response as needed
+					console.log(data);
+		
+					// Update the button text and re-enable it
+					if (action === 'follow') {
+						followButton.innerText = 'Unfollow';
+						followButton.onclick = function() {
+							toggleFollow(publicId, 'unfollow');
+						};
+					} else {
+						followButton.innerText = 'Follow';
+
+						followButton.onclick = function() {
+							toggleFollow(publicId, 'follow');
+						};
+					}
+		
+					// Re-enable the button
+					followButton.disabled = false;
+				})
+				.catch(error => {
+					console.error('Error:', error);
+		
+					// Re-enable the button in case of an error
+					followButton.disabled = false;
+				});
+		}
+
+</script>
 </head>    
         <section class="index-main">
 			<header class="header">
@@ -63,56 +104,56 @@
 				</div>
 			</header>
 		</section>
-		<script>
-			function toggleFollow(publicId) {
-            fetch(`/api/follow/${publicId}/`)
-                .then(response => response.json())
-                .then(data => {
-                    // Handle the response as needed
-                    console.log(data);
-                })
-                .catch(error => console.error('Error:', error))
-    }
-		</script>
+<script>
+
+
+	function toggleFollow(button, publicId, action) {
+		// Disable the clicked follow/unfollow button to prevent spam clicking
+		button.disabled = true;
+	
+		fetch(`/api/follow/${publicId}/?action=${action}`)
+			.then(response => response.json())
+			.then(data => {
+				// Handle the response as needed
+				console.log(data);
+	
+				// Update the clicked button text and style, then re-enable the button
+				if (data.success) {
+					if (action === 'follow') {
+						button.innerText = 'Unfollow';
+						button.style.backgroundColor = ''; // Remove background color
+						button.classList.remove('btn-success');
+                        button.classList.add('btn-light');
+						button.onclick = function() {
+							toggleFollow(button, publicId, 'unfollow');
+						};
+					} else {
+						button.innerText = 'Follow';
+						button.style.backgroundColor = '#4BBBAA'; 
+						button.classList.remove('btn-light');
+						button.classList.add('btn-success');
+						button.onclick = function() {
+							toggleFollow(button, publicId, 'follow');
+						};
+					}
+				}
+	
+				// Re-enable the clicked button
+				button.disabled = false;
+			})
+			.catch(error => {
+				console.error('Error:', error);
+	
+				// Re-enable the clicked button in case of an error
+				button.disabled = false;
+			});
+	}
+	
+	
+</script>
 {% endblock %}
 
 
-{% if allUsers %}
-					
-					<div class="d-flex flex-wrap">
-						{% for user in allUsers %}
-							<div style="width: 18rem;" class="card p-3">
-								<img class="img-thumbnail"style="width:100px;" src="{{user.pp_url}}" />
-								<h2>{{ user.company }}</h2>
-								<p>{{ user.about }}</p>
-								
-								{% if profile_info %}
-								{{ user.publicProfileId }}
-								
-									<button id="follow" class="btn btn-success" style="background-color: #4BBBAA;" onclick="followUserByPublicId('{{ user.publicProfileId }}','follow')">Follow</button>
-									<script>
-										function followUserByPublicId(publicId, buttonId) {
-											var button = document.getElementById(buttonId);
-											button.disabled = true;
-											fetch(`api/follow/${publicId}`)
-                                            .then(response => response.json())
-                                            .then(data => {
-                                                // Handle the response as needed
-                                                console.log(data);
-                                            })
-                                            .catch(error => console.error('Error:', error));
-											setTimeout(function () {
-												button.disabled = false;
-											}, 3000);
-										}
-									</script>
-								{% endif %}
-							</div>
-						{% endfor %}
-					</div>
-				{% else %}
-					<p>No users available.</p>
-				{% endif %}
 
 
 

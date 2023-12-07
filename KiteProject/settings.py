@@ -14,7 +14,7 @@ SECRET_KEY = 'django-insecure-2$cmld*utf_9*jh+$qw!x)t&zu*w(mr^2g2kailyho6_@xh=3z
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []#'localhost','192.168.0.33','kiteapp.pagekite.me']
+ALLOWED_HOSTS = ['192.168.0.33','127.0.0.1','.vercel.app']#'localhost','192.168.0.33','kiteapp.pagekite.me']
 # CSRF_TRUSTED_ORIGINS = ['http://localhost','http://192.168.0.33','https://kiteapp.pagekite.me']
 
 

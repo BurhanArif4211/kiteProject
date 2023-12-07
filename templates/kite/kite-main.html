@@ -4,7 +4,7 @@
 
 <head>
 
-    <title>Kite | User</title>
+    <title>My Kite | {{ profile_info.display_name }}</title>
     <link type="text/css" rel="stylesheet" href="/static/css/style-kite-main.css" />
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     {% load static %}
@@ -17,10 +17,29 @@
                     <div>
                         <div class="d-flex border-- binded-- mb-4">
                             <div class="col-md-4">
+                                <form class method="POST" action="/api/logout">
+                                    {% csrf_token %}
+                                    <button style="color:black;" class="btn btn-outline-light float-end btn-logout"
+                                        type="submit"><i class="fas fa-user-plus"></i>logout</button>
+                                </form>
                                 <center>
 
-                                    <div style="width:50%;">
+                                    <div style="width: 50%;">
                                         <img propimg src="{{ profile_info.pp_url }}" alt="user pp" id="profile-picture">
+                                    </div>
+                                    <div style="width: 50%;position: absolute;left: 50%;top: 0%;transform: translate(-50%, 0%);height:50%;" class="overlay-post" id="overlay-post">
+                                        <form enctype="multipart/form-data" id="change-profile-pic" method="post"
+                                            action="/api/uploaduserpic">
+                                            {% csrf_token %}
+                                            <label for="pp-input" class="camera-icon">
+                                                <i class="fas fa-camera pp-form-icon"></i>
+                                                <div class="pp-hover-text">Change</div>
+                                            </label>
+                                            <input name="pp" type="file" id="pp-input" style="
+                                              all: unset;
+                                              display: none;
+                                            ">
+                                        </form>
                                     </div>
                                     <p class="h2">Community</p>
                                 </center>
@@ -81,7 +100,35 @@
                                 <blockquote class="blockquote">
                                     <p class="mb-0">{{profile_info.about}}</p>
                                 </blockquote>
-
+                                <div class="d-lg-flex mt-sm-0 text-left">
+                                    <button type="button" class="btn btn-outline-dark mt-1 py-2 px-1  p-md-1"
+                                        onclick="loadModalContent()" data-toggle="modal" data-target="#uploadPostModal">
+                                        Upload Post
+                                    </button>
+                                    <button type="button" class="btn btn-outline-dark mt-1 py-2 px-1 mr-md-1 p-md-1 mx-md-2"
+                                        data-mdb-ripple-color="dark" style="z-index: 1;">
+                                        Edit profile
+                                    </button>
+                                    <div id="modal-container"></div>
+                                </div>
+                                <script>
+                                function loadModalContent() {
+                                    fetch('/uploadpost',
+                                        {
+                                            method: 'GET',
+                                            headers: {
+                                                'X-Requested-With': 'XMLHttpRequest'
+                                            },
+                                        })
+                                        .then(response => response.text())
+                                        .then(html => {
+                                            // Set the modal content
+                                            document.getElementById('modal-container').innerHTML = html;
+                                            // Show the modal
+                                            $('#uploadPostModal').modal('show');
+                                        });
+                                }</script>
+                                <!-- add buttons -->
                             </div>
                         </div>
                         <!-- Tab links -->
@@ -90,7 +137,7 @@
                             <button class="tablinks" onclick="openTab(event, 'Stats')">Stats</button>
                             <button class="tablinks" onclick="openTab(event, 'Services')">Services</button>
                             <button class="tablinks" onclick="openTab(event, 'Match')">Match</button>
-                            <button class="tablinks" onclick="openTab(event, 'Eu')">Engaged users</button>
+                            <button class="tablinks" onclick="openTab(event, 'Eu')">Interactions</button>
                         </div>
 
                         <!-- Tab content -->
@@ -158,16 +205,42 @@
                             <p>Tokyo is the capital of Japan.</p>
                         </div>
                         <div id="Eu" class="tabcontent">
-                            <h3>Engaged with</h3>
+                            {% load info_filters %}
+                            <!-- <h3>Engaged with</h3> -->
+                            <h3>Following:</h3>
                             <ul class="list-group list-group-flush">
-                                {% for nthprofile in profile_info.following %}
-                                <li class="list-group-item"><img onclick="href='/kites/{{nthprofile}}'" src="https://storage.googleapis.com/potfolio-492d3.appspot.com/userData/{{nthprofile}}/pp.jpg" alt=""> {{nthprofile}}</li>
+                                {% for following in profile_info.following %}
+                                <li class="list-group-item">
+                                    <a href='/kites/{{following}}' onclick="">
+                                        {% with user_details=following|get_user_details %}
+                                            {% if user_details %}
+                                                <img style="max-width: 100px;  max-height: 100px; object-fit: cover;" src="{{ user_details.profile_pic_url }}" alt="{{ user_details.display_name }}">
+                                                {{ user_details.display_name }}
+                                            {% else %}
+                                                User not found
+                                            {% endif %}
+                                        {% endwith %}
+                                    </a>
+                                </li>
                                 {% endfor %}
-                              </ul>
-                            <h3>Engaged by</h3>
+                            </ul>
+                            <h3>Followers</h3>
                             <ul class="list-group list-group-flush">
-                                <li class="list-group-item">An item</li>
-                              </ul>
+                                {% for follower in profile_info.followers %}
+                                <li class="list-group-item">
+                                    <a href='/kites/{{follower}}' onclick="">
+                                        {% with user_details=follower|get_user_details %}
+                                            {% if user_details %}
+                                                <img style="max-width: 100px;  max-height: 100px; object-fit: cover;" src="{{ user_details.profile_pic_url }}" alt="{{ user_details.display_name }}">
+                                                {{ user_details.display_name }}
+                                            {% else %}
+                                                User not found
+                                            {% endif %}
+                                        {% endwith %}
+                                    </a>
+                                </li>
+                                {% endfor %}
+                            </ul>
                         </div>
                         <style>
                             /* Style the tab */

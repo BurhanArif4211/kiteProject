@@ -1,18 +1,18 @@
-<div style="width: 18rem;" class="card p-3">
-    <a href="kites/{{user.publicProfileId}}"><img class="mx-auto d-block img-thumbnail"style="width:100px;" src="{{user.pp_url}}" />
+<div style="width: 18rem;" class="card p-2 position-relative">
+    <a class="" style="text-decoration: none;color:var(--dark);" href="kites/{{user.publicProfileId}}"><img class="mx-auto d-block img-thumbnail"style="width:100px;" src="{{user.pp_url}}" />
         <h1>{{user.display_name}}</h1>
-    <!-- <h2>{{ user.company }}</h2> -->
+    
     <p>{{ user.about }}</p>
-    </a><!-- Add other user details as needed -->
+    </a>
 
     {% if profile_info %}
         <!-- Display follow/unfollow button based on the follow status -->
         {% if user.publicProfileId in profile_info.following %}
-            <button id="folow" class="btn btn-light"  onclick="toggleFollow('{{ user.publicProfileId }}')">Unfollow</button>
+            <button onclick="toggleFollow(this,'{{ user.publicProfileId }}', 'unfollow')" class="follow-button btn btn-light btn-block position-absolute" style=" bottom:0;" >Unfollow</button>
         {% elif user.publicProfileId == profile_info.publicProfileId %}
         (You)
         {%else%}
-            <button id="folow" class="btn btn-success" style="background-color: #4BBBAA;" onclick="toggleFollow('{{ user.publicProfileId }}')">Follow</button>
+            <button onclick="toggleFollow(this,'{{ user.publicProfileId }}', 'follow'  )" class="follow-button btn btn-success btn-block position-absolute" style="background-color: #4BBBAA; bottom:0;" >Follow</button>
         {% endif %}
     {% endif %}
 </div>

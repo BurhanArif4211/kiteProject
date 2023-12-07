@@ -2,165 +2,429 @@
 
 {% block content %}
 <head>
-    <title>Kite | User</title>
+    <title>Kite | {{ profile_info.display_name }}</title>
     <link type="text/css" rel="stylesheet"
         href="/static/css/style-kite-main.css" />
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-    <section class="h-100">
-        <div class="container-fluid py-5 h-100">
-            <div
-                class="row d-flex justify-content-center align-items-center h-100">
-                <div class="col col-lg-9 col-xl-11">
-                    <div class="card">
-                        <div class="rounded-top text-white d-flex flex-row"
-                            style="background-image: linear-gradient(to top right ,#4BBBAA, #F7B633,#FA4B16); height:250px;">
-                            <div class="ms-4 mt-5 d-flex flex-column"
-                                style="width: 150px;">
-                                <div class="position-relative">
-                                    <!-- Profile picture -->
-                                    <div class="prof-pic">
+<section class="h-100">
+    <div class="container-fluid py-5 h-100">
+        <div class="row d-flex justify-content-center align-items-center h-100">
+            <div class="col col-lg-9 col-xl-11">
+                <div class="card">
+                    <div>
+                        <div class="d-flex border-- binded-- mb-4">
+                            <div class="col-md-4">
+                                <center>
 
-                                        <img src="{{ profile_info.pp_url }}"
-                                            alt="user pp"
-                                            class="img-fluid img-thumbnail mt-4 mb-2"
-                                            style="width: 150px; z-index: 1"
-                                            id="profile-picture">
+                                    <div style="width: 50%;">
+                                        <img propimg src="{{ profile_info.pp_url }}" alt="user pp" id="profile-picture">
                                     </div>
-                                    <!-- Overlay for hover effect -->
-                                    <!-- <div class="overlay" id="overlay">   NO need to upload pp on other person's profile
-                                        <form enctype="multipart/form-data"
-                                            id="change-profile-pic"
-                                            method="post"
-                                            action="/api/uploaduserpic">
-                                            {%csrf_token%}
-                                            <label for="pp-input"
-                                                class="camera-icon">
-                                                <i class="fas fa-camera"></i>
-                                            </label>
-                                            <input name="pp" type="file"
-                                                id="pp-input"
-                                                style="display: none">
-                                        </form>
-                                    </div> -->
+                                    
+                                    <p class="h2">Community</p>
+                                </center>
+                                <div class="d-flex mt-5" style="flex-direction: row;justify-content: space-around;">
+                                    <div class="d-flex" style="flex-direction: column;">
+                                        <p class=""><i class="fa fa-trophy"></i> Total Score</p>
+                                        <p class=""><i class="fa fa-medal"></i> Rank</p>
+                                        <p class=""><i class="fa fa-users"></i> Followers</p>
+                                        <p class=""><i class="fa fa-user-friends"></i> Following</p>
+                                        <p class=""><i class="fa fa-newspaper"></i> Posts</p>
+                                    </div>
+                                    <div class="d-flex" style="flex-direction: column;">
+                                        <p>{{score.total}}</p>
+                                        <p>{{1}}</p>
+                                        <p id="follower-count">{{profile_info.followers | length}}</p>
+                                        <p>{{profile_info.following | length}}</p>
+                                        <p>{{profile_info.posts | length}}</p>
+                                    </div>
                                 </div>
-<!--                                 
-                                <form class method="POST" action="/api/logout">
-                                    {% csrf_token %}
-                                    <button style="color: white;"
-                                        class="btn btn-outline-light float-end btn-logout"
-                                        type="submit"><i
-                                            class="fas fa-user-plus"></i>logout</button>
-                                </form> -->
-
                             </div>
-                            <div class="ms-3"
-                                style="margin-top: 130px;margin-left:10px;">
-                                <h1 class="fs-sm-1">{{ profile_info.display_name }}</h1>
-                                <p>{{ profile_info.niche }}</p>
-                            </div>
-                        </div>
-                        <div class="p-4 text-black"
-                            style="background-color: #f8f9fa;">
-                            {{profile_info.about}}
-                            <a style="display: block;"
-                                href="{{profile_info.links.1}}">Link-1</a>
-                            <a style="display: block;"
-                                href="{{profile_info.links.2}}">Link-2</a>
-                            <a style="display: block;"
-                                href="{{profile_info.links.3}}">Link-3</a>
-                            Owner of: <p>{{profile_info.company}}</p>
+                            <div class="col-md-8 p-4">
+                                <h1>{{ profile_info.display_name }}</h1>
+                                <h2>About</h2>
+                                <table class="table table-borderless">
+                                    <thead>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><i class="fa fa-puzzle-piece"></i> Niche</td>
+                                            <td>
+                                                {% for niche in niches %}
+                                                <span class="badge m-1 text-white" style="background:#4bbbaa;">{{niche}}</span>
+                                                {% endfor %}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><i class="fas fa-map-marker-alt"></i>
+                                                Location</td>
+                                            <td>{{profile_info.city}} city of {{profile_info.country}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><i class="fa fa-building"></i> Belongs to</td>
+                                            <td>{{profile_info.company}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><i class="fa fa-link"></i> Contacts</td>
+                                            <td>
+                                                {% for link in urls %}
+                                                <a href="{{ link.1 }}" style="text-transform:capitalize;"><i
+                                                        class="fab fa-{{ link.0 }}"></i> {{ link.0 }}</a><br>
+                                                {% endfor %}
 
-                            <div
-                                class="d-flex justify-content-end text-center py-1">
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+
+                                <blockquote class="blockquote">
+                                    <p class="mb-0">{{profile_info.about}}</p>
+                                </blockquote>
                                 <div class="d-lg-flex mt-sm-0 text-left">
-                                {% if profile_info %}
-                                    <!-- Display follow/unfollow button based on the follow status -->
+                                    {% if profile_info %}
                                     {% if profile_info.publicProfileId in current_profile_info.following %}
-                                        <button id="folow" class="btn btn-outline-dark"  onclick="toggleFollow('{{ profile_info.publicProfileId }}')">Unfollow</button>
+                                        <button id="followButton" class="btn btn-outline-dark" onclick="toggleFollow('{{ profile_info.publicProfileId }}', 'unfollow')">Unfollow</button>
                                     {% elif profile_info.publicProfileId == current_profile_info.publicProfileId %}
-                                      (You)
-                                    {%else%}
-                                    <button id="folow" class="btn btn-outline-dark"  onclick="toggleFollow('{{ profile_info.publicProfileId }}')">Follow</button>
+                                        (You)
+                                    {% else %}
+                                        <button id="followButton" class="btn btn-outline-dark" onclick="toggleFollow('{{ profile_info.publicProfileId }}', 'follow')">Follow</button>
                                     {% endif %}
                                 {% endif %}
-                                    <button type="button"
-                                        class="btn btn-outline-dark mt-1 py-2 px-1 mr-md-1 p-md-1 mx-md-2"
-                                        data-mdb-ripple-color="dark"
-                                        style="z-index: 1;">
-                                        Message
-                                    </button>
-                                </div>
-                                <div id="modal-container"></div>
-                                <div>
-                                    <p class="mb-1 h5">{{profile_info.posts|length}}</p>
-                                    <p class="small text-muted mb-0">Photos</p>
-                                </div>
-                                <div class="px-3">
-                                    <p class="mb-1 h5">{{profile_info.followers|length}}</p>
-                                    <p class="small text-muted mb-0">Followers</p>
-                                </div>
-                                <div>
-                                    <p class="mb-1 h5">{{profile_info.following|length}}</p>
-                                    <p class="small text-muted mb-0">Following</p>
-                                </div>
+                                        <button type="button"
+                                            class="btn btn-outline-dark mt-1 py-2 px-1 mr-md-1 p-md-1 mx-md-2"
+                                            data-mdb-ripple-color="dark"
+                                            style="z-index: 1;">
+                                            Message
+                                        </button>
+                                    </div> 
                             </div>
                         </div>
-                        <div id="post-grid-container"></div>
+                        <!-- Tab links -->
+                        <div class="tab">
+                            <button class="tablinks" onclick="openTab(event, 'Posts')">Posts</button>
+                            <button class="tablinks" onclick="openTab(event, 'Stats')">Stats</button>
+                            <button class="tablinks" onclick="openTab(event, 'Services')">Services</button>
+                            <button class="tablinks" onclick="openTab(event, 'Match')">Match</button>
+                            <button class="tablinks" onclick="openTab(event, 'Eu')">Interactions</button>
+                        </div>
+
+                        <!-- Tab content -->
+                        <div id="Posts" class="tabcontent">
+                            <h3>Posts</h3>
+                            <div id="post-grid-container"></div>
+
+                        </div>
+
+                        <div id="Stats" class="tabcontent">
+                            <h3>Stats</h3>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <center>
+                                        <h4>Total score distribution</h4>
+                                        <h3>Score {{ score.total }}</h3>
+                                        <canvas id="stats" width="200" height="200"></canvas>
+                                    </center>
+                                    </div>
+                                <div class="col-md-6"></div>
+                            </div>
+
+                            <script>
+                                document.addEventListener('DOMContentLoaded', function () {
+                                    // Get the canvas element by ID
+                                    var ctx = document.getElementById('stats').getContext('2d');
+
+                                    var data = {
+                                        labels: ['Total likes', 'Total follows', 'Total comments', /*'Special privilege',*/ 'Activities'],
+                                        datasets: [{
+                                            data: [ {{score.likes}} , {{score.follows}}, {{score.comments}}, {{score.activity}}], // Adjust these values as needed
+                                            backgroundColor: ['#4bbbaa', '#f7b633', '#fa4b16' ,'crimson'],
+                                            hoverBackgroundColor: ['#4bbbaa', '#f7b633', '#fa4b16' ,'crimson'],
+                                        }]
+                                    };
+
+                                    // Doughnut chart options
+                                    var options = {
+                                        responsive: true,
+                                        maintainAspectRatio: true, // Set to false to allow custom size via canvas attributes
+                                    };
+
+                                    // Create the Doughnut chart
+                                    var myDoughnutChart = new Chart(ctx, {
+                                        type: 'doughnut',
+                                        data: data,
+                                        options: options
+                                    });
+                                    // var myDoughnutChart2 = new Chart(ctx, {
+                                    //     type: 'doughnut',
+                                    //     data: data2,
+                                    //     options: options
+                                    // });
+                                });
+
+                            </script>
+                        </div>
+
+                        <div id="Services" class="tabcontent">
+                            <h3>Tokyo</h3>
+                            <p>Tokyo is the capital of Japan.</p>
+                        </div>
+                        <div id="Match" class="tabcontent">
+                            <h3>Tokyo</h3>
+                            <p>Tokyo is the capital of Japan.</p>
+                        </div>
+                        <div id="Eu" class="tabcontent">
+                            {% load info_filters %}
+                            <!-- <h3>Engaged with</h3> -->
+                            <h3>Following:</h3>
+                            <ul class="list-group list-group-flush">
+                                {% for following in profile_info.following %}
+                                <li class="list-group-item">
+                                    <a href='/kites/{{following}}' onclick="">
+                                        {% with user_details=following|get_user_details %}
+                                            {% if user_details %}
+                                                <img style="max-width: 100px;  max-height: 100px; object-fit: cover;" src="{{ user_details.profile_pic_url }}" alt="{{ user_details.display_name }}">
+                                                {{ user_details.display_name }}
+                                            {% else %}
+                                                Not Following Anyone Yet!
+                                            {% endif %}
+                                        {% endwith %}
+                                    </a>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                            <h3>Followers</h3>
+                            <ul class="list-group list-group-flush">
+                                {% for follower in profile_info.followers %}
+                                <li class="list-group-item">
+                                    <a href='/kites/{{follower}}' onclick="">
+                                        {% with user_details=follower|get_user_details %}
+                                            {% if user_details %}
+                                                <img style="max-width: 100px;  max-height: 100px; object-fit: cover;" src="{{ user_details.profile_pic_url }}" alt="{{ user_details.display_name }}">
+                                                {{ user_details.display_name }}
+                                            {% else %}
+                                                No Followers Yet!
+                                            {% endif %}
+                                        {% endwith %}
+                                    </a>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+
+                        <style>
+                            /* Style the tab */
+                            .tab {
+                                padding: 0px 3px;
+                                overflow: hidden;
+                            }
+
+                            /* Style the buttons that are used to open the tab content */
+                            .tab button {
+                                margin-top: 2px;
+                                margin-bottom: 2px;
+                                border-radius: 10px;
+                                background-color: inherit;
+                                float: left;
+                                border: none;
+                                outline: none;
+                                cursor: pointer;
+                                padding: 8px 12px;
+                                transition: 0.3s;
+                            }
+
+                            /* Change background color of buttons on hover */
+                            .tab button:hover {
+                                margin-top: 2px;
+                                margin-bottom: 2px;
+                                border-radius: 10px;
+                            }
+
+                            /* Create an active/current tablink class */
+                            .tab button.active {
+                                box-shadow: 0px 0px 2px black;
+                            }
+
+                            /* Style the tab content */
+                            .tabcontent {
+                                display: none;
+                                margin-top: 10px;
+                                padding: 6px 12px;
+                                border: 1px solid #ccc;
+                                border-top: none;
+                            }
+                        </style>
+                        <script>
+                            function openTab(evt, tabname) {
+                                // Declare all variables
+                                var i, tabcontent, tablinks;
+
+                                // Get all elements with class="tabcontent" and hide them
+                                tabcontent = document.getElementsByClassName("tabcontent");
+                                for (i = 0; i < tabcontent.length; i++) {
+                                    tabcontent[i].style.display = "none";
+                                }
+
+                                // Get all elements with class="tablinks" and remove the class "active"
+                                tablinks = document.getElementsByClassName("tablinks");
+                                for (i = 0; i < tablinks.length; i++) {
+                                    tablinks[i].className = tablinks[i].className.replace(" active", "");
+                                }
+
+                                // Show the current tab, and add an "active" class to the button that opened the tab
+                                document.getElementById(tabname).style.display = "block";
+                                evt.currentTarget.className += " active";
+                            }
+                            openTab(event, 'Posts')
+                        </script>
+
 
                         <script>
-                            function toggleFollow(publicId) {
-                                fetch(`/api/follow/${publicId}/`)
+                            //toggle follow 
+                            
+                            function toggleFollow(publicId, action) {
+                                const followButton = document.getElementById('followButton');
+                                const followerCount= document.getElementById('follower-count')
+                                // Disable the button to prevent spam clicking
+                                followButton.disabled = true;
+                            
+                                fetch(`/api/follow/${publicId}/?action=${action}`)
                                     .then(response => response.json())
                                     .then(data => {
                                         // Handle the response as needed
                                         console.log(data);
+                            
+                                        // Update the button text and re-enable it
+                                    if(data.success){
+                                        if (action === 'follow') {
+                                            followButton.innerText = 'Unfollow';
+                                            followerCount.innerText=data.data.theirFollowerCount    
+                                            followButton.onclick = function() {
+                                                toggleFollow(publicId, 'unfollow');
+                                            };
+                                        } else {
+                                            followButton.innerText = 'Follow';
+                                            followerCount.innerText=data.data.theirFollowerCount
+                                            followButton.onclick = function() {
+                                                toggleFollow(publicId, 'follow');
+                                            };
+                                        }
+                                    }else{
+                                        console.log(data.success)
+                                    }
+                                        // Re-enable the button
+                                        followButton.disabled = false;
                                     })
-                                    .catch(error => console.error('Error:', error))
-                        }
+                                    .catch(error => {
+                                        console.error('Error:', error);
+                            
+                                        // Re-enable the button in case of an error
+                                        followButton.disabled = false;
+                                    });
+                            }
                             // Fetch and load the post grid component asynchronously
-                            fetch('/api/loaduserposts/{{profile_info.publicProfileId}}/',{
+                            fetch(`/api/loaduserposts/{{profile_info.publicProfileId}}`, {
                                 method: 'GET',
-                                        headers: {
-                                          'X-Requested-With': 'XMLHttpRequest'
-                                        },
+                                headers: {
+                                    'X-Requested-With': 'XMLHttpRequest'
+                                },
                             })
                                 .then(response => response.text())
                                 .then(html => {
                                     document.getElementById('post-grid-container').innerHTML = html;
                                 });
-                                // Function to fetch and load the modal content asynchronously
-                                function loadModalContent() {
-                                    fetch('/uploadpost',
+                            // Function to fetch and load the modal content asynchronously
+                            function loadModalContent() {
+                                fetch('/uploadpost',
                                     {
                                         method: 'GET',
                                         headers: {
-                                          'X-Requested-With': 'XMLHttpRequest'
+                                            'X-Requested-With': 'XMLHttpRequest'
                                         },
-                                      })
-                                        .then(response => response.text())
-                                        .then(html => {
-                                            // Set the modal content
-                                            document.getElementById('modal-container').innerHTML = html;
-                                            // Show the modal
-                                            $('#uploadPostModal').modal('show');
-                                        });
-                                }
-                                
-                                // Handle file selection and upload
-                        
-                            document.getElementById('overlay').addEventListener('click', function () {
-                                document.getElementById('pp-input').click();
-                            });
-                            document.getElementById('pp-input').addEventListener('change', function (event) {
-                                // Submit the form when a file is selected
+                                    })
+                                    .then(response => response.text())
+                                    .then(html => {
+                                        // Set the modal content
+                                        document.getElementById('modal-container').innerHTML = html;
+                                        // Show the modal
+                                        $('#uploadPostModal').modal('show');
+                                    });
+                            }
+                            document.getElementById('pp-input').addEventListener('change', function () {
                                 document.getElementById('change-profile-pic').submit();
                             });
                         </script>
-
+                        <script>
+                            function commentToggle(a) {
+                                console.log(a.closest(".card").getElementsByClassName('comment-box')[0].toggleAttribute("hidden"))
+                            }
+                        </script>
                     </div>
                 </div>
             </div>
         </div>
-    </section>
+</section>
+<style>
+    .binded-- .fa,.binded-- .fas{
+        color:#fa4b16;
+    }
+    .binded-- {
+        border-radius: 15px;
+        box-shadow: 1px 1px 5px black;
+    }
 
-    {% endblock %}
+    .binded-->div:first-child {
+        border-top-left-radius: 15px;
+        border-bottom-left-radius: 15px;
+    }
+
+    .binded-->div:not(div:last-child) {
+        border-right: 1px ridge gray;
+        border-bottom-left-radius: 15px;
+    }
+
+    .binded-->div:last-child {
+        border-top-right-radius: 15px;
+        border-bottom-right-radius: 15px;
+    }
+
+    [propimg] {
+        margin-top: 10px;
+        width: 100%;
+        height: auto;
+        aspect-ratio: 1 / 1;
+    }
+</style>
+
+<script>
+
+    const config = {
+        type: 'doughnut',
+        data: data,
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'top',
+                },
+                title: {
+                    display: true,
+                    text: 'Chart.js Doughnut Chart'
+                }
+            }
+        },
+    };
+    const DATA_COUNT = 5;
+    const NUMBER_CFG = { count: DATA_COUNT, min: 0, max: 100 };
+
+    const data = {
+        labels: ['Red', 'Orange', 'Yellow', 'Green', 'Blue'],
+        datasets: [
+            {
+                label: 'Dataset 1',
+                data: Utils.numbers(NUMBER_CFG),
+                backgroundColor: Object.values(Utils.CHART_COLORS),
+            }
+        ]
+    };
+</script>
+{% endblock %}
