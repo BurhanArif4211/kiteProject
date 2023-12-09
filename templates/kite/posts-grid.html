@@ -1,5 +1,4 @@
 {% if posts %}
-
 <div class="d-flex flex-wrap row">
   {% for post in posts %}
   <div class="card p-3 col-md-4 col-sm-4 col-sm-12">
@@ -46,35 +45,6 @@
 {% else %}
 <p>No posts available.</p>
 {% endif %}
-
-<!-- post-grid.html >
-    {% if not posts %}
-    <div class="">No Posts Yet.</div>
-    {% endif %}
-    <div class="container mt-4">
-      <div class="row">
-        
-        {% for post in posts %}
-          <div class="col-sm-6 col-md-4 col-lg-3 mb-4">
-            <div class="card">
-              <img src="{{ post.post_url }}" class="card-img-top" alt="Post Image">
-              <div class="card-body">
-                <h5 class="card-title">{{ post.post_description }}</h5>
-                -- Other post information goes here -->
-
-<!-- Overlay --
-                <div class="overlay-post">
-                  <p class="overlay-post__date">{{ post.added_at }}</p>
-                  <p class="overlay-post__likes">Likes: {{ post.likes }}</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        {% endfor %}
-      </div>
-    </div>
-    </div>
-  -->
   <style>
     .comment-sector{
       width:100%;

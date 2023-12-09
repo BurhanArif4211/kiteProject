@@ -1,0 +1,77 @@
+from fubam import *
+
+
+def likeBtn(sub_class, text_reversal, arrow_reversal, post):
+    return button({'onclick': "toggleLike(this)", "type": "button", "class": f"btn btn-{sub_class}", "post-id": post.get("post_id")}, i({"class": f"fa fa-arrow-circle-{arrow_reversal}"}), text_reversal + ' ' + (f'{len(post.get("likes"))}' if isinstance(post.get("likes"), list) else f"{post.get('likes')}"))
+
+
+styles = style(''' 
+    .comment-sector{
+      width:100%;
+      margin-top: 5px;
+    }
+    .comment-sector>*{
+      height:40px;
+      margin-right: 1px;
+    }
+    .comment-box{
+      box-shadow: 2px 2px 3px black, 0px 0px 2px;
+    }
+    .comment-sector>textarea{
+      width:calc(100% - 40px) !important;
+      border: none;
+      box-shadow: 1px 1px 2px black;
+    }
+    .comment-sector>textarea::-webkit-resizer{
+      display: none;
+    }
+    .comment-sector>button{
+      width:40px !important;
+    }
+    ''')
+
+
+def card(post):
+    return f"""<div class="card p-3 col-md-4 col-sm-4 col-sm-12">
+    <img class="img-thumbnail" src="{post.get('post_url')}" />
+    <div style="display:flex;justify-content:start;align-items:center;" class="pt-2"><img src="{default.get("pp_url")}" class="mr-1 rounded-pill"
+        style="width:50px;height:50px"><div><strong>{default.get("displayName")}</strong><a class="engage pl-1 text-primary"
+        style="font-weight:bolder;" onc>Engage</a>    <p class="text-muted"><span class="fa fa-clock"></span> { post.get('added_at') }</p>
+      </div></div>
+            <p>{ post.get("post_description") }</p>
+    <div class="btn-group m-auto">
+      <div class="btn-group">{ 
+
+(likeBtn("outline-info", "Downvote", "down",post) if default.get("localID") in post.get("likes") else likeBtn("info", "Upvote", "up",post)) if not isinstance(post.get("likes"),int)  else likeBtn("info", "Upvote", "up",post)
+
+      }
+
+        <button type="button" class="btn btn-info dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <span class="sr-only"></span>
+        </button>
+        <div class="dropdown-menu">
+          <a class="dropdown-item" href="#">Aman</a>
+          <a class="dropdown-item" href="#">Aman 2</a>
+          <a class="dropdown-item" href="#">Aman returns</a>
+          <a class="dropdown-item" href="#">Aman Far from college</a>
+          <a class="dropdown-item" href="#">And 19 others</a>
+        </div>
+      </div>
+      <button onclick="commentToggle(this)" class="btn btn-info"><i class="fa fa-comment-alt"></i> Remarks {len(post.get("comments"))}</button>
+      <button class="btn btn-info" onclick="location.href = ''"><i class="fa fa-external-link-alt"></i> Visit kite</button>
+    </div>
+    <div hidden class="container comment-box p-3 my-3" style="border-radius: 20px;">
+      <div class="comment-block"><strong>AMAN ALi</strong> This is first comment</div>
+      <div class="comment-sector d-flex" style="align-items: center;">
+        <textarea placeholder="Remark this post"></textarea>
+        <button class="btn btn-primary"><i class="fa fa-paper-plane"></i></button>
+      </div>
+    </div>
+  </div>"""
+
+
+HTML = (
+    div(
+        {"class": "d-flex flex-wrap row"},
+        [card(post) for post in posts]
+    ) if posts else p("No posts available")) + styles

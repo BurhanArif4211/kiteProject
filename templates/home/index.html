@@ -1,5 +1,6 @@
 {% extends 'home/base-nav.html' %}
 {% block content %}
+
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -8,152 +9,150 @@
 	<link type="text/css" rel="stylesheet" href="/static/css/style-index.css">
 
 	<!-- This css does not work separately in a file. IDK why X(  -->
-<style>
-	.search{
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-        justify-content: center;
-       
-	}
+	<style>
+		.search {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
 
-    input {
-        width: 100%;
-        padding: 10px;
-        border: none;
-        border-bottom: 2px solid #555;
-        outline: none;
-        margin-bottom: 20px;
-		background-color: rgba(255, 255, 255, 0.7);
-        font-size: 18px;
-		box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-    }
-	.card.p-3 a{
-		color: inherit;
-		text-decoration: none;
-	}
+		}
 
-</style>
-<script>
+		input {
+			width: 100%;
+			padding: 10px;
+			border: none;
+			border-bottom: 2px solid #555;
+			outline: none;
+			margin-bottom: 20px;
+			background-color: rgba(255, 255, 255, 0.7);
+			font-size: 18px;
+			box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+		}
+
+		.card.p-3 a {
+			color: inherit;
+			text-decoration: none;
+		}
+
+
+	</style>
+	<script>
 		//toggle follow 
 
 		function toggleFollow(publicId, action) {
 			const followButton = document.getElementById('followButton');
-			
+
 			// Disable the button to prevent spam clicking
 			followButton.disabled = true;
-		
+
 			fetch(`/api/follow/${publicId}/?action=${action}`)
 				.then(response => response.json())
 				.then(data => {
 					// Handle the response as needed
 					console.log(data);
-		
+
 					// Update the button text and re-enable it
 					if (action === 'follow') {
 						followButton.innerText = 'Unfollow';
-						followButton.onclick = function() {
+						followButton.onclick = function () {
 							toggleFollow(publicId, 'unfollow');
 						};
 					} else {
 						followButton.innerText = 'Follow';
 
-						followButton.onclick = function() {
+						followButton.onclick = function () {
 							toggleFollow(publicId, 'follow');
 						};
 					}
-		
+
 					// Re-enable the button
 					followButton.disabled = false;
 				})
 				.catch(error => {
 					console.error('Error:', error);
-		
+
 					// Re-enable the button in case of an error
 					followButton.disabled = false;
 				});
 		}
 
-</script>
-</head>    
-        <section class="index-main">
-			<header class="header">
-				<div class="header__main">
-					<h1 class="header__heading-prime">Welcome To the winds</h1>
-					{% if profile_info %}
-                     <div class="search container">
-					<form onsubmit="event.preventDefault();" role="search">
-						<input id="search" type="search" placeholder="Search..." autofocus required />
-						<button class="btn btn-primary" style="background-color: #4BBBAA;" type="submit">Go</button>    
-					</form>
-					 </div> 
-					{%else%}
-					  <button onclick="location.href = '/login';" class="btn btn-success fw-bold header__button-join " style="background-color: #4BBBAA;">Join</button>	
-					{%endif%}
-                    {% if allUsers %}
-                        <div class="d-flex flex-wrap">
-                            {% for user in allUsers %}
-                                {% include 'home/profile-card.html' with user=user profile_info=profile_info %}
-                            {% endfor %}
-                        </div>
-                    {% else %}
-                        <p>No users available.</p>
-                    {% endif %}
-					
-			
-				</div>
-			</header>
-		</section>
+	</script>
+</head>
+<section class="index-main">
+	<header class="header">
+		<div class="header__main">
+			<h1 class="header__heading-prime">Welcome To the winds</h1>
+			{% if profile_info %}
+			<div class="search container">
+				<form onsubmit="event.preventDefault();" role="search">
+					<input id="search" type="search" placeholder="Search..." autofocus required />
+					<button class="btn btn-primary" style="background-color: #4BBBAA;" type="submit">Go</button>
+				</form>
+			</div>
+			{%else%}
+			<button onclick="location.href = '/login';" class="btn btn-success fw-bold header__button-join "
+				style="background-color: #4BBBAA;">Join</button>
+			{%endif%}
+			{% if allUsers %}
+			<div class="d-flex flex-wrap">
+				{% for user in allUsers %}
+				{% include 'home/profile-card.html' with user=user profile_info=profile_info %}
+				{% endfor %}
+			</div>
+			{% else %}
+			<p>No users available.</p>
+			{% endif %}
+
+
+		</div>
+	</header>
+</section>
 <script>
 
 
 	function toggleFollow(button, publicId, action) {
 		// Disable the clicked follow/unfollow button to prevent spam clicking
 		button.disabled = true;
-	
+
 		fetch(`/api/follow/${publicId}/?action=${action}`)
 			.then(response => response.json())
 			.then(data => {
 				// Handle the response as needed
 				console.log(data);
-	
+
 				// Update the clicked button text and style, then re-enable the button
 				if (data.success) {
 					if (action === 'follow') {
 						button.innerText = 'Unfollow';
 						button.style.backgroundColor = ''; // Remove background color
 						button.classList.remove('btn-success');
-                        button.classList.add('btn-light');
-						button.onclick = function() {
+						button.classList.add('btn-light');
+						button.onclick = function () {
 							toggleFollow(button, publicId, 'unfollow');
 						};
 					} else {
 						button.innerText = 'Follow';
-						button.style.backgroundColor = '#4BBBAA'; 
+						button.style.backgroundColor = '#4BBBAA';
 						button.classList.remove('btn-light');
 						button.classList.add('btn-success');
-						button.onclick = function() {
+						button.onclick = function () {
 							toggleFollow(button, publicId, 'follow');
 						};
 					}
 				}
-	
+
 				// Re-enable the clicked button
 				button.disabled = false;
 			})
 			.catch(error => {
 				console.error('Error:', error);
-	
+
 				// Re-enable the clicked button in case of an error
 				button.disabled = false;
 			});
 	}
-	
-	
+
+
 </script>
 {% endblock %}
-
-
-
-
-
