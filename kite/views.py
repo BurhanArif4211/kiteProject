@@ -11,6 +11,7 @@ from firebase_admin import auth
 from ErrorCodes import STATUS_CODES
 from .services.firebase import upload_image,validateLogin,getPublicUrl,AuthenticationError, fireauth, store# storage
 from .modules.scorealgo import scorify
+from fubam import render_pythonMarkup
 
 ######################################################################################################################
 #                                                       PAGES                                                        #
@@ -24,14 +25,14 @@ def index(request):
     except AuthenticationError as e:
         print(f"Authentication error: {e}")
         return redirect("/login")
-        
+
     #########################  THIS IS JUST FOR TEST DONOT PUSH IN PRODUCTION WITH THIS CODE  ##############################
     users=store.collection('users1').get()
     userList=[]
     for i in range(len(users)):
         userList.append(users[i].to_dict())
     ##########################################################################################################################
-    
+
     profile_data = store.collection('users1').where('user_id', '==', claims['user_id']).get()[0].to_dict()
     # user_info=getUserInfo(decoded_user)
     context = {
@@ -41,30 +42,30 @@ def index(request):
         'profile_info':profile_data,
     }
     return TemplateResponse(request, "home/index.html", context)
-    
 
-  
+
+
 def kitePG(request):
-    
+
     try:
         claims, decoded_user = validateLogin(request)
     except AuthenticationError as e:
         print(f"Authentication error: {e}")
         return redirect("/login")
-    
+
     if not claims:
         messages.success(request, ("Please Signup/Login In order to Continue to your kite."))
         return redirect('/login')
-    
+
     if not claims['email_verified']:
         del request.session['user_data']
         messages.success(request, ("Please Verify Your Account Email before Going Further! Check your email Inbox."))
         return redirect("/login")
-    
+
     if claims['email_verified']:
         # Use Firestore to get user profile data
         user_profile_data = store.collection('users1').where('user_id', '==', claims['user_id']).get()
-        
+
         if len(user_profile_data) > 0:
         # print(user_profile_data[0].to_dict())
             # Retrieve user account information
@@ -87,14 +88,14 @@ def kitePG(request):
             return render(request, "authentication/profile-form.html")
 
 def publicKitePG(request, publicProfileId):
-    
+
     try:
         claims, decoded_user = validateLogin(request)
     except AuthenticationError as e:
         print(f"Authentication error: {e}")
         return redirect("/login")
     if not claims:
-       return redirect('/login') 
+       return redirect('/login')
     if not claims['email_verified'] :
         return redirect('/login')
     else:
@@ -102,7 +103,7 @@ def publicKitePG(request, publicProfileId):
 
 
 def loginPG(request):
-    
+
     try:
         claims, decoded_user = validateLogin(request)
     except AuthenticationError as e:
@@ -110,7 +111,7 @@ def loginPG(request):
         return redirect("/login")
     if not claims:
         return TemplateResponse(request, "authentication/login.html")
-    
+
     if claims['email_verified']:
         return redirect("/kite")
     else:
@@ -118,15 +119,15 @@ def loginPG(request):
         messages.success(
             request, ("Please Verify Your Account Email before Going Futher! Check your email."))
         return render(request, 'authentication/login.html')
-  
+
 def uploadPostModal(request):
     if request.headers.get('X-Requested-With') == 'XMLHttpRequest':  # this is for security
         return TemplateResponse(request, 'kite/upload-post-popup.html')
     else:
         # messages.success(request,(f'This link is not supposed to be visited'))
         return redirect("/kite")
-    
-    
+
+
 ######################################################################################################################
 #                                       Authentication & Information                                                 #
 ######################################################################################################################
@@ -161,7 +162,7 @@ def createProfile(request):
         if not claims:
             messages.success(request, ("Please Signup/Login In order to Continue to your kite."))
             return redirect("/login")
-        elif not claims['email_verified']: 
+        elif not claims['email_verified']:
             del request.session['user_data']
             messages.success(request, ("Please Verify Your Account Email before Going Further! Check your email Inbox."))
             return redirect("/login")
@@ -180,19 +181,19 @@ def createProfile(request):
             try:
                 store.collection('users1').add(
                     {'display_name':user_info['displayName'],
-                    'user_id': claims['user_id'], 
+                    'user_id': claims['user_id'],
                      "country": country,
                      "links": links,
-                     'following' : [], 
-                     'followers' : [], 
-                     "niche": niche, 
-                     "city": city, 
-                     "company": company, 
-                     "about": about, 
+                     'following' : [],
+                     'followers' : [],
+                     "niche": niche,
+                     "city": city,
+                     "company": company,
+                     "about": about,
                      "publicProfileId":publicProfileId,
                      'pp_url':f"{getPublicUrl('static/default.jpg')}"
                      })
-                
+
                 return redirect("/kite")
             except Exception as e:
                 print(e)
@@ -213,7 +214,7 @@ def loginWithEmail(request):
             request.session['user_data'] = encoded_user_data
             return redirect("/kite")
         except Exception as e:
-            
+
             messages.success(request, (f"Sign in error: {e}"))
             return redirect("/login")
     else:
@@ -244,8 +245,8 @@ def userIdtoPublicId(user_id):
 def getProfileInfo(publicProfileId):
     # * * This function gets all profile data of a user from firebase mainly for cutom filter in the info_filters.py file
     return store.collection('users1').where('publicProfileId','==',publicProfileId).get()[0].to_dict()
-    
-    
+
+
 def resendEmailVerification(request):
     # This is useless for now
     try:
@@ -277,9 +278,9 @@ def uploadUserPic(request):
         except AuthenticationError as e:
             print(f"Authentication error: {e}")
             return redirect("/login")
-        
+
         publicProfileId = userIdtoPublicId(claims['user_id'])
-        
+
         profile_picture = request.FILES['pp']
         file_path = f"userData/{publicProfileId}/pp.jpg"
         # Upload the image to Firebase Storage using your existing function
@@ -287,14 +288,14 @@ def uploadUserPic(request):
         auth.update_user(claims['user_id'], photo_url=pp_url,)
         user_query = store.collection('users1').where('user_id', '==', claims['user_id']).stream()
         for doc in user_query:
-            # adding current time in orfer to prevent caching this sucessfully fixes the prfile-not-updating-bug. :) 
-            store.collection('users1').document(doc.id).update({'pp_url': f"{pp_url}?updatedOn={datetime.datetime.now()}"}) 
+            # adding current time in orfer to prevent caching this sucessfully fixes the prfile-not-updating-bug. :)
+            store.collection('users1').document(doc.id).update({'pp_url': f"{pp_url}?updatedOn={datetime.datetime.now()}"})
         #########################################################
 
         return redirect('/kite')
     else:
         return redirect('/')
-    
+
 def uploadUserPost(request):
  if request.method == 'POST' and request.FILES['postImage']:
     try:
@@ -307,7 +308,7 @@ def uploadUserPost(request):
     if not claims['email_verified']:
         return redirect('/kite')
     else:
-        
+
         postImage = request.FILES['postImage']
         postDescription = request.POST.get('postDescription')
         postId = randomId()
@@ -323,8 +324,10 @@ def uploadUserPost(request):
                 'public_profile_id': userIdtoPublicId(claims['user_id']),
                 'user_id':{claims['user_id']},# comment this maybe
                 'post_url': post_url,
+                'post_id': randomId(),
                 'post_description': postDescription,
                 'likes':[],
+                'liked':[],
                 'comments':[], #add comments later by using update method in firebase //It should be better to use Array e.g [{name:aman, caption: caption, time: time},{name: so on}] or how'll you name elements of dict for each comments?
                 'added_at': current_time, # TODO IMPORTANT: add a date fetching system from server since users can expliot this!!!
             }
@@ -342,7 +345,7 @@ def uploadUserPost(request):
         return redirect('/kite')
  else:
       return redirect('/')
-    
+
 ######################################################################################################################
 #                                                   Data Loading Functions                                           #
 ######################################################################################################################
@@ -357,12 +360,12 @@ def loadUserPosts(request):
     posts_info = []
     user_profile_data = store.collection('users1').where('user_id', '==', claims['user_id']).get()
     # user_info=getUserInfo(decoded_user)
-    
+
     # print(user_info)
-    
+
     if len(user_profile_data)>0:
         user_profile_data=user_profile_data[0].to_dict()
-        
+
     if 'posts' in user_profile_data:
         posts = user_profile_data['posts']
         for postId in posts:
@@ -375,14 +378,15 @@ def loadUserPosts(request):
     current_profile_info = store.collection(
         'users1').where('user_id', '==', claims['user_id']).get()[0].to_dict()
     # print(current_profile_info)
-    
+
     pp_url=current_profile_info.get('pp_url')
     displayName=current_profile_info.get('display_name')
-    
-    return TemplateResponse(request, 'kite/posts-grid.html', {'posts': posts_info, 'default':{'pp_url':pp_url,'displayName':displayName}})
+
+    # return TemplateResponse(request, 'kite/posts-grid.html', {'posts': posts_info, 'default':{'pp_url':pp_url,'displayName':displayName}})
+    return HttpResponse(render_pythonMarkup('kite/posts-grid', resources={'posts': posts_info, 'default':{'pp_url':pp_url,'displayName':displayName,"localID" : claims['user_id'] }}))
  else:
      return redirect('/')
- 
+
 def publicLoadUserPost(request,userIdFromUrl):
  if request.headers.get('X-Requested-With') == 'XMLHttpRequest': # For security so the user can't load their posts separately!
     try:
@@ -398,55 +402,68 @@ def publicLoadUserPost(request,userIdFromUrl):
             post_info = store.collection('posts1').document(postId).get().to_dict()
             posts_info.append(post_info)
     # print(posts_info)
-    
+
     pp_url=user_profile_data['pp_url']
     displayName=user_profile_data['display_name']
     return TemplateResponse(request, 'kite/posts-grid.html', {'posts': posts_info,'default':{'pp_url':pp_url,'displayName':displayName}})
  else:return redirect('/')
- 
+
 ######################################################################################################################
 #                                               Intractions                                                          #
 ######################################################################################################################
-
 def likeUserPost(request, targetPostId):
     try:
         claims, decoded_user = validateLogin(request)
     except AuthenticationError as e:
         print(f"Authentication error: {e}")
-        return redirect("/login")
+        return HttpResponse("redirect")
+
     if not claims:
-        return redirect('/login')
+        return HttpResponse("redirect")
+
     if not claims['email_verified']:
-        return redirect('/kite')
+        return HttpResponse("redirect")
+
     else:
         post_query = store.collection('posts1').where('post_id', '==', targetPostId).get()
 
-        if len(post_query)>0:
+        if len(post_query) > 0:
             post_profile = post_query[0]
             post_profile_data = post_profile.to_dict()
 
-            if 'post_id' in post_profile_data and claims['user_id'] in post_profile_data['post_id']:
+            if 'post_id' in post_profile_data:
                 print('User has not liked this post before')
                 document_id = post_profile.id
                 # Retrieve the 'likers' array from the document
-                likers = post_profile.get('likers', [])
+                likers = post_profile.to_dict().get('likes', [])
+                print(f"Likers before update: {likers}")
 
                 if claims['user_id'] in likers:
                     print('User has liked this post before')
                     # Remove the user from the 'likers' array
                     likers.remove(claims['user_id'])
+                    print(f"Likers after removing user: {likers}")
 
                     # Update the 'likers' array in the Firestore document
-                    post_profile.reference.update({'likers': likers})
+                    post_profile.reference.update({'likes': likers})
+                    print('Post likers updated successfully')
 
-                    return HttpResponse('{"state":"like"}')
+                    return HttpResponse('unliked')
                 else:
-                    # TODO Else insert into DataBase
-                    return HttpResponse('{"state":"liked"}')
+                    print()
+                    likers.append(claims['user_id'])
+                    print(f"Likers after appending user: {likers}")
+
+                    # Update the 'likers' array in the Firestore document
+                    post_profile.reference.update({'likes': likers})
+                    print('Post likes updated successfully')
+                    return HttpResponse('liked')
             else:
-                return HttpResponse('{"error":"Invalid post or user"}')
+                print('Invalid post or user')
+                return HttpResponse('posterror')
         else:
-            return HttpResponse('{"error":"Post not found"}')
+            print('Post not found')
+            return HttpResponse('posterror')
 
 from django.http import JsonResponse
 
@@ -461,13 +478,13 @@ def followUserByPublicId(request, publicProfileId):
     if not claims:
         return redirect('/')
     if claims['email_verified']:
-        
+
         print(f"The follow function was called by {claims['name']} for {publicProfileId}")
-        
+
         ourProfileData = store.collection('users1').where('user_id', '==', claims['user_id']).get()
-        
+
         ourPublicProfileId = ourProfileData[0].to_dict().get('publicProfileId')
-        
+
         # theirPublicProfileId = publicProfileId
         # Check if you are trying to follow yourself
         if publicProfileId == ourPublicProfileId:
@@ -476,36 +493,36 @@ def followUserByPublicId(request, publicProfileId):
                         "success": False,
                         "message": "You can't follow yourself!",
                         "data":{
-                            
+
                         }
                     }
             return JsonResponse(response)
         else:
             # Update 'following' for the current user (Staging)
             ourCurrentFollowing = set(ourProfileData[0].to_dict().get('following', [])) #following:[...,...,...]
-            
+
             theirProfileData = store.collection('users1').where('publicProfileId', '==', publicProfileId).get()[0].to_dict()
             theirCurrentFollowers = set(theirProfileData.get('followers', []))
-            
+
             if publicProfileId in ourCurrentFollowing and ourPublicProfileId in theirCurrentFollowers:
                 # If the user is already in the following list, remove them
                 ourCurrentFollowing.remove(publicProfileId)
                 theirCurrentFollowers.remove(ourPublicProfileId)
-                
+
             elif not (publicProfileId in ourCurrentFollowing and ourPublicProfileId in theirCurrentFollowers):
                 # If the user is not in the following list, add them
                 ourCurrentFollowing.add(publicProfileId)
                 theirCurrentFollowers.add(ourPublicProfileId)
             # Here we do the actual update of data.
-            
+
             ourProfileData = store.collection('users1').where('publicProfileId', '==', ourPublicProfileId ).stream()
             for doc in ourProfileData:
                 store.collection('users1').document(doc.id).update({'following': list(ourCurrentFollowing)})
-                
+
             theirProfileData = store.collection('users1').where('publicProfileId', '==', publicProfileId).stream()
             for doc in theirProfileData:
                 store.collection('users1').document(doc.id).update({'followers': list(theirCurrentFollowers)})
-                
+
             response={
                         "success": True,
                         "message": f'You followed/unfollowed {theirCurrentFollowers} ',
@@ -515,19 +532,19 @@ def followUserByPublicId(request, publicProfileId):
                         }
                     }
             return JsonResponse(response)
-        
+
                 ##############             ######################                 ################
             # Update 'followers' for the other user
             # theirProfileData = store.collection('users1').where('publicProfileId', '==', publicProfileId).stream()
             # for doc in theirProfileData:
             #     ourFollowersList = doc.to_dict()
             #     theirCurrentFollowers = set(ourFollowersList.get('followers', []))
-                
+
                 # if ourPublicProfileId in theirCurrentFollowers:
                 #     # If the current user is already in the other person's followers list, remove them
                 #     theirCurrentFollowers.remove(ourPublicProfileId)
                 #     store.collection('users1').document(doc.id).update({'followers': list(theirCurrentFollowers)})
-                    
+
                 #     response={
                 #                 "success": True,
                 #                 "message": f'You unfollowed {theirCurrentFollowers} ',
@@ -560,13 +577,13 @@ def followUserByPublicId(request, publicProfileId):
 #     except AuthenticationError as e:
 #         print(f"Authentication error: {e}")
 #         return redirect("/login")
-    
+
 #     if not claims:
 #         return redirect('/')
-    
+
 #     if claims['email_verified']:
 #         print(f"The follow function was called by {claims['name']} for {publicProfileId}")
-        
+
 #         ours_profile_data = store.collection('users1').where('user_id', '==', claims['user_id']).get()
 #         ourPublicProfileId = ours_profile_data[0].to_dict().get('publicProfileId')
 
@@ -582,7 +599,7 @@ def followUserByPublicId(request, publicProfileId):
 #                 }
 #             }
 #             return JsonResponse(response)
-        
+
 #         ### Update 'following' for the current user (Staging)
 #         ourCurrentFollowing = set(ours_profile_data[0].to_dict().get('following', []))
 
@@ -598,7 +615,7 @@ def followUserByPublicId(request, publicProfileId):
 #             store.collection('users1').document(doc.id).update({'following': list(ourCurrentFollowing)})
 
 #         ### Update 'followers' for the other user
-        
+
 #         # theirProfileData = store.collection('users1').where('publicProfileId', '==', publicProfileId).stream()
 #         # for doc in theirProfileData:
 #         #     ourFollowersList = doc.to_dict()
@@ -635,7 +652,7 @@ def followUserByPublicId(request, publicProfileId):
 #         }
 #         return JsonResponse(response)
 
-    
+
 ######################################################################################################################
 #                                                   Helper Functions                                                 #
 ######################################################################################################################
@@ -650,7 +667,7 @@ def publicKitePGHelper(request, publicProfileId,decoded_user, claims):
         # print(f"11: {user_profile_data[0].to_dict()}")
         # user_info=getUserInfo(decoded_user)
         current_user_profile_data = store.collection('users1').where('user_id', '==', claims['user_id']).get()[0].to_dict()
-        
+
         context = {
             'default':{'pp_url':current_user_profile_data['pp_url'],'display_name':current_user_profile_data['display_name']},# for Base-nav.html
             'current_profile_info':current_user_profile_data,
@@ -658,10 +675,10 @@ def publicKitePGHelper(request, publicProfileId,decoded_user, claims):
             'profile_info': user_profile_data[0].to_dict(),
             'score' : scorify(user_profile_data[0].to_dict()['user_id']),#chonge later to public profile id maybe
         }
-        
+
         return TemplateResponse(request, "kite/kite-public.html", context)
     else:
-        
+
         return redirect('/kite')
 
 
