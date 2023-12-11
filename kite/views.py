@@ -102,6 +102,36 @@ def publicKitePG(request, publicProfileId):
        return publicKitePGHelper(request, publicProfileId,decoded_user,claims)
 
 
+def feedPG(request):
+    # Fetch a single random post
+    claims, decoded_user=validateLogin(request)
+    postss_data = store.collection('posts1').get()
+    posts_data=[]
+    for post_data in postss_data:
+        post_data=post_data.to_dict()
+        posts_data.append(post_data)
+    # print(posts_data)
+   
+    
+    user_profile_data = store.collection('users1').where('user_id', '==', claims['user_id']).get()[0].to_dict()
+    pp_url=user_profile_data['pp_url']
+    displayName=user_profile_data['display_name']
+    
+    context={'posts': posts_data,'default':{'pp_url':pp_url,'displayName':displayName,"claims" : claims }}
+    # print(context)
+    return render(request, 'feed/feed.html',context)
+    # return HttpResponse(render_pythonMarkup('feed/post-card', resources={'posts': post_data, 'default':{'pp_url':pp_url,'displayName':displayName,"claims" : claims }}))
+    
+#########   this will be used to load next post in the future for infinite scrolling.
+# def loadFeedPost(request):
+#     # Fetch a new random post
+#     post_ref = store.collection('posts1').limit(1).get()
+#     post_data = post_ref[0].to_dict()
+
+#     return JsonResponse({
+#         'post': post_data,
+#     })
+
 def loginPG(request):
 
     try:
@@ -322,14 +352,14 @@ def uploadUserPost(request):
         store.collection('posts1').document(postId).set(
             {
                 'public_profile_id': userIdtoPublicId(claims['user_id']),
-                'user_id':{claims['user_id']},# comment this maybe
+                # 'user_id':{claims['user_id']},# comment this maybe
                 'post_url': post_url,
                 'post_id': randomId(),
                 'post_description': postDescription,
                 'likes':[],
-                'liked':[],
+                #'liked':[],
                 'comments':[], #add comments later by using update method in firebase //It should be better to use Array e.g [{name:aman, caption: caption, time: time},{name: so on}] or how'll you name elements of dict for each comments?
-                'added_at': current_time, # TODO IMPORTANT: add a date fetching system from server since users can expliot this!!!
+                'added_at': current_time, # TODO IMPORTANT: add a date fetching system from server users can expliot this!!!
             }
         )
 
@@ -387,6 +417,7 @@ def loadUserPosts(request):
  else:
      return redirect('/')
 
+
 def publicLoadUserPost(request,userIdFromUrl):
  if request.headers.get('X-Requested-With') == 'XMLHttpRequest': # For security so the user can't load their posts separately!
     try:
@@ -405,7 +436,7 @@ def publicLoadUserPost(request,userIdFromUrl):
 
     pp_url=user_profile_data['pp_url']
     displayName=user_profile_data['display_name']
-    return TemplateResponse(request, 'kite/posts-grid.html', {'posts': posts_info,'default':{'pp_url':pp_url,'displayName':displayName}})
+    return HttpResponse(render_pythonMarkup('kite/posts-grid', resources={'posts': posts_info, 'default':{'pp_url':pp_url,'displayName':displayName,"localID" : claims['user_id'] }}))
  else:return redirect('/')
 
 ######################################################################################################################

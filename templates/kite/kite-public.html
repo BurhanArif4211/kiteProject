@@ -426,5 +426,37 @@
             }
         ]
     };
+
+
+        function conditionPop(x){
+            alert(x) //Change with a good looking modal
+        }
+        function posterror(){
+            conditionPop("Post or user not found, it commonly happens when the owner deletes the post")
+        }
+        function redirect(){
+            location.href = "./login"
+        }
+        function unliked(x){
+            x.classList.add("btn-info")
+            x.classList.remove("btn-outline-info")
+            x.innerHTML = x.innerHTML.replace("Downvote",'Upvote')
+            x.innerHTML = x.innerHTML.replace("-down",'-up')
+            count = parseInt(x.innerHTML.match(/[0-9]+/g)[0])
+            x.innerHTML = x.innerHTML.replace(count,count-1)
+        }
+        function liked(x){
+            x.classList.add("btn-outline-info")
+            x.classList.remove("btn-info")
+            x.innerHTML = x.innerHTML.replace("Upvote",'Downvote')
+            x.innerHTML = x.innerHTML.replace("-up",'-down')
+            count = parseInt(x.innerHTML.match(/[0-9]+/g)[0])
+            x.innerHTML = x.innerHTML.replace(count,count+1)
+        }
+        function toggleLike(a){
+            fetch(`/api/like/${a.getAttribute("post-id")}`).then(response => response.text()).then(data => {
+                eval(`${data}(a)`)
+            })
+        }
 </script>
 {% endblock %}

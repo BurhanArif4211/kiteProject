@@ -1,0 +1,11 @@
+from fubam import *
+import random 
+
+def card (post, color):
+   return div({"style":f"background:{color}"},div({},"heloo"))
+colors = ['black','pink','wheat']
+
+HTML = div(card(posts,colors[random.randint(0,2)]))
+HTML += script('''
+               //TODO add script
+               ''')

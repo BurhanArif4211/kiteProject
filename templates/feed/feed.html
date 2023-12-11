@@ -1,0 +1,102 @@
+{% extends 'home/base-nav.html' %}
+{% block content %}
+{% if posts %}
+
+{%for post in posts%}<!-- for now, we fetch and load all posts until on scrol will be built -->
+    <div class="post-card">
+        {{ post.post_id }}
+        <img src='{{ post.post_url }}'>
+    </div>
+    {%endfor%}
+
+{% endif %}
+
+<script>
+
+    //this is example code but does not work
+    // plz bru add on scroll load fetch feature i wasted 3 hours could not do it :((((
+
+//    const postContainer = document.getElementById("post-container");
+//const loader = document.getElementById("loader");
+//
+//let ready = false;
+//let postsLoaded = 0;
+//let totalPosts = 0;
+//let postsArray = [];
+//
+//const count = 30;
+//const apiUrl = "/api/loadfeedpost";
+//
+//// Check if all posts were loaded
+//function postLoaded() {
+//  postsLoaded++;
+//  if (postsLoaded === totalPosts) {
+//    ready = true;
+//    loader.hidden = true;
+//  }
+//}
+//
+//// Helper Function to Set Attributes on DOM Elements
+//function setAttributes(element, attributes) {
+//  for (const key in attributes) {
+//    element.setAttribute(key, attributes[key]);
+//  }
+//}
+//
+//// Create Elements for Posts, add to DOM
+//function displayPosts() {
+//  postsLoaded = 0;
+//  totalPosts = postsArray.length;
+//
+//  // Run function for each object in postsArray
+//  postsArray.forEach((post) => {
+//    // Create post container
+//    const postItem = document.createElement("div");
+//    postItem.className = "post-item";
+//
+//    // Create elements for post content (adjust as needed)
+//    const postDescription = document.createElement("p");
+//    postDescription.textContent = post.post_description;
+//
+//    const postImage = document.createElement("img");
+//    postImage.src = post.post_url;
+//    postImage.alt = "Post Image";
+//
+//    // Add post content to post container
+//    postItem.appendChild(postDescription);
+//    postItem.appendChild(postImage);
+//
+//    // Event Listener, check when each post is finished loading
+//    postItem.addEventListener("load", postLoaded);
+//
+//    // Put post container inside the postContainer Element
+//    postContainer.appendChild(postItem);
+//  });
+//}
+//
+//// Get Posts from API
+//async function getPosts() {
+//  try {
+//    const response = await fetch(apiUrl);
+//    postsArray = await response.json();
+//    displayPosts();
+//  } catch (error) {
+//    // Catch Errors Here
+//  }
+//}
+//
+//// Check to see if scrolling near bottom of page, Load More Posts
+//window.addEventListener("scroll", () => {
+//  if (
+//    window.innerHeight + window.scrollY >= document.body.offsetHeight - 1000 &&
+//    ready
+//  ) {
+//    ready = false;
+//    getPosts();
+//  }
+//});
+//
+//getPosts();
+//
+</script>
+{% endblock %}
