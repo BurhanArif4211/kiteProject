@@ -120,6 +120,7 @@ def feedPG(request):
     context={'posts': posts_data,'default':{'pp_url':pp_url,'displayName':displayName,"claims" : claims }}
     # print(context)
     return render(request, 'feed/feed.html',context)
+
     # return HttpResponse(render_pythonMarkup('feed/post-card', resources={'posts': post_data, 'default':{'pp_url':pp_url,'displayName':displayName,"claims" : claims }}))
     
 #########   this will be used to load next post in the future for infinite scrolling.

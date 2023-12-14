@@ -1,15 +1,77 @@
 {% extends 'home/base-nav.html' %}
 {% block content %}
 {% if posts %}
+<style>
+    .post-column {
+        max-width: 33.33%; /* Adjust the width of the column as needed */
+        margin: auto;
+        background-color: #dfdfdf;/*debug*/
 
-{%for post in posts%}<!-- for now, we fetch and load all posts until on scrol will be built -->
+    }
+</style>
+<link rel="stylesheet" href="/static/css/style-feed.css" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm"></div>
+        <div class="col-sm-12 post-column">
+          {% load info_filters %}
+
+          {%for post in posts%}
+               {% with user_details=post.public_profile_id|get_user_details %}
+               <!-- {{user_details}} -->
+                <div class="card slide1691-post">
+                    <div class="slide1691-postinfo">
+                      <span class="slide1691-text16 float:right"><span>{{post.added_at}}</span></span>
+                      <img src="{{user_details.profile_pic_url}}" alt="Ellipse31220" class="slide1691-ellipse3">
+                      <span class="slide1691-text18">
+                        <span class="slide1691-text19">{{user_details.display_name}}</span>
+                        <span>Followed</span>
+                      </span>
+                      <span class="slide1691-text21"><span>{{user_details.company}}</span></span>
+                      <span class="slide1691-text23">
+                        <span>{{post.post_description}}</span>
+                      </span>
+                      <div class="slide1691-ellipse5"></div>
+                    </div>
+                    <img src="{{ post.post_url }}" alt="postimg1224" class="slide1691-postimg">
+
+                    <div class="slide1691-postinteractions">
+                      <!-- <img src="public/external/rectangle111234-wcok-200h.png" alt="Rectangle111234" class="slide1691-rectangle11"> -->
+                      <div class="slide1691-frame7">
+                        <span class="slide1691-text25"><span class="material-symbols-outlined"></span><span>1K</span></span>
+                        <img src="/static/assets/feed-assets/external/line31246-llp.svg" alt="Line31246" class="slide1691-line3">
+                        <span class="slide1691-text27"><span>466</span></span>
+                        <div class="slide1691-frameiconheart">
+                          <img src="/static/assets/feed-assets/external/vector1236-avsc.svg" alt="Vector1236" class="slide1691-vector2">
+                        </div>
+                        <div class="slide1691-frameiconcommentsquare">
+                          <img src="/static/assets/feed-assets/external/vector1239-33o.svg" alt="Vector1239" class="slide1691-vector3">
+                        </div>
+                        <div class="slide1691-frameiconellipses">
+                          <img src="/static/assets/feed-assets/external/vector1251-54v.svg" alt="Vector1251" class="slide1691-vector4">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  {% endwith %}
+                  {%endfor%}
+            
+        </div>
+        <div class="col-sm"></div>
+
+    </div>
+</div>
+<!-- {%for post in posts%}for now, we fetch and load all posts until on scrol will be built 
     <div class="post-card">
         {{ post.post_id }}
         <img src='{{ post.post_url }}'>
     </div>
     {%endfor%}
 
-{% endif %}
+{% endif %} -->
 
 <script>
 
