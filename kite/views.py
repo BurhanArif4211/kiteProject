@@ -45,6 +45,24 @@ def index(request):
 
 
 
+def feedPG(request):
+    # Fetch a single random post
+    claims, decoded_user=validateLogin(request)
+    postss_data = store.collection('posts1').get()
+    posts_data=[]
+    for post_data in postss_data:
+        post_data=post_data.to_dict()
+        posts_data.append(post_data)
+    # print(posts_data)
+   
+    
+    user_profile_data = store.collection('users1').where('user_id', '==', claims['user_id']).get()[0].to_dict()
+    pp_url=user_profile_data['pp_url']
+    displayName=user_profile_data['display_name']
+    
+    context={'posts': posts_data,'default':{'pp_url':pp_url,'displayName':displayName,"claims" : claims }}
+    # print(context)
+    return render(request, 'feed/feed.html',context)
 def kitePG(request):
 
     try:
@@ -120,7 +138,6 @@ def feedPG(request):
     context={'posts': posts_data,'default':{'pp_url':pp_url,'displayName':displayName,"claims" : claims }}
     # print(context)
     return render(request, 'feed/feed.html',context)
-
     # return HttpResponse(render_pythonMarkup('feed/post-card', resources={'posts': post_data, 'default':{'pp_url':pp_url,'displayName':displayName,"claims" : claims }}))
     
 #########   this will be used to load next post in the future for infinite scrolling.
