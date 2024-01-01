@@ -1,0 +1,308 @@
+/* BASECOLORS 
+   teal : #4BBBAA
+   yellow : #F7B633
+   red : #FA4B16
+*/
+body {
+    overflow: hidden;
+    background: #e8f6fe  url(/static/assets/svg/Scalable-K.svg);
+    background-position: 100% 10%;
+    background-size: 50%;
+    background-repeat: no-repeat;
+}
+
+.home-link {
+    margin-top: 3rem;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+}
+
+.home-logo {
+
+    padding: 2.5rem !important;
+    width: 25rem;
+}
+
+.left>p {
+    font-size: 4rem;
+    font-weight: 500;
+}
+
+.left>span {
+    font-size: 4.8rem;
+    font-weight: 700;
+    display: inline-block;
+    background-image: linear-gradient(to right, #4BBBAA, #F7B633, #FA4B16);
+    -webkit-background-clip: text;
+    text-shadow: 2px 2px 8px #00000008;
+    backface-visibility: hidden;
+    color: transparent;
+}
+
+
+
+@media screen and (max-width:1400px)  {
+    body {
+        background-position: 100% 5%;
+        background-size: 100%;
+
+    }
+    .left {
+        display: none !important;
+    }
+    .msgs-sm{
+        display: block !important;
+    }
+
+    .home-logo {
+        width: 15rem;
+    }
+    #logreg-forms {
+        width: 60rem;
+    }
+    .form-signin form{
+        padding: 0;
+        
+    }
+    .logreg-forms {
+        padding: 2rem;
+    }
+
+    .social-login {
+        display: block;
+        margin: 0 auto;
+        margin-bottom: 10px;
+    }
+
+    #logreg-forms .social-btn {
+        font-size: 1.3rem;
+        font-weight: 400;
+        color: white;
+        width: 200px;
+        height: 2.6rem;
+
+    }
+
+    #logreg-forms .social-btn:nth-child(1) {
+        margin-bottom: 5px;
+    }
+
+    #logreg-forms .social-btn span {
+        display: none;
+    }
+
+    #logreg-forms .facebook-btn:after {
+        content: 'Facebook';
+    }
+
+    #logreg-forms .google-btn:after {
+        content: 'Google';
+    }
+
+}
+@media (max-height: 1080px) {
+    .left {
+        display: none !important;
+    }
+    .msgs-sm{
+        display: block !important;
+    }
+}
+
+@media screen and (max-width:700px) {
+
+    .left {
+        display: none !important;
+    }
+    .msgs-sm{
+        display: block !important;
+    }
+    #logreg-forms {
+        width: 30rem;
+    }
+
+    body {
+        background-position: 100% 45%;
+        width: 100vw;
+        background-size: 150%;
+    }
+
+    
+}
+
+@media screen and (max-width:500px) {
+    body {
+        font-size: 60%;
+        background: none;
+    }
+
+    #logreg-forms form{
+        padding: 2.5rem;
+    }
+}
+
+/* GPT Is the hero */
+
+.password-container {
+    position: relative;
+}
+
+.show-password {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    cursor: pointer;
+    z-index: 2;
+}
+
+.password-container input:focus+.show-password {
+    top: 50%;
+}
+
+/* end */
+
+
+.logreg-forms {
+
+
+    background: #FFF;
+    border-radius: 32px;
+    box-shadow: 0 16px 32px 0 rgba(0, 0, 0, 0.10);
+
+    padding: 64px;
+
+    max-width: 488px;
+    margin: 0 auto;
+
+}
+
+#logreg-forms form {
+    width: 100%;
+    max-width: 410px;
+    padding: 15px;
+    margin: auto;
+}
+
+#logreg-forms .form-control {
+    position: relative;
+    box-sizing: border-box;
+    height: auto;
+    padding: 10px;
+    font-size: 16px;
+}
+
+#logreg-forms .form-control:focus {
+    z-index: 2;
+}
+
+#logreg-forms .form-signin input[type="email"] {
+    margin-bottom: -1px;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+#logreg-forms .form-signin input[type="password"] {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+}
+
+#logreg-forms .social-login {
+    width: 390px;
+    margin: 0 auto;
+    margin-bottom: 14px;
+}
+
+#logreg-forms .social-btn {
+    font-weight: 400;
+    color: white;
+    width: 164px;
+    font-size: 0.9rem;
+}
+
+#logreg-forms a {
+    display: block;
+    padding-top: 10px;
+    color: lightseagreen;
+}
+
+#logreg-form .lines {
+    width: 200px;
+    border: 1px solid red;
+}
+
+#logreg-forms .facebook-btn {
+    background-color: #3C589C;
+    box-shadow:0 16px 22px 0 rgba(0, 0, 0, 0.10);
+}
+
+#logreg-forms .google-button {
+    border: solid 1px rgba(0, 0, 0, 0.05);
+    box-shadow:0 16px 22px 0 rgba(0, 0, 0, 0.10);
+    color: black;
+    background-color:white;
+}
+
+#logreg-forms .form-reset,
+#logreg-forms .form-signup {
+    display: none;
+}
+
+#logreg-forms .form-signup .social-btn {
+    width: 210px;
+}
+
+#logreg-forms .form-signup input {
+    margin-bottom: 2px;
+}
+
+.form-signup .social-login {
+    width: 210px !important;
+    margin: 0 auto;
+}
+
+/* Mobile */
+
+
+
+/*  Alert boxes by amaan  */
+
+#alerts>* {
+    width: 100% !important;
+}
+
+#alerts {
+    width: 100%;
+    position: fixed;
+    top: 12vh;
+}
+
+@media only screen and (min-width: 601px) {
+    #alerts {
+        right: 20px;
+        /* Position to the right on smaller screens */
+        width: auto;
+        min-width: 500px;
+        max-width: calc(100% - 40px);
+        /* Limit maximum width to free space on the right */
+    }
+}
+
+@media only screen and (max-width: 600px) {
+    #alerts {
+        right: 50%;
+        /* Center the element */
+        transform: translateX(50%);
+        /* Centering trick */
+        max-width: 90vw;
+    }
+}
+
+@media only screen and (min-width: 901px) {
+    #alerts {
+        min-width: 800px;
+    }
+}
+
+/*   */

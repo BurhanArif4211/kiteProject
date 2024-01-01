@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        .wide {
+            height: 50px;
+            width: 50px;
+            border: none;
+            font-size: xx-large;
+        }
+
+        #scrollableDiv {
+            height: 500px;
+            overflow-y: scroll;
+            border: 1px solid #ccc;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="scrollableDiv">
+        <p>Aman is such a powerfull man. ...</p>
+    </div>
+
+    <script>
+        callApi()
+        var scrollableDiv = document.getElementById('scrollableDiv');
+
+        scrollableDiv.addEventListener('scroll', function () {
+            if (scrollableDiv.scrollTop + scrollableDiv.clientHeight >= scrollableDiv.scrollHeight) {
+                // Call your API here
+                callApi();
+            }
+        });
+
+        function callApi() {
+            // Replace this with your actual API call
+            fetch('./test')
+                .then(response => response.text())
+                .then(data => {
+                    scrollableDiv.innerHTML += data
+                    // Handle the API response as needed
+                })
+                .catch(error => error);
+                // We are not gonna say that our code stucked don't need to do anything
+        }
+        // You know i hate commenting explore rest on your own
+    </script>
+
+</body>
+
+</html>

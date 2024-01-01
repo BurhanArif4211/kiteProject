@@ -1,0 +1,6 @@
+{% for notification in notifications %}
+<a class="dropdown-item" href="#">
+  <i class="material-icons">{{ notification.type }}</i>
+  {{ notification.message }}
+</a>
+{% endfor %}

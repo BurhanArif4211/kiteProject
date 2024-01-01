@@ -1,5 +1,5 @@
 from django import template
-from kite.views import getUserInfo,getPublicUrl,getProfileInfo
+from kite.routeHandlers.apis import getUserInfo,getPublicUrl,getProfileInfo
 register = template.Library()
 
 @register.filter(name='get_user_details')

@@ -11,17 +11,13 @@ store = firestore.client()
 
 #############################################
 fireConfig = {
-"apiKey" : "AIzaSyDHP6GQhjz0uFtrnuFllumERl-HmGSA9kA",
-    "authDomain" : "potfolio-492d3.firebaseapp.com",
-    "databaseURL" : "https://potfolio-492d3-default-rtdb.asia-southeast1.firebasedatabase.app",
-    "projectId" : "potfolio-492d3",
-    "storageBucket" : "potfolio-492d3.appspot.com",
-    "messagingSenderId" : "1041514184898",
-    "appId" : "1:1041514184898:web:d02a11cc9eac9cd6d7bb5b"
+
 }
 fireApp = firebase.initialize_app(fireConfig)
 # # Firebase Authentication Quota: 50k Active Users
 fireauth = fireApp.auth()
+
+
 # # firestore Quota: 1GB
 # store = fireApp.firestore()
 # # Storage Quota: 5GB
@@ -65,7 +61,7 @@ def validateLogin(request):
             return [claims, decoded_user]
         except auth.ExpiredIdTokenError:
             del request.session['user_data']
-            messages.success(request, ("You were loged out!"))
+            messages.info(request, ("You were loged out!"))
             raise AuthenticationError("Expired ID token")
         except auth.InvalidIdTokenError:
             del request.session['user_data']

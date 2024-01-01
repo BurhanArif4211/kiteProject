@@ -1,3 +1,4 @@
+
 <!-- base-nav.html -->
 
 <!DOCTYPE html>
@@ -6,31 +7,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <link type="text/css" rel="stylesheet" href="/static/css/style-base-nav.css" />
-
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
-        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css"
-        integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
-    <!-- This is added just for message boxes  -->
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-    <!---->
-
+    <link type="text/css" rel="stylesheet" href="/static/css/bootstrap.css" />
+    <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 </head>
-
 <body>
-
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light" style=" border-bottom-right-radius: 50px; border-bottom: 4px #4BBBAA solid;">
         <a class="home-link navbar-brand" href="/"><img src="/static/assets/png/main1-light.png" alt
                 class="home-logo"></a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
             aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav mr-auto">
+        <div class="collapse navbar-collapse " id="navbarNav">
+            <ul class="navbar-nav mr-auto w-100">
                 <li class="nav-item">
                     <a class="nav-link" href="/">Home</a>
                 </li>
@@ -41,30 +32,79 @@
                     <a class="nav-link" href="/feed">Feed</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/search">Find Freelancers</a>
+                    <a class="nav-link" href="/community?src=buy">Find Freelancers</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Find Work</a>
+                    <a class="nav-link" href="/community?src=work">Find Work</a>
                 </li>
 
             </ul>
-            <div class="navbar-nav">
-                {% if not request.path == '/kite/' %}
-                {% if profile_info %}
-                <!-- Show user profile image and displayName if user is logged in -->
-                <a class="nav-item nav-link" href="/kite">
+            
+            <div class="navbar-nav d-flex  justify-content-end w-100"  >
+                {% if "logged_profile_info" in request.session %}
+                <div class="dropdown ">
+                    <button onclick="loadMessagingContent()" class="btn bg-transparent nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      <span class="material-icons">message</span>
+                    </a>
+                    <div class="dropdown-menu" id="messages-box" aria-labelledby="navbarDropdown" style="width:400px; height:100px;background:url('/static/assets/svg/pattren-1-scalable.svg'); background: opacity 0.3;">
+                    </div>
+                    <script>
+                        /// This fetches and loads notifications
+                        function loadMessagingContent() {
+                            fetch('/load/messagebox/',
+                                {
+                                    method: 'GET',
+                                    headers: {
+                                        'X-Requested-With': 'XMLHttpRequest'
+                                    },
+                                })
+                                .then(response => response.text())
+                                .then(html => {
+                                    // Set the modal content
+                                    document.getElementById('messages-box').innerHTML = html;
+                                });
+                        }
+                    </script>
 
-                </a>
+                  </div>
                 <div class="dropdown">
-                    <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
-                        aria-haspopup="true" aria-expanded="false">
-                        <img src="{{default.pp_url}}" alt="Profile Image" class="rounded-circle"
-                            style="width: 30px; height: 30px; margin-right: 5px;">
-                            {{ default.display_name }}
+                    <button onclick="loadNotificationContent()" class="btn bg-transparent nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      <span class="material-icons">notifications</span>
+                    </a>
+                    <div class="dropdown-menu" id="notification-menu" aria-labelledby="navbarDropdown">
+                      
+                    </div>
+                    <script>
+                        /// This fetches and loads notifications
+                        function loadNotificationContent() {
+                            fetch('/load/currentnotifications/',
+                                {
+                                    method: 'GET',
+                                    headers: {
+                                        'X-Requested-With': 'XMLHttpRequest'
+                                    },
+                                })
+                                .then(response => response.text())
+                                .then(html => {
+                                    // Set the modal content
+                                    document.getElementById('notification-menu').innerHTML = html;
+                                   
+                                });
+                        }
+                    </script>
+
+                  </div>
+                <div class="dropdown">
+                    <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"aria-haspopup="true" aria-expanded="false">
+                        
+                        <img src="{{request.session.logged_profile_info.pp_url}}" alt="Profile Image" class="rounded-circle"
+                        style="width: 30px; height: 30px; margin-right: 5px;">
+                        {{ request.session.logged_profile_info.display_name }}
+
                     </button>
+
                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                         <a class="dropdown-item" href="/kite">View Kite</a>
-                        <a class="dropdown-item" href="#">Notifications</a>
                         <a class="dropdown-item">
                             <form method="POST" action="/api/logout">
                                 {% csrf_token %}
@@ -78,7 +118,6 @@
                 <a class="btn btn-login nav-item nav-link " style="background-color:#4BBBAA ; color:white;"
                     href="/login">Login</a>
                 {% endif %}
-                {%endif%}
             </div>
         </div>
     </nav>
@@ -94,21 +133,10 @@
     {% endblock %}
 
     <!-- for modal and others -->
-
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
-        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
-        crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
-        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
-        crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
-        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
-        crossorigin="anonymous"></script>
-<style>
-    [class-type="died"]:hover{
-        border: none;
-    }
-</style>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script src="/static/js/bootstrap.js"></script>
+    
 </body>
 
 </html>

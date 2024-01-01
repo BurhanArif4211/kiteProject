@@ -1,0 +1,111 @@
+import json
+from fubam import *
+
+
+def pack(package,packid):
+  
+    print(package)
+    return div({"class": "columns"},
+               
+               ul({"class": "price"},
+                  
+                  li({"class": "header"}, package.get("name")),
+                  li({"class": "grey"}, package.get("Description")),
+                  *[(li({"class": ""}, f"{key}: {value}") if key not in ["Price",
+                     "name", "Description"] else "") for key, value in package.items()],
+                  li({"class": "grey"}, package.get("Price")),
+                  li(
+                   form(
+                       {'action':'/services/chosen/'},
+                       inp(
+                        {"type":"hidden","value":f"{packid}:{package.get('name')}","name":"circuit"}
+                       ),
+                       button(
+                           {"class": "btn btn-info", "type": "submit"},
+                           "Select"
+                       )
+                   )
+               )
+    )
+    )
+
+
+jjdata = json.loads(jdata[0][2])
+data = jjdata
+packid = jdata[0][0]
+HTML = html(
+    [div(div(h1(json.loads(data[2])["services"]),textarea(json.loads(data[2])["desc"])),[pack(item,data[0]) for item in json.loads(data[2])["packages"]],
+    div(
+        strong("Tags "),
+        [span({"style": 'background-color:purple;border-radius:10px;'}, da)
+         for da in json.loads(data[2])["tags"]]
+    )) for data in jdata],
+    '''
+<style>
+* {
+  box-sizing: border-box;
+}
+
+/* Create three columns of equal width */
+.columns {
+  float: left;
+  width: 33.3%;
+  padding: 8px;
+}
+
+/* Style the list */
+.price {
+  list-style-type: none;
+  border: 1px solid #eee;
+  margin: 0;
+  padding: 0;
+  -webkit-transition: 0.3s;
+  transition: 0.3s;
+}
+
+/* Add shadows on hover */
+.price:hover {
+  box-shadow: 0 8px 12px 0 rgba(0, 0, 0, 0.2)
+}
+
+/* Pricing header */
+.price .header {
+  background-color: #111;
+  color: white;
+  font-size: 25px;
+}
+
+/* List items */
+.price li {
+  border-bottom: 1px solid #eee;
+  padding: 20px;
+  text-align: center;
+}
+
+/* Grey list item */
+.price .grey {
+  background-color: #eee;
+  font-size: 20px;
+}
+
+/* The "Sign Up" button */
+.button {
+  background-color: #04AA6D;
+  border: none;
+  color: white;
+  padding: 10px 25px;
+  text-align: center;
+  text-decoration: none;
+  font-size: 18px;
+}
+
+/* Change the width of the three columns to 100%
+(to stack horizontally on small screens) */
+@media only screen and (max-width: 600px) {
+  .columns {
+    width: 100%;
+  }
+}
+</style>
+'''
+)

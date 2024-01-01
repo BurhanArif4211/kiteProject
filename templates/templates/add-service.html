@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css"
+        integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+</head>
+
+<body>
+
+    <div class="container pt-5 my-auto">
+
+        <span class="h1">Name your service <input id="sname" type="text" value="Service name"> </span>
+        <br><span class="h3">About your service</span><textarea id="desc" cols="30" rows="2"
+            class="form-control"></textarea>
+        <div>
+            <table class="table" id="table">
+                <thead>
+                    <tr>
+                        <th>Packages</th>
+                        <th contenteditable="true">Basic</th>
+                        <th contenteditable="true">Premium</th>
+                        <th contenteditable="true">Enterprize</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td> <span>Description</span></td>
+                        <td contenteditable="true">Desc.</td>
+                        <td contenteditable="true">Desc.</td>
+                        <td contenteditable="true">Desc.</td>
+                    </tr>
+                    <tr>
+                        <td> <span>Price</span></td>
+                        <td contenteditable="true">$20</td>
+                        <td contenteditable="true">$35</td>
+                        <td contenteditable="true">$50</td>
+                    </tr>
+                    <tr>
+                        <td> <button type="button" class="btn btn-danger"
+                                onclick="this.closest('tr').remove()">x</button> <span contenteditable="">No of
+                                imgs</span></td>
+                        <td contenteditable="true">1</td>
+                        <td contenteditable="true">4</td>
+                        <td contenteditable="true">5</td>
+                    </tr>
+                    <tr>
+                        <td> <button type="button" class="btn btn-danger"
+                                onclick="this.closest('tr').remove()">x</button> <span contenteditable="">No of
+                                imgs</span></td>
+                        <td contenteditable="true">1</td>
+                        <td contenteditable="true">4</td>
+                        <td contenteditable="true">5</td>
+                    </tr>
+                    <tr>
+                        <td> <button type="button" class="btn btn-danger"
+                                onclick="this.closest('tr').remove()">x</button> <span contenteditable="">No of
+                                imgs</span></td>
+                        <td contenteditable="true">1</td>
+                        <td contenteditable="true">4</td>
+                        <td contenteditable="true">5</td>
+                    </tr>
+                    <button type="button" onclick="addIn(this)" class="btn btn-outline-info"> <span
+                            class="badge badge-info rounded-pill">+</span> Add thing</button>
+                </tbody>
+            </table>
+            <div class="tags">
+                {% csrf_token %}
+                <span>Add comma seprated tags.</span>
+                <input id="tags" type="text" value="">
+            </div>
+        </div>
+
+        <button onclick="done(this);" class="btn-success btn">Save</button>
+
+        <script>
+            var f;
+            function hF(x) {
+                console.log(x);
+                arr = [x[1].innerText, x[2].innerText, x[3].innerText]
+                return arr
+            }
+
+            function popF(x) {
+                console.log(x);
+                if (x && x.length > 0) {
+                    const val = x[0].getElementsByTagName("span")[0].innerText;
+                    const arr = [x[1].innerText, x[2].innerText, x[3].innerText];
+                    return [val, arr]
+                } else {
+                    console.error("Invalid input for popF");
+                    return null;
+                }
+            }
+
+            function g(x) {
+                return document.getElementById(x)
+            }
+            function save() {
+                const service = g("sname").value;
+                const table = g("table");
+                const tags = g("tags").value;
+                var json = "{"
+                json += '"services":"' + service + '",\n';
+                json += '"desc":"' + g("desc").value + '",\n';
+                f = [];
+                for (var tr of Array.from(table.querySelectorAll("tbody tr"))) {
+                    f.push(popF(Array.from(tr.getElementsByTagName("td"))))
+                }
+                json += '"packages":['
+                var i = 0
+                const he = hF(Array.from(table.getElementsByTagName("th")))
+                console.log(he);
+                for (var header of he) {
+                    console.log(header);
+                    json += '{';
+                    json += '"name":"' + header + '",\n';
+                    console.log(f)
+                    for (const fs of f) {
+                        json += '"' + fs[0] + '":"' + fs[1][i] + '",\n';
+                    }
+                    json = json.slice(0, -2);  // Remove the trailing comma and newline
+                    json += '},'
+                    i++
+                }
+                json = json.slice(0, -1);  // Remove the trailing comma
+                json += '],'
+                json += '"tags":"' + tags + '"\n}';
+                return json;
+            }
+            function done(d) {
+                // Check if the tags input has a value
+                if (g("tags").value.trim() !== "", g("desc").value.trim() !== "", g("sname").value.trim() !== "") {
+                    if (confirm("Save the service")) {
+                        d.remove()
+                        var csrf_token = document.querySelector('[name=csrfmiddlewaretoken]').value;
+                        fetch('{% url 'serviceapi' %}', {
+                            method: "POST",
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRFToken': csrf_token,
+                            }, body: JSON.stringify({
+                                json: save(),
+                            }),
+
+                        },
+                        ).then(response => response.json()).then(
+                            data => {
+                                console.log(data);
+                                if (data.state == 0) {
+                                    console.log("this block");
+                                    document.write(data.msg)
+                                }
+                                else if (data.state == -1) {
+                                    location.href = data.msg
+                                }
+                                else {
+                                    alert(data.msg)
+                                }
+                            }
+                        )
+                    }
+                } else {
+                    alert("Please complete the form before saving.");
+                }
+            }
+        </script>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+            integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+            crossorigin="anonymous"></script>
+        <script>
+            function addIn(a) {
+                // Create a new row element
+                var newRow = document.createElement("tr");
+
+                // Add the row content
+                newRow.innerHTML = `
+                <tr>
+                        <td> <button type="button" class="btn btn-danger"
+                                onclick="this.closest('tr').remove()">x</button> <span contenteditable="">No of imgs</span></td>
+                        <td contenteditable="true">1</td>
+                        <td contenteditable="true">4</td>
+                        <td contenteditable="true">5</td>
+                    </tr>
+        `;
+
+                // Get the tbody element
+                var tbody = a.closest('div').querySelector('tbody');
+
+                // Append the new row to the tbody
+                tbody.appendChild(newRow);
+            }
+        </script>
+
+        <script src="../static/js/profile-form.js"></script>
+</body>
+
+</html>

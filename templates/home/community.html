@@ -1,0 +1,172 @@
+{% extends 'home/base-nav.html' %}
+
+{% block content %}
+<head>
+    <title>Kite | {{ profile_info.display_name }}</title>
+    <link type="text/css" rel="stylesheet"
+        href="/static/css/style-kite-main.css" />
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<section class="h-100">
+    <div class="container-fluid py-5 h-100">
+        <div class="row d-flex justify-content-center align-items-center h-100">
+            <div class="col col-lg-9 col-xl-11">
+                <center class="mb-5">
+                    <h1 class="display-3 pb-2">Meet the attendents</h1>
+                    <form action="" class="searchform mb-3"><input type="text" placeholder="Find someone"><button><i class="fa fa-search"></i></button></form>
+                    <div class="row-c">
+                      <div class="card-c">
+                        <svg class="bd-placeholder-img rounded-circle" width="140" height="140" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: " preserveAspectRatio="xMidYMid slice" focusable="false">
+                          <title></title>
+                          <rect width="100%" height="100%" fill="#ffe006"></rect><text x="50%" y="50%" fill="#777" dy=".3em"></text>
+                        </svg><br>
+                        <h2 class="fw-normal">Aman Ali</h2>
+                      </div><!-- /.col-lg-4 -->
+                      {% for user in userList %}                        
+                      <div class="card-c">
+                          <img src="{{user.pp_url}}" alt=""><br>
+                          <h2 class="fw-normal"></h2>
+                        </div>
+                        {% endfor %}
+                    </div>
+                  </center>
+                  <div class="service-container container" style="max-width:700px;">
+                    <center>
+
+                        <h1 class="display-3 pb-2">Find services</h1>
+                        <form action="" class="searchform mb-3"><input type="text" placeholder="Find services"><button><i class="fa fa-search"></i></button></form>
+                    </center>
+                        <div class="row service">
+                            <div class="col-md-6"><img class="service" src="../../static/assets/jpg/default.jpg" alt=""><h2>Name</h2></div>
+                            <div class="col-md-6"><div class="server"><img src="" alt="" class="server"><strong>user name</strong></div>
+                        <div class="protocol">
+                            <h6>
+                                About
+                            </h6>
+                            <p>Lorem ipsum dolor amet consectetur, adipisicing elit. Et sint vero alias. Quisquam dicta recusandae dolore, quo molestias harum suscipit optio nihil fuga. Aspernatur, dolorem aliquid. Obcaecati eum laborum blanditiis.</p>
+                            <h5>Starting from $20</h5>
+                        </div>
+                        </div>
+                        </div>
+                    </div>
+            </div>
+        </div>
+</section>
+<script>
+
+    const config = {
+        type: 'doughnut',
+        data: data,
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'top',
+                },
+                title: {
+                    display: true,
+                    text: 'Chart.js Doughnut Chart'
+                }
+            }
+        },
+    };
+    const DATA_COUNT = 5;
+    const NUMBER_CFG = { count: DATA_COUNT, min: 0, max: 100 };
+
+    const data = {
+        labels: ['Red', 'Orange', 'Yellow', 'Green', 'Blue'],
+        datasets: [
+            {
+                label: 'Dataset 1',
+                data: Utils.numbers(NUMBER_CFG),
+                backgroundColor: Object.values(Utils.CHART_COLORS),
+            }
+        ]
+    };
+
+
+        function conditionPop(x){
+            alert(x) //Change with a good looking modal
+        }
+        function posterror(){
+            conditionPop("Post or user not found, it commonly happens when the owner deletes the post")
+        }
+        function redirect(){
+            location.href = "./login"
+        }
+        function unliked(x){
+            x.classList.add("btn-info")
+            x.classList.remove("btn-outline-info")
+            x.innerHTML = x.innerHTML.replace("Downvote",'Upvote')
+            x.innerHTML = x.innerHTML.replace("-down",'-up')
+            count = parseInt(x.innerHTML.match(/[0-9]+/g)[0])
+            x.innerHTML = x.innerHTML.replace(count,count-1)
+        }
+        function liked(x){
+            x.classList.add("btn-outline-info")
+            x.classList.remove("btn-info")
+            x.innerHTML = x.innerHTML.replace("Upvote",'Downvote')
+            x.innerHTML = x.innerHTML.replace("-up",'-down')
+            count = parseInt(x.innerHTML.match(/[0-9]+/g)[0])
+            x.innerHTML = x.innerHTML.replace(count,count+1)
+        }
+        function toggleLike(a){
+            fetch(`/api/like/${a.getAttribute("post-id")}`).then(response => response.text()).then(data => {
+                eval(`${data}(a)`)
+            })
+        }
+</script>
+<style>
+    .service .server>strong{
+        padding-left: 10px;
+    }
+    .service .server{
+        width: inherit !important;
+        padding: 5px;
+    }
+    .service .server img{
+        width: 50px !important;
+        height: 50px !important;
+    }
+    .service div{
+        border:  2px solid black;
+    }
+    .service img.service{
+        width: 100% !important;
+        height: 200px;
+    }
+    .searchform *:not(.fa){
+        padding: 3px;
+        border: 2px solid black;
+    }
+    .searchform{
+        max-width: 400px;
+        min-width: 40px;
+        height: 40px;
+        display: flex;
+    }
+    .searchform input{
+        width:90%;
+        height: 100% !important;
+        border-top-left-radius: 10px !important;
+        border-bottom-left-radius: 10px !important;
+    }
+    .searchform button{
+        width:10%;
+        background-color: #f7b633;
+        height: 100% !important;
+        border-top-right-radius: 10px !important;
+        border-bottom-right-radius: 10px !important;
+     }
+     .row-c{
+        width: 100%;
+        display: flex;
+        justify-content: space-evenly;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+     }
+     .row-c > .card-c{
+        width: 200px;
+     }
+</style>
+{% endblock %}

@@ -18,3 +18,8 @@ def render_component(path,resources={}):
 
     result = file_namespace.get('HTML')
     return result
+
+def render_jinjaly(file_content,resources={}):
+    file_namespace = resources
+    exec(file_content, file_namespace)
+    return file_namespace.get('HTML')

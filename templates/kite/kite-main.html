@@ -3,465 +3,392 @@
 {% block content %}
 
 <head>
-
-    <title>My Kite | {{ profile_info.display_name }}</title>
+    <title>Kite | {{ profile_info.display_name }}</title>
     <link type="text/css" rel="stylesheet" href="/static/css/style-kite-main.css" />
+    <link type="text/css" rel="stylesheet" href="/static/css/bootstrap.css" />
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     {% load static %}
 </head>
+
 <section class="h-100">
-    <div class="container-fluid py-5 h-100">
+    <div class="container-fluid h-100">
         <div class="row d-flex justify-content-center align-items-center h-100">
             <div class="col col-lg-9 col-xl-11">
                 <div class="card">
-                    <div>
-                        <div class="d-flex border-- binded-- mb-4">
-                            <div class="col-md-4">
-                                <form class method="POST" action="/api/logout">
-                                    {% csrf_token %}
-                                    <button style="color:black;" class="btn btn-outline-light float-end btn-logout"
-                                        type="submit"><i class="fas fa-user-plus"></i>logout</button>
-                                </form>
-                                <center>
+                    <div class="col">
+                        <div class="profile-pic">
+                            <label class="-label rounded-circle " for="pp-input">
+                                <span class="glyphicon glyphicon-camera"></span>
+                                <span><i class="material-icons">camera</i></span>
+                            </label>
+                            <input id="pp-input" name="profilePicture" type="file" />
+                            <img class="rounded-circle mx-auto d-block " src="{{ profile_info.pp_url }}" alt="user pp"
+                                id="profilePicture" />
+                        </div>
+                        <h1 class="strong p-3 mb-1 text-center">{{profile_info.display_name }}</h1>
+                        <!-- <p class="h2">Community</p> -->
 
-                                    <div style="width: 50%;">
-                                        <img propimg src="{{ profile_info.pp_url }}" alt="user pp" id="profile-picture">
-                                    </div>
-                                    <div style="width: 50%;position: absolute;left: 50%;top: 0%;transform: translate(-50%, 0%);height:50%;" class="overlay-post" id="overlay-post">
-                                        <form enctype="multipart/form-data" id="change-profile-pic" method="post"
-                                            action="/api/uploaduserpic">
-                                            {% csrf_token %}
-                                            <label for="pp-input" class="camera-icon">
-                                                <i class="fas fa-camera pp-form-icon"></i>
-                                                <div class="pp-hover-text">Change</div>
-                                            </label>
-                                            <input name="pp" type="file" id="pp-input" style="
-                                              all: unset;
-                                              display: none;
-                                            ">
-                                        </form>
-                                    </div>
-                                    <p class="h2">Community</p>
-                                </center>
-                                <div class="d-flex mt-5" style="flex-direction: row;justify-content: space-around;">
-                                    <div class="d-flex" style="flex-direction: column;">
-                                        <p class=""><i class="fa fa-trophy"></i> Total Score</p>
-                                        <p class=""><i class="fa fa-medal"></i> Rank</p>
-                                        <p class=""><i class="fa fa-users"></i> Followers</p>
-                                        <p class=""><i class="fa fa-user-friends"></i> Following</p>
-                                        <p class=""><i class="fa fa-newspaper"></i> Posts</p>
-                                    </div>
-                                    <div class="d-flex" style="flex-direction: column;">
-                                        <p>{{score.total}}</p>
-                                        <p>{{1}}</p>
-                                        <p>{{profile_info.followers | length}}</p>
-                                        <p>{{profile_info.following | length}}</p>
-                                        <p>{{profile_info.posts | length}}</p>
-                                    </div>
-                                </div>
+                        <div class="d-flex mt-5  " style="flex-direction: row;justify-content: space-around;">
+
+                            <div class="d-flex fs-5 " style="flex-direction: column;">
+                                <p class="strong"><i class="material-icons">sports_score</i>
+                                    Total Score</p>
+                                <p class="strong"><i class="material-icons">emoji_events</i>
+                                    Rank</p>
+                                <p class="strong"><i class="material-icons">group</i>
+                                    Followers</p>
+                                <p class="strong"><i class="material-icons">group</i>
+                                    Following</p>
+                                <p class="strong"><i class="material-icons">article</i>
+                                    Posts</p>
                             </div>
-                            <div class="col-md-8 p-4">
-                                <h1>{{ profile_info.display_name }}</h1>
-                                <h2>About</h2>
-                                <table class="table table-borderless">
-                                    <thead>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td><i class="fa fa-puzzle-piece"></i> Niche</td>
-                                            <td>
-                                                {% for niche in niches %}
-                                                <span class="badge m-1 text-white" style="background:#4bbbaa;">{{niche}}</span>
-                                                {% endfor %}
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td><i class="fas fa-map-marker-alt"></i>
-                                                Location</td>
-                                            <td>{{profile_info.city}} city of {{profile_info.country}}</td>
-                                        </tr>
-                                        <tr>
-                                            <td><i class="fa fa-building"></i> Belongs to</td>
-                                            <td>{{profile_info.company}}</td>
-                                        </tr>
-                                        <tr>
-                                            <td><i class="fa fa-link"></i> Contacts</td>
-                                            <td>
-                                                {% for link in urls %}
-                                                <a href="{{ link.1 }}" style="text-transform:capitalize;"><i
-                                                        class="fab fa-{{ link.0 }}"></i> {{ link.0 }}</a><br>
-                                                {% endfor %}
-
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-
-                                <blockquote class="blockquote">
-                                    <p class="mb-0">{{profile_info.about}}</p>
-                                </blockquote>
-                                <div class="d-lg-flex mt-sm-0 text-left">
-                                    <button type="button" class="btn btn-outline-dark mt-1 py-2 px-1  p-md-1"
-                                        onclick="loadModalContent()" data-toggle="modal" data-target="#uploadPostModal">
-                                        Upload Post
-                                    </button>
-                                    <button type="button" class="btn btn-outline-dark mt-1 py-2 px-1 mr-md-1 p-md-1 mx-md-2"
-                                        data-mdb-ripple-color="dark" style="z-index: 1;">
-                                        Edit profile
-                                    </button>
-                                    <div id="modal-container"></div>
-                                </div>
-                                <script>
-                                function loadModalContent() {
-                                    fetch('/uploadpost',
-                                        {
-                                            method: 'GET',
-                                            headers: {
-                                                'X-Requested-With': 'XMLHttpRequest'
-                                            },
-                                        })
-                                        .then(response => response.text())
-                                        .then(html => {
-                                            // Set the modal content
-                                            document.getElementById('modal-container').innerHTML = html;
-                                            // Show the modal
-                                            $('#uploadPostModal').modal('show');
-                                        });
-                                }</script>
-                                <!-- add buttons -->
+                            <div class="d-flex fs-5" style="flex-direction: column;">
+                                <p class="strong">{{score.total}}</p>
+                                <p class="strong">{{1}}</p>
+                                <p class="strong" id="follower-count">{{profile_info.followers| length}}</p>
+                                <p class="strong">{{profile_info.following |length}}</p>
+                                <p class="strong">{{profile_info.posts |length}}</p>
                             </div>
                         </div>
-                        <!-- Tab links -->
-                        <div class="tab">
-                            <button class="tablinks" onclick="openTab(event, 'Posts')">Posts</button>
-                            <button class="tablinks" onclick="openTab(event, 'Stats')">Stats</button>
-                            <button class="tablinks" onclick="openTab(event, 'Services')">Services</button>
-                            <button class="tablinks" onclick="openTab(event, 'Match')">Match</button>
-                            <button class="tablinks" onclick="openTab(event, 'Eu')">Interactions</button>
-                        </div>
+                    </div>
 
-                        <!-- Tab content -->
-                        <div id="Posts" class="tabcontent">
-                            <h3>Posts</h3>
-                            <div id="post-grid-container"></div>
+                    <blockquote class="blockquote text-center fw-bolder ">
+                        <p class="p-1 strong mb-0">{{profile_info.about}}</p>
+                    </blockquote>
 
-                        </div>
+                    <div class="d-lg-flex p-1 mt-sm-0 text-center">
+                        <button type="button" class="btn btn-outline-dark rounded-5 mt-1 py-2"
+                            onclick="loadUploadModalContent()" data-toggle="modal" data-target="#uploadPostModal">
+                            <span>+</span>Upload Post
+                        </button>
+                        <button type="button" class="btn btn-outline-dark rounded-5 mt-1 py-2 mr-md-3 "
+                            data-mdb-ripple-color="dark" style="z-index: 1;">
+                            Edit profile
+                        </button>
+                    </div>
+                    <div id="modal-container"></div>
 
-                        <div id="Stats" class="tabcontent">
-                            <h3>Stats</h3>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <center>
-                                        <h4>Total score distribution</h4>
-                                        <h3>Score {{ score.total }}</h3>
-                                        <canvas id="stats" width="400" height="400"></canvas>
-                                    </center>
-                                    </div>
-                                <div class="col-md-6"></div>
-                            </div>
-
-                            <script>
-                                document.addEventListener('DOMContentLoaded', function () {
-                                    // Get the canvas element by ID
-                                    var ctx = document.getElementById('stats').getContext('2d');
-
-                                    var data = {
-                                        labels: ['Total likes', 'Total follows', 'Total comments', /*'Special privilege',*/ 'Activities'],
-                                        datasets: [{
-                                            data: [ {{score.likes}} , {{score.follows}}, {{score.comments}}, {{score.activity}}], // Adjust these values as needed
-                                            backgroundColor: ['#4bbbaa', '#f7b633', '#fa4b16' ,'crimson'],
-                                            hoverBackgroundColor: ['#4bbbaa', '#f7b633', '#fa4b16' ,'crimson'],
-                                        }]
-                                    };
-
-                                    // Doughnut chart options
-                                    var options = {
-                                        responsive: true,
-                                        maintainAspectRatio: true, // Set to false to allow custom size via canvas attributes
-                                    };
-
-                                    // Create the Doughnut chart
-                                    var myDoughnutChart = new Chart(ctx, {
-                                        type: 'doughnut',
-                                        data: data,
-                                        options: options
-                                    });
-                                    // var myDoughnutChart2 = new Chart(ctx, {
-                                    //     type: 'doughnut',
-                                    //     data: data2,
-                                    //     options: options
-                                    // });
-                                });
-
-                            </script>
-                        </div>
-
-                        <div id="Services" class="tabcontent">
-                            <h3>Tokyo</h3>
-                            <p>Tokyo is the capital of Japan.</p>
-                        </div>
-                        <div id="Match" class="tabcontent">
-                            <h3>Tokyo</h3>
-                            <p>Tokyo is the capital of Japan.</p>
-                        </div>
-                        <div id="Eu" class="tabcontent">
-                            {% load info_filters %}
-                            <!-- <h3>Engaged with</h3> -->
-                            <h3>Following:</h3>
-                            <ul class="list-group list-group-flush">
-                                {% for following in profile_info.following %}
-                                <li class="list-group-item">
-                                    <a href='/kites/{{following}}' onclick="">
-                                        {% with user_details=following|get_user_details %}
-                                            {% if user_details %}
-                                                <img style="max-width: 100px;  max-height: 100px; object-fit: cover;" src="{{ user_details.profile_pic_url }}" alt="{{ user_details.display_name }}">
-                                                {{ user_details.display_name }}
-                                            {% else %}
-                                                User not found
-                                            {% endif %}
-                                        {% endwith %}
-                                    </a>
-                                </li>
-                                {% endfor %}
-                            </ul>
-                            <h3>Followers</h3>
-                            <ul class="list-group list-group-flush">
-                                {% for follower in profile_info.followers %}
-                                <li class="list-group-item">
-                                    <a href='/kites/{{follower}}' onclick="">
-                                        {% with user_details=follower|get_user_details %}
-                                            {% if user_details %}
-                                                <img style="max-width: 100px;  max-height: 100px; object-fit: cover;" src="{{ user_details.profile_pic_url }}" alt="{{ user_details.display_name }}">
-                                                {{ user_details.display_name }}
-                                            {% else %}
-                                                User not found
-                                            {% endif %}
-                                        {% endwith %}
-                                    </a>
-                                </li>
-                                {% endfor %}
-                            </ul>
-                        </div>
-                        <style>
-                            /* Style the tab */
-                            .tab {
-                                padding: 0px 3px;
-                                overflow: hidden;
-                            }
-
-                            /* Style the buttons that are used to open the tab content */
-                            .tab button {
-                                margin-top: 2px;
-                                margin-bottom: 2px;
-                                border-radius: 10px;
-                                background-color: inherit;
-                                float: left;
-                                border: none;
-                                outline: none;
-                                cursor: pointer;
-                                padding: 8px 12px;
-                                transition: 0.3s;
-                            }
-
-                            /* Change background color of buttons on hover */
-                            .tab button:hover {
-                                margin-top: 2px;
-                                margin-bottom: 2px;
-                                border-radius: 10px;
-                            }
-
-                            /* Create an active/current tablink class */
-                            .tab button.active {
-                                box-shadow: 0px 0px 2px black;
-                            }
-
-                            /* Style the tab content */
-                            .tabcontent {
-                                display: none;
-                                margin-top: 10px;
-                                padding: 6px 12px;
-                                border: 1px solid #ccc;
-                                border-top: none;
-                            }
-                        </style>
-                        <script>
-                            function openTab(evt, tabname) {
-                                // Declare all variables
-                                var i, tabcontent, tablinks;
-
-                                // Get all elements with class="tabcontent" and hide them
-                                tabcontent = document.getElementsByClassName("tabcontent");
-                                for (i = 0; i < tabcontent.length; i++) {
-                                    tabcontent[i].style.display = "none";
-                                }
-
-                                // Get all elements with class="tablinks" and remove the class "active"
-                                tablinks = document.getElementsByClassName("tablinks");
-                                for (i = 0; i < tablinks.length; i++) {
-                                    tablinks[i].className = tablinks[i].className.replace(" active", "");
-                                }
-
-                                // Show the current tab, and add an "active" class to the button that opened the tab
-                                document.getElementById(tabname).style.display = "block";
-                                evt.currentTarget.className += " active";
-                            }
-                            openTab(event, 'Posts')
-                        </script>
-                        <!--
-                                 <form enctype="multipart/form-data" id="change-profile-pic" method="post"
-                                            action="/api/uploaduserpic">
-                                            {% csrf_token %}
-                                            <label for="pp-input" class="camera-icon">
-                                                <i class="fas fa-camera pp-form-icon"></i>
-                                                <div class="pp-hover-text">Change Profile Pic</div>
-                                            </label>
-                                            <input name="pp" type="file" id="pp-input" style="
-                                              all: unset;
-                                              display: none;
-                                            ">
-                                        </form>
-                            <form class method="POST" action="/api/logout">
-                                {% csrf_token %}
-                                <button style="color: white;" class="btn btn-outline-light float-end btn-logout"
-                                    type="submit"><i class="fas fa-user-plus"></i>logout</button>
-                            </form>
- -->
-
-                        <script>
-                            // Fetch and load the post grid component asynchronously
-                            fetch('/api/loaduserposts', {
-                                method: 'GET',
-                                headers: {
-                                    'X-Requested-With': 'XMLHttpRequest'
-                                },
-                            })
+                    <script>
+                        /// This fetches and loads a modal for uploading a new post
+                        function loadUploadModalContent() {
+                            fetch('/uploadpost',
+                                {
+                                    method: 'GET',
+                                    headers: {
+                                        'X-Requested-With': 'XMLHttpRequest'
+                                    },
+                                })
                                 .then(response => response.text())
                                 .then(html => {
-                                    document.getElementById('post-grid-container').innerHTML = html;
+                                    // Set the modal content
+                                    document.getElementById('modal-container').innerHTML = html;
+                                    // Show the modal
+                                    $('#uploadPostModal').modal('show');
                                 });
-                            // Function to fetch and load the modal content asynchronously
-                            function loadModalContent() {
-                                fetch('/uploadpost',
-                                    {
-                                        method: 'GET',
-                                        headers: {
-                                            'X-Requested-With': 'XMLHttpRequest'
-                                        },
-                                    })
-                                    .then(response => response.text())
-                                    .then(html => {
-                                        // Set the modal content
-                                        document.getElementById('modal-container').innerHTML = html;
-                                        // Show the modal
-                                        $('#uploadPostModal').modal('show');
-                                    });
-                            }
-                            document.getElementById('pp-input').addEventListener('change', function () {
-                                document.getElementById('change-profile-pic').submit();
-                            });
-                        </script>
-                        <script>
-                            function commentToggle(a) {
-                                console.log(a.closest(".card").getElementsByClassName('comment-box')[0].toggleAttribute("hidden"))
-                            }
-                        </script>
+                        }
+                    </script>
+
+                    <!-- Tab links -->
+                    <div class="tab">
+                        <button class="tablinks" onclick="openTab(event, 'Posts')">Posts</button>
+                        <button class="tablinks" onclick="openTab(event, 'Stats')">Stats</button>
+                        <button class="tablinks" onclick="loadService(); openTab(event, 'Services')">Services</button>
+                        <button class="tablinks" onclick="openTab(event, 'Match')">Match</button>
+                        <button class="tablinks" onclick="openTab(event, 'Eu')">Interactions</button>
+                        <button class="tablinks" onclick="openTab(event, 'About')">About</button>
+
                     </div>
+
+                    <!-- Tab content -->
+                    <div id="Posts" class="tabcontent">
+                        <h3>Posts</h3>
+                        <div id="post-grid-container">
+                            <!-- ### So the peoples think that somethings is going to happen and maintain UX  and UI ### -->
+                            <style>
+                                [preload] * {
+                                    background-color: gray;
+                                    color: transparent !important;
+                                    user-select: none;
+                                    border-color: gray !important;
+                                }
+
+                                [preload] {
+                                    background-color: gray;
+                                    color: transparent !important;
+                                    user-select: none;
+                                    border-color: gray !important;
+                                }
+                            </style>
+                            <div class="d-flex flex-wrap row">
+                            <div class="card p-3 col-md-4 col-sm-4 col-sm-12" disabled>
+                                <img class="img-thumbnail" src="" style="background-color: gray; height: 300px;"
+                                    preload>
+                                <div style="display: flex; justify-content: start; align-items: center;" class="pt-2">
+                                    <img src="data:image/svg+xml,%3Csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='100%25' height='100%25' fill='%23808080' /%3E%3C/svg%3E"
+                                        class="mr-1 rounded-pill" preload style="width: 50px; height: 50px"
+                                        style="background-color: gray;" />
+                                    <div>
+                                        <strong preload>amaan</strong><a class="engage pl-1 text-primary"
+                                            style="font-weight: bolder;" onc="" preload>Engage</a>
+                                        <p class="text-muted" preload><span class="fa fa-clock"></span>_______</p>
+                                    </div>
+                                </div>
+                                <p preload>_______</p>
+                                <div class="btn-group m-auto">
+                                    <div class="btn-group" preload>
+                                        <button
+                                            preload>
+                                            <i class="fa fa-arrow-circle-up"></i>
+                                            Upvote 0
+                                        </button>
+                                        <button type="button" preload
+                                            class="btn dropdown-toggle dropdown-toggle-split"
+                                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" preload>
+                                            <span class="sr-only"></span>
+                                        </button>
+                                        <div class="dropdown-menu" preload>
+                                        </div>
+                                    </div>
+                                    <button preload><i
+                                            class="fa fa-comment-alt"></i> Remarks 0</button>
+                                    <button class="btn" preload><i
+                                            class="fa fa-external-link-alt"></i> Visit kite</button>
+                                </div>
+                            </div>
+                            <div class="card p-3 col-md-4 col-sm-4 col-sm-12" disabled>
+                                <img class="img-thumbnail" src="" style="background-color: gray; height: 300px;"
+                                    preload>
+                                <div style="display: flex; justify-content: start; align-items: center;" class="pt-2">
+                                    <img src="data:image/svg+xml,%3Csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='100%25' height='100%25' fill='%23808080' /%3E%3C/svg%3E"
+                                        class="mr-1 rounded-pill" preload style="width: 50px; height: 50px"
+                                        style="background-color: gray;" />
+                                    <div>
+                                        <strong preload>amaan</strong><a class="engage pl-1 text-primary"
+                                            style="font-weight: bolder;" onc="" preload>Engage</a>
+                                        <p class="text-muted" preload><span class="fa fa-clock"></span>_______</p>
+                                    </div>
+                                </div>
+                                <p preload>________</p>
+                                <div class="btn-group m-auto">
+                                    <div class="btn-group" preload>
+                                        <button
+                                            preload>
+                                            <i class="fa fa-arrow-circle-up"></i>
+                                            Upvote 0
+                                        </button>
+                                        <button type="button" preload
+                                            class="btn dropdown-toggle dropdown-toggle-split"
+                                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" preload>
+                                            <span class="sr-only"></span>
+                                        </button>
+                                        <div class="dropdown-menu" preload>
+                                     
+                                        </div>
+                                    </div>
+                                    <button preload><i
+                                            class="fa fa-comment-alt"></i> Remarks 0</button>
+                                    <button class="btn" preload><i
+                                            class="fa fa-external-link-alt"></i> Visit kite</button>
+                                </div>
+                            </div>
+                            <div class="card p-3 col-md-4 col-sm-4 col-sm-12" disabled>
+                                <img class="img-thumbnail" src="" style="background-color: gray; height: 300px;"
+                                    preload>
+                                <div style="display: flex; justify-content: start; align-items: center;" class="pt-2">
+                                    <img src="data:image/svg+xml,%3Csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='100%25' height='100%25' fill='%23808080' /%3E%3C/svg%3E"
+                                        class="mr-1 rounded-pill" preload style="width: 50px; height: 50px"
+                                        style="background-color: gray;" />
+                                    <div>
+                                        <strong preload>amaan</strong><a class="engage pl-1 text-primary"
+                                            style="font-weight: bolder;" onc="" preload>Engage</a>
+                                        <p class="text-muted" preload><span class="fa fa-clock"></span>_______</p>
+                                    </div>
+                                </div>
+                                <p preload></p>
+                                <div class="btn-group m-auto">
+                                    <div class="btn-group" preload>
+                                        <button
+                                            preload>
+                                            <i class="fa fa-arrow-circle-up"></i>
+                                            Upvote 0
+                                        </button>
+                                        <button type="button" preload
+                                            class="btn dropdown-toggle dropdown-toggle-split"
+                                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" preload>
+                                            <span class="sr-only"></span>
+                                        </button>
+                                        <div class="dropdown-menu" preload>
+                                  
+                                        </div>
+                                    </div>
+                                    <button preload><i
+                                            class="fa fa-comment-alt"></i> Remarks 0</button>
+                                    <button class="btn" preload><i
+                                            class="fa fa-external-link-alt"></i> Visit kite</button>
+                                </div>
+                            </div>
+
+                        </div>
+
+
+                            <!-- ### -->
+                        </div>
+                    </div>
+
+                    <div id="Stats" class="tabcontent">
+                        <h3>Stats</h3>
+                        <div class="row">
+                            <div class="col-md-6 text-center ">
+                                <h4>Total score distribution</h4>
+                                <h3>Score {{ score.total }}</h3>
+                                <canvas id="stats" width="400" height="400"></canvas>
+                            </div>
+                            <div class="col-md-6"></div>
+                        </div>
+                        <script>
+                            //For stats Chart
+
+                            document.addEventListener('DOMContentLoaded', function () {
+                                // Get the canvas element by ID
+                                let ctx = document.getElementById('stats').getContext('2d');
+
+                                let data = {
+                                    labels: ['Total likes', 'Total follows', 'Total comments', /*'Special privilege',*/ 'Activities'],
+                                    datasets: [{
+                                        data: [{{ score.likes }}, {{ score.follows }}, {{ score.comments }
+                            }, {{ score.activity }}],
+                                backgroundColor: ['#4bbbaa', '#f7b633', '#fa4b16', 'crimson'],
+                                hoverBackgroundColor: ['#4bbbaa', '#f7b633', '#fa4b16', 'crimson'],
+                                }]
+                            };
+
+                            // Doughnut chart options
+                            let options = {
+                                responsive: true,
+                                maintainAspectRatio: true, // Set to false to allow custom size via canvas attributes
+                            };
+
+                            // Create the Doughnut chart
+                            let myDoughnutChart = new Chart(ctx, {
+                                type: 'doughnut',
+                                data: data,
+                                options: options
+                            });
+                  
+                        });
+                        </script>
+
+                    </div>
+                    <div id="Services" class="tabcontent">
+
+                    </div>
+
+                    <div id="Match" class="tabcontent">
+                        <!--TODO Add Match system -->
+                    </div>
+
+                    <div id="About" class="tabcontent">
+
+                        < <div class="table-responsive">
+                            <table class="table table-borderless">
+                                <thead></thead>
+                                <tbody>
+                                    <tr>
+                                        <td><i class="material-icons">extension</i>
+                                            Niche</td>
+                                        <td>
+                                            {% for niche in niches %}
+                                            <span class="badge m-1 text-white"
+                                                style="background:#4bbbaa;">{{niche}}</span>
+                                            {% endfor %}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><i class="material-icons">place</i>
+                                            Location</td>
+                                        <td>{{profile_info.city}} city of
+                                            {{profile_info.country}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><i class="material-icons">domain</i>
+                                            Belongs to</td>
+                                        <td>{{profile_info.company}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><i class="material-icons">link</i>
+                                            Contacts</td>
+                                        <td>
+                                            {% for link in urls %}
+                                            <a href="{{ link.1 }}" style="text-transform:capitalize;"><i
+                                                    class="fab fa-{{ link.0 }}"></i>
+                                                {{ link.0 }}</a><br>
+                                            {% endfor %}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                    </div>
+
                 </div>
+                <div id="Eu" class="tabcontent">
+
+                    {% load info_filters %}
+                    <div class="container">
+                        <div class="row d-flex">
+                            <div class="col">
+                                <h3>Followers</h3>
+                                <ul class="list-group list-group-flush">
+                                    {% for follower in profile_info.followers|slice:":10" %}
+                                    <li class="list-group-item">
+                                        <a href='/kites/{{follower}}' onclick="">
+                                            {% with user_details=follower|get_user_details %}
+                                            {% if user_details %}
+                                            <img style="max-width: 100px;  max-height: 100px; object-fit: cover;"
+                                                src="{{ user_details.profile_pic_url }}"
+                                                alt="{{ user_details.display_name }}">
+                                            {{ user_details.display_name }}
+                                            {% else %}
+                                            No Followers Yet!
+                                            {% endif %}
+                                            {% endwith %}
+                                        </a>
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                            <div class="col">
+                                <h3>Following:</h3>
+                                <ul class="list-group list-group-flush">
+                                    {% for following in profile_info.following|slice:":10" %}
+                                    <li class="list-group-item">
+                                        <a href='/kites/{{following}}' onclick="">
+                                            {% with user_details=following|get_user_details %}
+                                            {% if user_details %}
+                                            <img style="max-width: 100px;  max-height: 100px; object-fit: cover;"
+                                                src="{{ user_details.profile_pic_url }}"
+                                                alt="{{ user_details.display_name }}">
+                                            {{ user_details.display_name }}
+                                            {% else %}
+                                            Not Following Anyone Yet!
+                                            {% endif %}
+                                            {% endwith %}
+                                        </a>
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+
             </div>
         </div>
+    </div>
+    </div>
 </section>
-<style>
-    .binded-- .fa,.binded-- .fas{
-        color:#fa4b16;
-    }
-    .binded-- {
-        border-radius: 15px;
-        box-shadow: 1px 1px 5px black;
-    }
 
-    .binded-->div:first-child {
-        border-top-left-radius: 15px;
-        border-bottom-left-radius: 15px;
-    }
-
-    .binded-->div:not(div:last-child) {
-        border-right: 1px ridge gray;
-        border-bottom-left-radius: 15px;
-    }
-
-    .binded-->div:last-child {
-        border-top-right-radius: 15px;
-        border-bottom-right-radius: 15px;
-    }
-
-    [propimg] {
-        margin-top: 10px;
-        width: 100%;
-        height: auto;
-        aspect-ratio: 1 / 1;
-    }
-</style>
-
-<script>
-
-    const config = {
-        type: 'doughnut',
-        data: data,
-        options: {
-            responsive: true,
-            plugins: {
-                legend: {
-                    position: 'top',
-                },
-                title: {
-                    display: true,
-                    text: 'Chart.js Doughnut Chart'
-                }
-            }
-        },
-    };
-    const DATA_COUNT = 5;
-    const NUMBER_CFG = { count: DATA_COUNT, min: 0, max: 100 };
-
-    const data = {
-        labels: ['Red', 'Orange', 'Yellow', 'Green', 'Blue'],
-        datasets: [
-            {
-                label: 'Dataset 1',
-                data: Utils.numbers(NUMBER_CFG),
-                backgroundColor: Object.values(Utils.CHART_COLORS),
-            }
-        ]
-    };
-        function conditionPop(x){
-            alert(x) //Change with a good looking modal
-        }
-        function posterror(){
-            conditionPop("Post or user not found, it commonly happens when the owner deletes the post")
-        }
-        function redirect(){
-            location.href = "./login"
-        }
-        function unliked(x){
-            x.classList.add("btn-info")
-            x.classList.remove("btn-outline-info")
-            x.innerHTML = x.innerHTML.replace("Downvote",'Upvote')
-            x.innerHTML = x.innerHTML.replace("-down",'-up')
-            count = parseInt(x.innerHTML.match(/[0-9]+/g)[0])
-            x.innerHTML = x.innerHTML.replace(count,count-1)
-        }
-        function liked(x){
-            x.classList.add("btn-outline-info")
-            x.classList.remove("btn-info")
-            x.innerHTML = x.innerHTML.replace("Upvote",'Downvote')
-            x.innerHTML = x.innerHTML.replace("-up",'-down')
-            count = parseInt(x.innerHTML.match(/[0-9]+/g)[0])
-            x.innerHTML = x.innerHTML.replace(count,count+1)
-        }
-        function toggleLike(a){
-            fetch(`/api/like/${a.getAttribute("post-id")}`).then(response => response.text()).then(data => {
-                eval(`${data}(a)`)
-            })
-        }
-</script>
+<script src="/static/js/kite-main.js"></script>
 {% endblock %}

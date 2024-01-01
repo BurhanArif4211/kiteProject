@@ -1,0 +1,179 @@
+ /* BASE COLORS
+   teal : #4BBBAA
+   yellow : #F7B633
+   red : #FA4B16
+  */
+
+  /* GPT */
+
+  .overlay-pp {
+    position: relative;
+    display: inline-block;
+  }
+
+  .overlay-post {
+    position: absolute;
+    z-index: 3;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.3s;
+    cursor: pointer;
+    color: white;
+  }
+
+  .camera-icon {
+    color: #fff;
+    font-size: 24px;
+    cursor: pointer;
+  }
+
+  .overlay-post:hover {
+    opacity: 1;
+  }
+
+  .pp-hover-text {
+    color: white;
+    position: absolute;
+    opacity: 0;
+    transition: all ease 0.5s;
+    transform: translate(-50%, 0%);
+    text-align: center;
+  }
+
+  .overlay-pp:hover .pp-hover-text {
+    transform: translate(0%, 0%);
+    opacity: 1;
+  }
+
+  /* end */
+
+  .prof-pic {
+    width: 100%;
+    height: 100%;
+  }
+
+  .btn-logout {
+    position: absolute;
+    top: 1.33%;
+    right: 0.33%;
+  }
+
+
+  /*  For Profile Pic and overlay for uploduserpicture  */
+
+  .profile-pic {
+    color: transparent;
+    transition: all 0.3s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    transition: all 0.3s ease;
+  }
+  .profile-pic input {
+    display: none;
+  }
+  .profile-pic img {
+    position: absolute;
+    object-fit: cover;
+    width: 20rem;
+    height:20rem;
+    z-index: 0;
+  }
+  .profile-pic .-label {
+    cursor: pointer;
+    z-index: 1;
+    width: 20rem;
+    height:20rem;
+  }
+   .-label:hover {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.8);
+    z-index: 10000;
+    color: #fafafa;
+    transition: background-color 0.2s ease-in-out;
+    border-radius: 100px;
+    margin-bottom: 0;
+  }
+  .profile-pic span {
+    display: inline-flex;
+    
+    height: 2em;
+  }
+
+
+    /* Style the tabs for kite page*/
+    .tab {
+      padding: 0px 3px;
+      overflow: hidden;
+  }
+
+  /* Style the buttons that are used to open the tab content */
+  .tab button {
+      margin-top: 2px;
+      margin-bottom: 2px;
+      border-radius: 10px;
+      background-color: inherit;
+      float: left;
+      border: none;
+      outline: none;
+      cursor: pointer;
+      padding: 8px 12px;
+      transition: 0.3s;
+  }
+
+  /* Change background color of buttons on hover */
+  .tab button:hover {
+      margin-top: 2px;
+      margin-bottom: 2px;
+      border-radius: 10px;
+  }
+
+  /* Create an active/current tablink class */
+  .tab button.active {
+      box-shadow: 0px 0px 2px black;
+  }
+
+  /* Style the tab content */
+  .tabcontent {
+      display: none;
+      margin-top: 10px;
+      padding: 6px 12px;
+      border: 1px solid #ccc;
+      border-top: none;
+  }
+
+/* IDK waht is this just rename it. */
+
+  .binded-- .fa,.binded-- .fas{
+    color:#fa4b16;
+}
+.binded-- {
+    border-radius: 15px;
+    box-shadow: 1px 1px 5px black;
+}
+
+.binded-->div:first-child {
+    border-top-left-radius: 15px;
+    border-bottom-left-radius: 15px;
+}
+
+.binded-->div:not(div:last-child) {
+    border-right: 1px ridge gray;
+    border-bottom-left-radius: 15px;
+}
+
+.binded-->div:last-child {
+    border-top-right-radius: 15px;
+    border-bottom-right-radius: 15px;
+}
+

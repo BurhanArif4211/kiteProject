@@ -4,430 +4,196 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
-        <link rel="stylesheet"
-            href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
-            integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
-            crossorigin="anonymous">
-        <link rel="stylesheet"
-            href="https://use.fontawesome.com/releases/v5.3.1/css/all.css"
-            integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU"
-            crossorigin="anonymous">
-
-             <!-- This is added justfor message boxes  -->
-            <link href="https://fonts.googleapis.com/icon?family=Material+Icons"rel="stylesheet">
-             <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-            <!--  -->
-        <style>
-
-/* BASECOLORS 
-   teal : #4BBBAA
-   yellow : #F7B633
-   red : #FA4B16
-*/
-body{
-                font-family: 'lato' , sans-serif;
-                background: url(/static/assets/svg/Scalable-K.svg);
-                background-position: 100% 10%;
-                background-size: 50%;
-                background-repeat: no-repeat;
-                box-sizing: border-box;
-                }
-.home-link{
-    display: block;
-    position: absolute;
-    left: 64px;
-    top: 45px;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    user-select: none;
-}
-.home-logo{
-    display: block;
-    width: 321px;
-}
-.cont{
-    box-sizing: border-box;
-    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-}
-
-.left{
-    width: 750px;
-    left: 10%;
-    top: 50%;
-    position: absolute;
-    height: 630px;
-    margin-top: -315px;
-}
-.left>p{
-    font-size: 4rem;
-    font-weight: 500;
-}
-.left>span{
-    font-size: 4.8rem;
-    font-weight: 700;
-    display: inline-block;
-    background-image: linear-gradient(to right  ,#4BBBAA, #F7B633,#FA4B16);
-    -webkit-background-clip: text;
-    text-shadow: 2px 2px 8px #00000008;
-    backface-visibility: hidden;
-    color: transparent;
-}
-/* GPT Is the hero */
-
-.password-container {
-    position: relative;
-}
-
-.show-password {
-    position: absolute;
-    top: 50%;
-    right: 10px;
-    transform: translateY(-50%);
-    cursor: pointer;
-    z-index: 2;
-}
-.password-container input:focus + .show-password {
-    top: 50%;
-}
-
-/* end */
-
-/* start styling of error messages by https://codepen.io/jonathan-huffman */
-
-.box {
-    max-width: 100%;
-    padding: 0px 10px;
-    overflow: auto;
-    margin: 20px 5px;
-  }
-  .iconArea {
-    width:50px;
-    float: left;
-    display: inline-block;
-  }
-  .copyArea {
-    line-height: 1.3;
-    max-width: 850px;
-    float: none;
-    display:block;
-    overflow: hidden;
-  }
-  .copyArea  p {
-    margin-top: 20px;
-    position: relative;
-  }
-  .closeArea {
-    width: 30px;
-    float: right;
-  }
-  .closeArea i {
-
-    cursor: pointer;
-  }
-  
-  
-  /* Unique Box Styles */
-  .warning {
-    background:#FA4B16;
-    border-radius: 3px;
-  }
-.war{
-    position: absolute;
-    top: 380px;
-}
-.can{
-    position: absolute;
-    top: 380px;
-}
-/* end  */
-
-#logreg-forms{
-    z-index: 4;
-    right: 16.667%;
-    position: absolute;
-    background: #FFF ;
-    border-radius: 32px;
-    box-shadow: 0 16px 32px 0 rgba(0, 0, 0, 0.08);
-    top: 50%;
-    transform: translateY(-50%);
-    padding: 64px;
-    width: 92%;
-    max-width: 488px;
-    margin: 0 auto;
-    /*width:412px;
-    margin:10vh auto;
-    background-color:#f3f3f3;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
-  transition: all 0.3s cubic-bezier(.25,.8,.25,1);*/
-}
-#logreg-forms form {
-    width: 100%;
-    max-width: 410px;
-    padding: 15px;
-    margin: auto;
-}
-#logreg-forms .form-control {
-    position: relative;
-    box-sizing: border-box;
-    height: auto;
-    padding: 10px;
-    font-size: 16px;
-}
-#logreg-forms .form-control:focus { z-index: 2; }
-#logreg-forms .form-signin input[type="email"] {
-    margin-bottom: -1px;
-    border-bottom-right-radius: 0;
-    border-bottom-left-radius: 0;
-}
-#logreg-forms .form-signin input[type="password"] {
-    border-top-left-radius: 0;
-    border-top-right-radius: 0;
-}
-
-#logreg-forms .social-login{
-    width:390px;
-    margin:0 auto;
-    margin-bottom: 14px;
-}
-#logreg-forms .social-btn{
-    font-weight: 100;
-    color:white;
-    width:164px;
-    font-size: 0.9rem;
-}
-
-#logreg-forms a{
-    display: block;
-    padding-top:10px;
-    color:lightseagreen;
-}
-
-#logreg-form .lines{
-    width:200px;
-    border:1px solid red;
-}
-
-
-#logreg-forms button[type="submit"]{ margin-top:10px; }
-
-#logreg-forms .facebook-btn{  background-color:#3C589C; }
-
-#logreg-forms .google-btn{ background-color: #fbf5da; }
-
-#logreg-forms .form-reset, #logreg-forms .form-signup{ display: none; }
-
-#logreg-forms .form-signup .social-btn{ width:210px; }
-
-#logreg-forms .form-signup input { margin-bottom: 2px;}
-
-.form-signup .social-login{
-    width:210px !important;
-    margin: 0 auto;
-}
-
-/* Mobile */
-
-@media screen and (max-width:500px){
-    #logreg-forms{
-        width:300px;
-    }
-    
-    #logreg-forms  .social-login{
-        width:200px;
-        margin:0 auto;
-        margin-bottom: 10px;
-    }
-    #logreg-forms  .social-btn{
-        font-size: 1.3rem;
-        font-weight: 100;
-        color:white;
-        width:200px;
-        height: 56px;
-        
-    }
-    #logreg-forms .social-btn:nth-child(1){
-        margin-bottom: 5px;
-    }
-    #logreg-forms .social-btn span{
-        display: none;
-    }
-    #logreg-forms  .facebook-btn:after{
-        content:'Facebook';
-    }
-  
-    #logreg-forms  .google-btn:after{
-        content:'Google+';
-    }
-    
-}
-    </style>
-    <script>
-       
-        function togglePasswordVisibility(fieldId) {
-            var passwordField = document.getElementById(fieldId);
-            var fieldType = passwordField.type;
-
-            if (fieldType === 'password') {
-                passwordField.type = 'text';
-            } else {
-                passwordField.type = 'password';
-            }
-        }        
-
-function validatePassword() {
-    let password1 = document.getElementById("user-pass").value;
-    let password2 = document.getElementById("user-repeatpass").value;
-    let errorElement = document.getElementById("passwordError");
-    console.log(password1 + password2)
-
-    if (password1 !== password2) {
-        errorElement.innerHTML = "Passwords do not match.";
-        return false;
-    } else {
-        errorElement.innerHTML = "";
-    }
-    return true;
-}
-
-
-    </script>
-        <title>Join Kite Now</title>
+        <link rel="stylesheet" href="/static/css/bootstrap.css">
+        <link rel="stylesheet" href="/static/css/style-login.css">
+        <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+        <title>Join Kite</title>
     </head>
     <body>
         <a href="/" class="home-link">
             <img src="/static/assets/png/main1-light.png" alt class="home-logo">
         </a>
-        <div class="cont">
-            <div class="left">
-               <p> Put your Kite on the clouds for the world to see.
-                </p><span>Take Flight!</span>
-                {% if messages %}
-                {%for message in messages%}
-                <div class="box warning" >
-                    <div class="iconArea"><p><i class="material-icons war md-36 md-light">warning</i></p></div>
-                    <div class="closeArea" id="warning"><p class="copyRight"><i class="material-icons can md-dark">cancel</i></p></div>
-                    <div class="copyArea"><p><strong>Message:<div class="message-box">
-                    <div class="message">{{message}}</div></div></strong></p></div>
-                  </div>
-                {%endfor%}
-                {%endif%}
-
-                
+        <div id="alerts">
+            {% if messages %}
+            {%for message in messages%}
+            <div class="alert alert-{{message.tags}} alert-dismissible fade show" role="alert">
+                {{message}}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
-            <div class="right">
+            {%endfor%}
+            {%endif%}
         </div>
-        <div id="logreg-forms">
-            {%if "user_data" not in request.session%}
-            <!-- For Sign In -->
-            <form method="POST" action="/api/login" class="form-signin">
-                {% csrf_token %}
-                <h1 class="h3 mb-3 font-weight-normal"
-                    style="text-align: center"> Sign in</h1>
-                <div class="social-login">
-                    <button class="btn facebook-btn social-btn" type="button"><span><i
-                                class="fab fa-facebook-f"></i>  With Facebook</span> </button>
-                            <!-- <form method="POST" action="/api/loginWithGoogle"> -->
-                    <button class="text-dark btn google-button btn social-btn" >
-                        <svg xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 24 24" width="15" height="15">
-                            <g
-                                transform="matrix(1, 0, 0, 1, 27.009001, -39.238998)">
-                                <path fill="#4285F4"
-                                    d="M -3.264 51.509 C -3.264 50.719 -3.334 49.969 -3.454 49.239 L -14.754 49.239 L -14.754 53.749 L -8.284 53.749 C -8.574 55.229 -9.424 56.479 -10.684 57.329 L -10.684 60.329 L -6.824 60.329 C -4.564 58.239 -3.264 55.159 -3.264 51.509 Z" />
-                                <path fill="#34A853"
-                                    d="M -14.754 63.239 C -11.514 63.239 -8.804 62.159 -6.824 60.329 L -10.684 57.329 C -11.764 58.049 -13.134 58.489 -14.754 58.489 C -17.884 58.489 -20.534 56.379 -21.484 53.529 L -25.464 53.529 L -25.464 56.619 C -23.494 60.539 -19.444 63.239 -14.754 63.239 Z" />
-                                <path fill="#FBBC05"
-                                    d="M -21.484 53.529 C -21.734 52.809 -21.864 52.039 -21.864 51.239 C -21.864 50.439 -21.724 49.669 -21.484 48.949 L -21.484 45.859 L -25.464 45.859 C -26.284 47.479 -26.754 49.299 -26.754 51.239 C -26.754 53.179 -26.284 54.999 -25.464 56.619 L -21.484 53.529 Z" />
-                                <path fill="#EA4335"
-                                    d="M -14.754 43.989 C -12.984 43.989 -11.404 44.599 -10.154 45.789 L -6.734 42.369 C -8.804 40.429 -11.514 39.239 -14.754 39.239 C -19.444 39.239 -23.494 41.939 -25.464 45.859 L -21.484 48.949 C -20.534 46.099 -17.884 43.989 -14.754 43.989 Z" />
-                            </g>
-                        </svg>
-                       With Google
-                    </button>
-                <!-- </form> -->
-                </div>
-                <p style="text-align:center"> OR </p>
-                <input name="email" type="email" id="inputEmail"
-                    class="form-control" placeholder="Email address" required
-                    autofocus>
-                <input name="password" type="password" id="inputPassword"
-                    class="form-control" placeholder="Password" required>
-                    <div class="password-container">
-                <span style="transform:translateY(-120%);" class="show-password" onclick="togglePasswordVisibility('inputPassword')"><i style="user-select:none; opacity: .5;" class="material-icons">visibility</i></span>
+        <div
+            class="main container d-flex justify-content-center align-items-center "
+            style="height: 75vh;">
+            <div class="container">
+                <div class="cont row d-flex align-items-center">
+                    <div class="col-sm-6 left d-none d-sm-block">
+                        <p> Put your Kite on the clouds for the world to see.
+                        </p><span>Take Flight!</span>
                     </div>
-                <button class="btn btn-success btn-block" type="submit"><i
-                        class="fas fa-sign-in-alt"></i> Sign in</button>
-                <a href="#" id="forgot_pswd">Forgot password?</a>
-                <hr>
-                <!-- <p>Don't have an account!</p>  -->
-                <button class="btn btn-primary btn-block" type="button"
-                    id="btn-signup"><i class="fas fa-user-plus"></i> Sign up New
-                    Account</button>
-            </form>
 
-            <form action="/reset/password/" class="form-reset">
-                <input type="email" id="resetEmail" class="form-control"
-                    placeholder="Email address" required autofocus>
-                <button class="btn btn-primary btn-block" type="submit">Reset
-                    Password</button>
-                <a href="#" id="cancel_reset"><i class="fas fa-angle-left"></i>
-                    Back</a>
-            </form>
+                    <div class="col-sm-6 logreg-forms" id="logreg-forms">
 
-            <!-- For Sign UP -->
+                        {%if "user_data" not in request.session%}
+                        <!-- For Sign In -->
+                        <form method="POST" action="/api/login"
+                            class="form-signin">
+                            {% csrf_token %}
+                            <h1 class="h3 mb-3 font-weight-normal"
+                                style="text-align: center"> Sign in</h1>
+                            <div class="social-login">
+                                <button class="btn facebook-btn social-btn"
+                                    type="button"><span><i
+                                            class="fab fa-facebook-f"></i> With
+                                        Facebook</span>
+                                </button>
+                                <!-- <form method="POST" action="/api/loginWithGoogle"> -->
+                                <button
+                                    
+                                    class="text-dark btn google-button btn social-btn">
+                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 24 24" width="15"
+                                        height="15">
+                                        <g
+                                            transform="matrix(1, 0, 0, 1, 27.009001, -39.238998)">
+                                            <path fill="#4285F4"
+                                                d="M -3.264 51.509 C -3.264 50.719 -3.334 49.969 -3.454 49.239 L -14.754 49.239 L -14.754 53.749 L -8.284 53.749 C -8.574 55.229 -9.424 56.479 -10.684 57.329 L -10.684 60.329 L -6.824 60.329 C -4.564 58.239 -3.264 55.159 -3.264 51.509 Z" />
+                                            <path fill="#34A853"
+                                                d="M -14.754 63.239 C -11.514 63.239 -8.804 62.159 -6.824 60.329 L -10.684 57.329 C -11.764 58.049 -13.134 58.489 -14.754 58.489 C -17.884 58.489 -20.534 56.379 -21.484 53.529 L -25.464 53.529 L -25.464 56.619 C -23.494 60.539 -19.444 63.239 -14.754 63.239 Z" />
+                                            <path fill="#FBBC05"
+                                                d="M -21.484 53.529 C -21.734 52.809 -21.864 52.039 -21.864 51.239 C -21.864 50.439 -21.724 49.669 -21.484 48.949 L -21.484 45.859 L -25.464 45.859 C -26.284 47.479 -26.754 49.299 -26.754 51.239 C -26.754 53.179 -26.284 54.999 -25.464 56.619 L -21.484 53.529 Z" />
+                                            <path fill="#EA4335"
+                                                d="M -14.754 43.989 C -12.984 43.989 -11.404 44.599 -10.154 45.789 L -6.734 42.369 C -8.804 40.429 -11.514 39.239 -14.754 39.239 C -19.444 39.239 -23.494 41.939 -25.464 45.859 L -21.484 48.949 C -20.534 46.099 -17.884 43.989 -14.754 43.989 Z" />
+                                        </g>
+                                    </svg>
+                                    With Google
+                                </button>
+                                <!-- </form> -->
+                            </div>
+                            <p style="text-align:center"> OR </p>
+                            <input name="email" type="email" id="inputEmail"
+                                class="form-control" placeholder="Email address"
+                                required
+                                autofocus>
+                            <input name="password" type="password"
+                                id="inputPassword"
+                                class="form-control" placeholder="Password"
+                                required>
+                            <div class="password-container">
+                                <span style="transform:translateY(-120%);"
+                                    class="show-password"
+                                    onclick="togglePasswordVisibility('inputPassword')"><i
+                                        style="user-select:none; opacity: .5;"
+                                        class="material-icons">visibility</i></span>
+                            </div>
+                            <button class="btn btn-success btn-block"
+                                style="width: 100%;" type="submit"><i
+                                    class="fas fa-sign-in-alt"></i> Sign in</button>
+                            <a href="#" id="forgot_pswd">Forgot password?</a>
+                            <hr>
+                            <!-- <p>Don't have an account!</p>  -->
+                            <button class="btn btn-primary btn-block"
+                                style="width: 100%;" type="button"
+                                id="btn-signup"><i class="fas fa-user-plus"></i>
+                                Sign up
+                                New
+                                Account</button>
+                        </form>
 
-            <form onsubmit="return validatePassword()" method="POST" action="/api/signup" class="form-signup">
-                {% csrf_token %}
+                        <form action="/api/resetpassword/" class="form-reset">
+                            <input name="email" type="email" id="resetEmail"
+                                class="form-control mb-2"
+                                placeholder="Email address" required autofocus>
+                            <button class="btn btn-primary btn-block"
+                                type="submit">Reset
+                                Password</button>
+                            <a href="#" id="cancel_reset"><i
+                                    class="fas fa-angle-left"></i>
+                                Back</a>
+                        </form>
 
-                <div class="social-login">
-                    <button class="btn facebook-btn social-btn" type="button"><span><i
-                                class="fab fa-facebook-f"></i>
-                           With Facebook</span> </button>
-                </div>
-                <div class="social-login">
-                    <button class="text-dark btn google-button btn social-btn"
-                        >
-                        <svg xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 24 24" width="15" height="15">
-                            <g
-                                transform="matrix(1, 0, 0, 1, 27.009001, -39.238998)">
-                                <path fill="#4285F4"
-                                    d="M -3.264 51.509 C -3.264 50.719 -3.334 49.969 -3.454 49.239 L -14.754 49.239 L -14.754 53.749 L -8.284 53.749 C -8.574 55.229 -9.424 56.479 -10.684 57.329 L -10.684 60.329 L -6.824 60.329 C -4.564 58.239 -3.264 55.159 -3.264 51.509 Z" />
-                                <path fill="#34A853"
-                                    d="M -14.754 63.239 C -11.514 63.239 -8.804 62.159 -6.824 60.329 L -10.684 57.329 C -11.764 58.049 -13.134 58.489 -14.754 58.489 C -17.884 58.489 -20.534 56.379 -21.484 53.529 L -25.464 53.529 L -25.464 56.619 C -23.494 60.539 -19.444 63.239 -14.754 63.239 Z" />
-                                <path fill="#FBBC05"
-                                    d="M -21.484 53.529 C -21.734 52.809 -21.864 52.039 -21.864 51.239 C -21.864 50.439 -21.724 49.669 -21.484 48.949 L -21.484 45.859 L -25.464 45.859 C -26.284 47.479 -26.754 49.299 -26.754 51.239 C -26.754 53.179 -26.284 54.999 -25.464 56.619 L -21.484 53.529 Z" />
-                                <path fill="#EA4335"
-                                    d="M -14.754 43.989 C -12.984 43.989 -11.404 44.599 -10.154 45.789 L -6.734 42.369 C -8.804 40.429 -11.514 39.239 -14.754 39.239 C -19.444 39.239 -23.494 41.939 -25.464 45.859 L -21.484 48.949 C -20.534 46.099 -17.884 43.989 -14.754 43.989 Z" />
-                            </g>
-                        </svg>
-                      With Google
-                    </button>
-                </div>
+                        <!-- For Sign UP -->
 
-                <p style="text-align:center">OR</p>
-                <input name="username" type="text" id="user-name"class="form-control" placeholder="Full name" required autofocus>
-                <input name="email" type="email" id="user-email" class="form-control" placeholder="Email address" requiredautofocus>
-                <div class="password-container">
-                    <!-- <label for="password1">Password:</label> -->
-                    <input name="password" type="password" id="user-pass" class="form-control" placeholder="Password" required autofocus>
-                    <span class="show-password" onclick="togglePasswordVisibility('user-pass')"><i style="user-select:none; opacity: .5;" class="material-icons">visibility</i></span>
-                </div>
-                
-                <div class="password-container">
-                    <!-- <label for="password2">Confirm Password:</label> -->
-                    <input type="password" id="user-repeatpass" class="form-control" placeholder="Repeat Password" required autofocus>
-                    <span class="show-password" onclick="togglePasswordVisibility('user-repeatpass')"><i style="user-select:none; opacity: .5;" class="material-icons">visibility</i></span>
-                </div>
-                
-                <div id="passwordError" style="color: red;"></div>
-                <br>
-                <button class="btn btn-primary btn-block" type="submit" value="Submit"><i class="fas fa-user-plus"></i>Sign Up</button>
-                <a href="#" id="cancel_signup"><i class="fas fa-angle-left"></i>Back</a>
-            </form>
-            <br>
+                        <form onsubmit="return validatePassword()" method="POST"
+                            action="/api/signup" class="form-signup">
+                            {% csrf_token %}
 
-            {%else%}
+                            <div class="social-login">
+                                <button class="btn facebook-btn social-btn"
+                                    style="width: 100%;"
+                                    type="button"><span><i
+                                            class="fab fa-facebook-f"></i>
+                                        With Facebook</span> </button>
+                            </div>
+                            <div class="social-login">
+                                <button style="width: 100%;"
+                                    class="text-dark btn google-button btn social-btn">
+                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 24 24" width="15"
+                                        height="15">
+                                        <g
+                                            transform="matrix(1, 0, 0, 1, 27.009001, -39.238998)">
+                                            <path fill="#4285F4"
+                                                d="M -3.264 51.509 C -3.264 50.719 -3.334 49.969 -3.454 49.239 L -14.754 49.239 L -14.754 53.749 L -8.284 53.749 C -8.574 55.229 -9.424 56.479 -10.684 57.329 L -10.684 60.329 L -6.824 60.329 C -4.564 58.239 -3.264 55.159 -3.264 51.509 Z" />
+                                            <path fill="#34A853"
+                                                d="M -14.754 63.239 C -11.514 63.239 -8.804 62.159 -6.824 60.329 L -10.684 57.329 C -11.764 58.049 -13.134 58.489 -14.754 58.489 C -17.884 58.489 -20.534 56.379 -21.484 53.529 L -25.464 53.529 L -25.464 56.619 C -23.494 60.539 -19.444 63.239 -14.754 63.239 Z" />
+                                            <path fill="#FBBC05"
+                                                d="M -21.484 53.529 C -21.734 52.809 -21.864 52.039 -21.864 51.239 C -21.864 50.439 -21.724 49.669 -21.484 48.949 L -21.484 45.859 L -25.464 45.859 C -26.284 47.479 -26.754 49.299 -26.754 51.239 C -26.754 53.179 -26.284 54.999 -25.464 56.619 L -21.484 53.529 Z" />
+                                            <path fill="#EA4335"
+                                                d="M -14.754 43.989 C -12.984 43.989 -11.404 44.599 -10.154 45.789 L -6.734 42.369 C -8.804 40.429 -11.514 39.239 -14.754 39.239 C -19.444 39.239 -23.494 41.939 -25.464 45.859 L -21.484 48.949 C -20.534 46.099 -17.884 43.989 -14.754 43.989 Z" />
+                                        </g>
+                                    </svg>
+                                    With Google
+                                </button>
+                            </div>
+
+                            <p style="text-align:center">OR</p>
+                            <input name="username" type="text" id="user-name"
+                                class="form-control" placeholder="Full name"
+                                required
+                                autofocus>
+                            <input name="email" type="email" id="user-email"
+                                class="form-control" placeholder="Email address"
+                                requiredautofocus>
+                            <div class="password-container">
+                                <!-- <label for="password1">Password:</label> -->
+                                <input name="password" type="password"
+                                    id="user-pass"
+                                    class="form-control" placeholder="Password"
+                                    required
+                                    autofocus>
+                                <span class="show-password"
+                                    onclick="togglePasswordVisibility('user-pass')"><i
+                                        style="user-select:none; opacity: .5;"
+                                        class="material-icons">visibility</i></span>
+                            </div>
+
+                            <div class="password-container">
+                                <!-- <label for="password2">Confirm Password:</label> -->
+                                <input type="password" id="user-repeatpass"
+                                    class="form-control"
+                                    placeholder="Repeat Password"
+                                    required autofocus>
+                                <span class="show-password"
+                                    onclick="togglePasswordVisibility('user-repeatpass')"><i
+                                        style="user-select:none; opacity: .5;"
+                                        class="material-icons">visibility</i></span>
+                            </div>
+
+                            <div id="passwordError" style="color: red;"></div>
+                            <br>
+                            <button class="btn btn-primary btn-block"
+                                style="width: 100%;" type="submit"
+                                value="Submit"><i class="fas fa-user-plus"></i>Sign
+                                Up</button>
+                            <a href="#" id="cancel_signup"><i
+                                    class="fas fa-angle-left"></i>Back</a>
+                        </form>
+                        <br>
+
+                        <!--{%comment%} {%else%}
             <form method="POST" action="/api/logout">
                 {% csrf_token %}
 
@@ -442,20 +208,45 @@ function validatePassword() {
                     class="fas fa-user-plus"></i>Resend Email Verification</button>
                 
             </form>
-            {%endif%}
+             {%endcomment%}-->
+                        {%endif%}
 
+
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
-        <p style="text-align:center">
 
-        </p>
+        <script src="/static/js/bootstrap.js"></script>
+
         <script
-            src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-        <script
-            src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
-            integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
-            crossorigin="anonymous"></script>
+            src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
         <script>
+         function togglePasswordVisibility(fieldId) {
+                var passwordField = document.getElementById(fieldId);
+                var fieldType = passwordField.type;
+                if (fieldType === 'password') {
+                    passwordField.type = 'text';
+                } else {
+                    passwordField.type = 'password';
+                }
+            }        
+        
+        function validatePassword() {
+            let password1 = document.getElementById("user-pass").value;
+            let password2 = document.getElementById("user-repeatpass").value;
+            let errorElement = document.getElementById("passwordError");
+            console.log(password1 + password2)
+        
+            if (password1 !== password2) {
+                errorElement.innerHTML = "Passwords do not match.";
+                return false;
+            } else {
+                errorElement.innerHTML = "";
+            }
+            return true;
+        }
 
         function toggleResetPswd(e){
         e.preventDefault();
@@ -487,4 +278,3 @@ function validatePassword() {
 </script>
     </body>
 </html>
-

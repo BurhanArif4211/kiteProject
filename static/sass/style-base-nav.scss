@@ -1,0 +1,48 @@
+
+/* BASECOLORS 
+   teal : #4BBBAA
+   yellow : #F7B633
+   red : #FA4B16
+*/
+
+body{
+  background-color: var(--light);
+   font-size: 62.5%; /* 1 rem = 10px; 10px/16px = 62.5% */
+   font-family: "lato", sans-serif;
+}
+.home-link{
+
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+  }
+  .home-logo{
+    display: block;
+    width: 10rem;
+  }
+
+  nav.navbar {
+    padding: .5rem 1rem; 
+  }
+
+  .navbar-brand {
+    font-size: 2rem; 
+  }
+
+  .navbar-toggler {
+    padding: 0.5rem 1.5rem; 
+  }
+
+  .navbar-nav .nav-item {
+    color: black;
+    font-weight: 800;
+    margin-right: 1rem; 
+  }
+
+  .navbar-collapse {
+    margin: 0; 
+  }
+
+  .navbar-nav .nav-link {
+    padding: 0.5rem 1rem;
+  }

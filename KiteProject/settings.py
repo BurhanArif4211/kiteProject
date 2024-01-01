@@ -14,8 +14,8 @@ SECRET_KEY = 'django-insecure-2$cmld*utf_9*jh+$qw!x)t&zu*w(mr^2g2kailyho6_@xh=3z
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['192.168.0.33','127.0.0.1','.vercel.app']#'localhost','192.168.0.33','kiteapp.pagekite.me']
-# CSRF_TRUSTED_ORIGINS = ['http://localhost','http://192.168.0.33','https://kiteapp.pagekite.me']
+ALLOWED_HOSTS = ['192.168.0.44','127.0.0.1','.vercel.app','kiteapp.pagekite.me']#'localhost','192.168.0.33']
+CSRF_TRUSTED_ORIGINS = ['http://localhost','http://192.168.0.44','https://kiteapp.pagekite.me']
 
 
 
@@ -123,3 +123,6 @@ STATICFILES_DIRS = [BASE_DIR / 'static']
 # STATICFILES_DIRS = [
 #     os.path.join(BASE_DIR,"static")
 # ]
+
+#ADDED BY AMAN ALI 24 hours cookies
+SESSION_COOKIE_AGE = 86400

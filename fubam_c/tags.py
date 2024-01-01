@@ -1,3 +1,15 @@
+def wrapper(*args):
+    attributes = " "
+    body = ""
+    for arg in args:
+        if isinstance(arg, str) or isinstance(arg,int) or isinstance(arg,float):
+            body += f"  {arg}\n"
+        elif isinstance(arg,list):
+            for ar in arg:
+                body += f"  {ar}\n"
+        else:
+            TypeError(f"{arg} of type `{type(arg)}` is not useable!")
+    return f'{body}'     
 def div(*args):
     attributes = " "
     body = ""
@@ -941,7 +953,7 @@ def img(*args):
 def inp(*args):
     attributes = " "
     body = ""
-    phyla = "inp"
+    phyla = "input"
     closings = True
     for arg in args:
         if isinstance(arg, dict):

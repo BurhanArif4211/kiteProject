@@ -1,13 +1,17 @@
-{% if posts %}
-<div class="d-flex flex-wrap row">
-  {% for post in posts %}
+{% if posts_info %}
+<div class="d-flex flex-wrap row"> 
+  {% load info_filters %}
+  {% with user_details=publicProfileId|get_user_details %}
+  {% for post in posts_info %}
   <div class="card p-3 col-md-4 col-sm-4 col-sm-12">
     <img class="img-thumbnail" src="{{post.post_url}}" />
-    <div style="display:flex;justify-content:start;align-items:center;" class="pt-2"><img src="{{default.pp_url}}" class="mr-1 rounded-pill"
-        style="width:50px;height:50px"><div><strong>{{default.displayName}}</strong><a class="engage pl-1 text-primary"
-        style="font-weight:bolder;" onc>Engage</a>    <p class="text-muted"><span class="fa fa-clock"></span> {{ post.added_at }}</p>
-      </div></div>
-            <p>{{ post.post_description }}</p>
+    <div style="display:flex;justify-content:start;align-items:center;" class="pt-2"><img src="{{user_details.profile_pic_url}}" class="mr-1 rounded-pill"style="width:50px;height:50px">
+        <div>
+          <strong>{{user_details.display_name}}</strong>
+          <p class="text-muted"><span class="fa fa-clock"></span> {{ post.added_at }}</p>
+      </div>
+    </div>
+      <p>{{ post.post_description }}</p>
     <div class="btn-group m-auto">
       <div class="btn-group">
         <button onclick="toggleLike()" type="button" class="btn btn-info"><i class="fa fa-arrow-circle-up"></i> Upvote {{post.likes|length}}</button>
@@ -15,25 +19,14 @@
           <span class="sr-only"></span>
         </button>
         <div class="dropdown-menu">
-          <a class="dropdown-item" href="#">Aman</a>
-          <a class="dropdown-item" href="#">Aman 2</a>
-          <a class="dropdown-item" href="#">Aman returns</a>
-          <a class="dropdown-item" href="#">Aman Far from college</a>
-          <a class="dropdown-item" href="#">And 19 others</a>
+
         </div>
       </div>
       <button onclick="commentToggle(this)" class="btn btn-info"><i class="fa fa-comment-alt"></i> Remarks {{post.comments|length}}</button>
       <button class="btn btn-info" onclick="location.href = ''"><i class="fa fa-external-link-alt"></i> Visit kite</button>
     </div>
     <div hidden class="container comment-box p-3 my-3" style="border-radius: 20px;">
-      <div class="comment-block"><strong>AMAN ALi</strong> This is first comment</div>
-      <div class="comment-block"><strong>AMAN ALi</strong> This is second comment</div>
-      <div class="comment-block"><strong>AMAN ALi</strong> This is third comment</div>
-      <div class="comment-block"><strong>AMAN ALi</strong> This is fouth comment</div>
-      <div class="comment-block"><strong>AMAN ALi</strong> This is fifth comment</div>
-      <div class="comment-block"><strong>AMAN ALi</strong> This is sixth comment</div>
-      <div class="comment-block"><strong>AMAN ALi</strong> This is seventh comment</div>
-      <div class="comment-block"><strong>AMAN ALi</strong> This is eigth comment</div>
+
       <div class="comment-sector d-flex" style="align-items: center;">
         <textarea placeholder="Remark this post"></textarea>
         <button class="btn btn-primary"><i class="fa fa-paper-plane"></i></button>
@@ -41,6 +34,7 @@
     </div>
   </div>
   {% endfor %}
+  {%endwith%}
 </div>
 {% else %}
 <p>No posts available.</p>

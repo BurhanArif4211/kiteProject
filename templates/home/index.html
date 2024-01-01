@@ -37,121 +37,107 @@
 
 
 	</style>
-	<script>
-		//toggle follow 
-
-		function toggleFollow(publicId, action) {
-			const followButton = document.getElementById('followButton');
-
-			// Disable the button to prevent spam clicking
-			followButton.disabled = true;
-
-			fetch(`/api/follow/${publicId}/?action=${action}`)
-				.then(response => response.json())
-				.then(data => {
-					// Handle the response as needed
-					console.log(data);
-
-					// Update the button text and re-enable it
-					if (action === 'follow') {
-						followButton.innerText = 'Unfollow';
-						followButton.onclick = function () {
-							toggleFollow(publicId, 'unfollow');
-						};
-					} else {
-						followButton.innerText = 'Follow';
-
-						followButton.onclick = function () {
-							toggleFollow(publicId, 'follow');
-						};
-					}
-
-					// Re-enable the button
-					followButton.disabled = false;
-				})
-				.catch(error => {
-					console.error('Error:', error);
-
-					// Re-enable the button in case of an error
-					followButton.disabled = false;
-				});
-		}
-
-	</script>
 </head>
 <section class="index-main">
 	<header class="header">
 		<div class="header__main">
-			<h1 class="header__heading-prime">Welcome To the winds</h1>
-			{% if profile_info %}
+			<h1 class="header__heading-prime">Welcome</h1>
+			
+			{% if "user_data" in request.session %}
+			
 			<div class="search container">
-				<form onsubmit="event.preventDefault();" role="search">
-					<input id="search" type="search" placeholder="Search..." autofocus required />
-					<button class="btn btn-primary" style="background-color: #4BBBAA;" type="submit">Go</button>
-				</form>
+				<!-- <form onsubmit="event.preventDefault();" role="search"> -->
+				<input id="search-input" type="search" placeholder="Search..." autofocus required />
+				<div class="search-results-wrapper">
+					<div class="search-results" id="search-results"></div>
+				</div>
+				<button class="btn btn-primary" style="background-color: #4BBBAA;" type="submit">Go</button>
+				<!-- </form> -->
 			</div>
 			{%else%}
 			<button onclick="location.href = '/login';" class="btn btn-success fw-bold header__button-join "
 				style="background-color: #4BBBAA;">Join</button>
 			{%endif%}
-			{% if allUsers %}
-			<div class="d-flex flex-wrap">
-				{% for user in allUsers %}
-				{% include 'home/profile-card.html' with user=user profile_info=profile_info %}
-				{% endfor %}
-			</div>
-			{% else %}
-			<p>No users available.</p>
-			{% endif %}
-
-
 		</div>
 	</header>
 </section>
 <script>
 
+	const searchInput = document.getElementById("search-input");
+    const searchResults = document.getElementById("search-results");
+    
+    searchInput.addEventListener("input", () => {
+        const searchTerm = searchInput.value;
+        searchTimeout = setTimeout(() => {
+        if (searchTerm.trim() === "") {
+            searchResults.style.display = "none";
+            return;
+        }
+    
+     
+        fetch(`/api/search?qN=${searchTerm}`)
+            .then((response) => response.json())
+            .then((data) => {
+				console.log(data.users)
+    
+                searchResults.innerHTML = ""; // Clear previous results
+                data.users.forEach((user) => {
+                  const resultItem = document.createElement("div");
+                  const link = document.createElement("a");
+                  link.setAttribute("class", `search-result`);
+                  link.setAttribute("href", `/kites/${user.publicProfileId}`);
+                  
+                  resultItem.textContent = `${user.display_name}`;
+                  link.appendChild(resultItem);
 
-	function toggleFollow(button, publicId, action) {
-		// Disable the clicked follow/unfollow button to prevent spam clicking
-		button.disabled = true;
+                  searchResults.appendChild(link);
+                });
+                searchResults.style.display = "block";
+            });},500);
+    });
 
-		fetch(`/api/follow/${publicId}/?action=${action}`)
-			.then(response => response.json())
-			.then(data => {
-				// Handle the response as needed
-				console.log(data);
 
-				// Update the clicked button text and style, then re-enable the button
-				if (data.success) {
-					if (action === 'follow') {
-						button.innerText = 'Unfollow';
-						button.style.backgroundColor = ''; // Remove background color
-						button.classList.remove('btn-success');
-						button.classList.add('btn-light');
-						button.onclick = function () {
-							toggleFollow(button, publicId, 'unfollow');
-						};
-					} else {
-						button.innerText = 'Follow';
-						button.style.backgroundColor = '#4BBBAA';
-						button.classList.remove('btn-light');
-						button.classList.add('btn-success');
-						button.onclick = function () {
-							toggleFollow(button, publicId, 'follow');
-						};
-					}
-				}
-
-				// Re-enable the clicked button
-				button.disabled = false;
-			})
-			.catch(error => {
-				console.error('Error:', error);
-
-				// Re-enable the clicked button in case of an error
-				button.disabled = false;
-			});
-	}
+	//function toggleFollow(button, publicId, action) {
+	//	// Disable the clicked follow/unfollow button to prevent spam clicking
+	//	button.disabled = true;
+//
+	//	fetch(`/api/follow/${publicId}/?action=${action}`)
+	//		.then(response => response.json())
+	//		.then(data => {
+	//			// Handle the response as needed
+	//			console.log(data);
+//
+	//			// Update the clicked button text and style, then re-enable the button
+	//			if (data.success) {
+	//				if (action === 'follow') {
+	//					button.innerText = 'Unfollow';
+	//					button.style.backgroundColor = ''; // Remove background color
+	//					button.classList.remove('btn-success');
+	//					button.classList.add('btn-light');
+	//					button.onclick = function () {
+	//						toggleFollow(button, publicId, 'unfollow');
+	//					};
+	//				} else {
+	//					button.innerText = 'Follow';
+	//					button.style.backgroundColor = '#4BBBAA';
+	//					button.classList.remove('btn-light');
+	//					button.classList.add('btn-success');
+	//					button.onclick = function () {
+	//						toggleFollow(button, publicId, 'follow');
+	//					};
+	//				}
+	//			}
+//
+	//			// Re-enable the clicked button
+	//			button.disabled = false;
+	//		})
+	//		.catch(error => {
+	//			console.error('Error:', error);
+//
+	//			// Re-enable the clicked button in case of an error
+	//			button.disabled = false;
+	//		});
+	//}
 
 
 </script>

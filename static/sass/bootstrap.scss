@@ -1,0 +1,35 @@
+
+$primary:       #4BBBAA ;
+// $secondary:     $gray-600 ;
+$success:      #F7B633;
+// $info:          $cyan ;
+$warning:       #FA4B16 ;
+// $danger:        $red ;
+$light:         #e8f6fe ;
+$dark:          #300b00 ;
+
+@import './../node_modules/bootstrap/scss/bootstrap.scss';
+
+// if you want to customize any bootstrap, you can do it here
+.btn-primary{
+    color:#e0f4ff;
+    border-radius: 6rem;
+    font-weight: 700;
+}
+
+.float-right{
+    float:right;
+    
+}
+:root,
+[data-bs-theme=light] {
+    // --bs-body-font-size: 62.5%; //1 rem = 10px; 10px/16px = 62.5%
+    font-family: 'lato' sans-serif;
+}
+
+.alert-error {
+    --bs-alert-color: var(--bs-danger-text-emphasis);
+    --bs-alert-bg: var(--bs-danger-bg-subtle);
+    --bs-alert-border-color: var(--bs-danger-border-subtle);
+    --bs-alert-link-color: var(--bs-danger-text-emphasis);
+  }

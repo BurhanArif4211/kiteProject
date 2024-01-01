@@ -4,359 +4,57 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
-        <link rel="stylesheet"
-            href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
-            integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
-            crossorigin="anonymous">
-        <link rel="stylesheet"
-            href="https://use.fontawesome.com/releases/v5.3.1/css/all.css"
-            integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU"
-            crossorigin="anonymous">
+        <link rel="stylesheet" href="/static/css/bootstrap.css">
+        <link rel="stylesheet" href="/static/css/style-profile-form.css">
         <style>
 
-
-/* BASECOLORS 
-   teal : #4BBBAA
-   yellow : #F7B633
-   red : #FA4B16
-*/
-body{
-    font-family: 'lato' , sans-serif;
-    background: url(../static/assets/svg/Scalable-K1.svg);
-    background-position: 0% -8%;
-    background-size: 50%;
-    background-repeat: no-repeat;
-    box-sizing: border-box;
-    }
-.home-link{
-    display: block;
-    position: absolute;
-    left: 64px;
-    top: 45px;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    user-select: none;
-}
-.home-logo{
-    display: block;
-    width: 321px;
-}
-.cont{
-    box-sizing: border-box;
-    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-}
-
-.right{
-    width: 750px;
-    right: 10%;
-    top: 50%;
-    position: absolute;
-    height: 630px;
-    margin-top: -315px;
-}
-.right>p{
-    font-size: 4rem;
-    font-weight: 500;
-}
-.right>span{
-    font-size: 4.8rem;
-    font-weight: 700;
-    display: inline-block;
-    background-image: linear-gradient(to right  ,#4BBBAA, #F7B633,#FA4B16);
-    -webkit-background-clip: text;
-    text-shadow: 2px 2px 8px #00000008;
-    backface-visibility: hidden;
-    color: transparent;
-}
-.btn-success{
-    font-size: 1.4rem;
-    background-color:#4BBBAA;
-    border-radius: 100px;
-}
-
-.btn-logout{
-    position: absolute;
-    right: 13.33%;
-}
-/* for image upload tag */
-input[type="file"] {
-    display: none;
-}
-.custom-file-upload {
-    border: 1px solid #ccc;
-    display: inline-block;
-    padding: 6px 12px;
-    cursor: pointer;
-}
-
-/* Written by @iam.burhanarif */
-
-#logreg-forms{
-    z-index: 4;
-    left: 16.667%;
-    position: absolute;
-    background: #FFF ;
-    border-radius: 32px;
-    box-shadow: 0 16px 32px 0 rgba(0, 0, 0, 0.08);
-    top: 50%;
-    transform: translateY(-50%);
-    padding: 64px;
-    width: 92%;
-    max-width: 488px;
-    margin: 0 auto;
-
-}
-#logreg-forms form {
-    width: 100%;
-    max-width: 410px;
-    padding: 15px;
-    margin: auto;
-}
-#logreg-forms .form-control {
-    position: relative;
-    box-sizing: border-box;
-    height: auto;
-    padding: 13px;
-    font-size: 16px;
-    margin-bottom: 18px;
-    border-radius: 80px;
-}
-#logreg-forms .form-control:focus { z-index: 2; }
-#logreg-forms .form-signin input[type="email"] {
-    margin-bottom: -1px;
-    border-bottom-right-radius: 0;
-    border-bottom-left-radius: 0;
-}
-#logreg-forms .form-signin input[type="password"] {
-    border-top-left-radius: 0;
-    border-top-right-radius: 0;
-}
-
-#logreg-forms .social-login{
-    width:390px;
-    margin:0 auto;
-    margin-bottom: 14px;
-}
-#logreg-forms .social-btn{
-    font-weight: 100;
-    color:white;
-    width:190px;
-    font-size: 0.9rem;
-}
-
-#logreg-forms a{
-    display: block;
-    padding-top:10px;
-    color:#4BBBAA;
-}
-
-
-
-#logreg-form .lines{
-    width:200px;
-    border:1px solid #FA4B16;
-}
-
-
-#logreg-forms button[type="submit"]{ margin-top:10px; }
-
-
-/* Mobile */
-
-@media screen and (max-width:500px){
-    #logreg-forms{
-        width:300px;
-    }    
-}
-#demo2 select {
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    -ms-appearance: none;
-    -o-appearance: none;
-  overflow: hidden;
-  cursor:pointer;
-  color: #999 !important;
-  font-size: 16px !important;
-  } 
-  /*For IE */
-  #demo2 select::-ms-expand {
-      display: none;
-  }
-  .contact-form span.required {
-      color:#FA4B16 !important;
-  }
-  
-  
-  
-  #email_validation, #name_validation {
-      display:none;
-  }
-  
-  label.required:after {
-    content:'*';
-    color:#FA4B16;
-  }
-  
-  span.error {
-    background-color:#FFDFDF;
-    color:#FA4B16;
-  }
-  .row {
-    margin:5px;
-  }
-  
-
-  @media (min-width: 640px) {
-      .container {
-          width: 600px
-      }
-  }
-  .tab-content>.tab-pane {
-      padding: 0 15px;
-  }
-  
-  @media (min-width: 768px) {
-  .form-horizontal .control-label {
-      padding-top: 7px;
-      margin-bottom: 0;
-      text-align: left;
-  }
-  }
-  .col-sm-offset-4 {
-      margin-left: 33.3333% !important;
-  }
-  .form-horizontal .form-group {
-      margin-top: 15px !important;
-  }
-  .border
-  {
-  border:1px solid #ccc;
-  }
-  .alert-pad
-  {
-  padding-left: 25px;
-  }
-  .com-pad
-  {
-  padding-left: 5px;
-  }
-  label
-  {
-  font-weight: 500 !important;
-  }
-  .top-margin
-  {
-  margin-top:10px !important;;
-  }
-  .bottom-gap
-  {
-  margin-bottom:5px;
-  }
-  hr
-  {
-  margin-left:0px;
-  
-  }
-  .weekly .btn {
-      margin: 0 0 5px 0;
-      border-radius: 50%;
-      width: 42px;
-      height: 42px;
-      padding: 0;
-  }
-  .mtb-xy {margin:15px 0;}
-  .nav-tabs {
-      margin: 0 30px;
-  
-  }
-  .tab-content {
-      margin: 0 auto;
-  }
-  
-  .outer-width
-  {
-  
-  margin:0 auto;
-  }
-  
-  
     </style>
         <title>Join Kite Now</title>
     </head>
     <body>
+        
         <a href="/" class="home-link">
             <img src="../static/assets/png/main1-light.png" alt class="home-logo">
         </a>
-        <form method="POST" action="/api/logout">
-            {% csrf_token %}
-
-            <button class="btn btn-primary btn-logout" type="submit"><i
-                class="fas fa-user-plus"></i>logout</button>
-            
-        </form>
-
-        <div class="cont">
-            <div class="left">
-            <div id="logreg-forms">
-                <!-- For Sign In -->
-                <form method="POST" action="/api/createprofile" id="profileForm" class="form-signin">
-                    {% csrf_token %}
-                    <h1 class="h3 mb-3 font-weight-normal"
-                        style="text-align: center">Tell Us About Yourself</h1>
-                        <select name="country" class="form-control countries" id="countries" required="required">
-                            <option value="" selected="">Country</option>
-                        </select>
-                    <input name="city" type="text" id="user-name" class="form-control" placeholder="Your City" required autofocus>
-                    <input name="niche" type="text" id="user-name" class="form-control" placeholder="Your Niche" required autofocus>
-                    <input name="company" type="text" id="user-name" class="form-control" placeholder="Company Name"  autofocus>
-                    <input name="about" type="text" id="user-name" class="form-control" placeholder="About "  autofocus>
-                    <input name="link1" type="text" class="form-control" placeholder="Link"  autofocus>
-                    <input name="link2" type="text" class="form-control" placeholder="Link" >
-                    <input name="link3" type="text" class="form-control" placeholder="Link" >
-                    <button class="btn btn-success btn-block" type="submit"><i class="fas fa-sign-in-alt"></i>Next</button>
-
-                </form>
-
-                <br>
-
-            </div>
-            </div>
-            <div class="right">
-                <p> Your Kite can Attract Valuable traffic to your bussiness!
-                </p><a style="color: white;" class="btn btn-success ">Learn More</a>
-            </div>
-
+        
+       
+        <div class="main container d-flex justify-content-center align-items-center " style="height: 100vh;">
+        
+        <div class="row">
+        <div class="cont row  align-items-center">
+        <div class="col-sm-6  right">
+            <p> Your Kite can Attract Valuable traffic to your bussiness!
+            </p><a  class="btn btn-primary  btn-block ">Learn More</a>
         </div>
-        <p style="text-align:center">
+        <div id="logreg-forms" class="col-sm-6 mh-100 logreg-forms left" >
+            <form method="POST" action="/api/logout">
+                {% csrf_token %}
+                <button class="btn rounded-5 btn-outline-primary p-2" style="width: 100%;" type="submit">logout</button>
+            </form>
+            <form method="POST" action="/api/createprofile" id="profileForm" class="form-signin">
+                {% csrf_token %}
+                <div class="login-cont clearfix">
+                </div>
+                <h1 class="h3 mb-3 font-weight-normal" style="text-align: center">Tell Us About Yourself</h1>
+                    <select name="country" class="form-control countries" id="countries" required >
+                        <option value="" selected="" >Country</option>
+                    </select>
+                <input name="city" type="text" id="user-name" class="form-control" placeholder="Your City" required autofocus>
+                <input name="niche" type="text" id="user-name" class="form-control" placeholder="Your Niche" required autofocus>
+                <input name="company" type="text" id="user-name" class="form-control" placeholder="Company Name" autofocus>
+                <input name="about" type="text" id="user-name" class="form-control" placeholder="About "  autofocus>
+                <input name="link1" type="text" class="form-control" placeholder="Link" autofocus>
+                <input name="link2" type="text" class="form-control" placeholder="Link" autofocus >
+                <input name="link3" type="text" class="form-control" placeholder="Link" autofocus >
+                <button class="btn btn-primary p-2" style="width: 100%;" type="submit">Next</button>
+                </form>
+        </div>
+    </div>
+    </div>
+</div>
 
-        </p>
-        <script
-            src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-        <script
-            src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
-            integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
-            crossorigin="anonymous"></script>
-        <script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 
-        function toggleResetPswd(e){
-        e.preventDefault();
-        $('#logreg-forms .form-signin').toggle() // display:block or none
-        $('#logreg-forms .form-reset').toggle() // display:block or none
-    }
-    
-    function toggleSignUp(e){
-        e.preventDefault();
-        $('#logreg-forms .form-signin').toggle(); // display:block or none
-        $('#logreg-forms .form-signup').toggle(); // display:block or none
-    }
-    
-    $(()=>{
-        // Login Register Form
-        $('#logreg-forms #forgot_pswd').click(toggleResetPswd);
-        $('#logreg-forms #cancel_reset').click(toggleResetPswd);
-        $('#logreg-forms #btn-signup').click(toggleSignUp);
-        $('#logreg-forms #cancel_signup').click(toggleSignUp);
-    })</script>
-    <script src="../static/js/profile-form.js" ></script>
+    <script src="/static/js/profile-form.js" ></script>
     </body>
 </html>

@@ -8,11 +8,11 @@
     {% if profile_info %}
         <!-- Display follow/unfollow button based on the follow status -->
         {% if user.publicProfileId in profile_info.following %}
-            <button onclick="toggleFollow(this,'{{ user.publicProfileId }}', 'unfollow')" class="follow-button btn btn-light btn-block position-absolute" style=" bottom:0;" >Unfollow</button>
+            <button onclick="toggleFollow(this,'{{ user.publicProfileId }}', 'unfollow')" class="follow-button btn btn-light btn-block " >Unfollow</button>
         {% elif user.publicProfileId == profile_info.publicProfileId %}
         (You)
         {%else%}
-            <button onclick="toggleFollow(this,'{{ user.publicProfileId }}', 'follow'  )" class="follow-button btn btn-success btn-block position-absolute" style="background-color: #4BBBAA; bottom:0;" >Follow</button>
+            <button onclick="toggleFollow(this,'{{ user.publicProfileId }}', 'follow'  )" class="follow-button btn btn-success btn-block " style="background-color: #4BBBAA; " >Follow</button>
         {% endif %}
     {% endif %}
 </div>
